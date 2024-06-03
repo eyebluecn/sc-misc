@@ -22,8 +22,8 @@ func getDefaultMysqlUrl() string {
 	var mysqlPort int = 3306
 	var mysqlHost string = "127.0.0.1"
 	var mysqlSchema string = "smart_classroom_go"
-	var mysqlUsername string = "root"
-	var mysqlPassword string = "123456"
+	var mysqlUsername string = "smart_classroom_go"
+	var mysqlPassword string = "your_db_password" //数据库密码
 	var mysqlCharset string = "utf8mb4"
 
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=%s&parseTime=True&loc=Local", mysqlUsername, mysqlPassword, mysqlHost, mysqlPort, mysqlSchema, mysqlCharset)
