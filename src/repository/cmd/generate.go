@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/eyebluecn/sc-misc/src/common/util"
 	"github.com/eyebluecn/sc-misc/src/repository/config"
 	"gorm.io/gen"
 	"os"
@@ -17,7 +18,13 @@ func main() {
 		outPath = "src/repository/dao"
 	}
 
-	modelPkgPath := "../model/po"
+	modelPkgPath := os.Getenv("MODEL_PKG_PATH")
+	if modelPkgPath == "" {
+		modelPkgPath = "src/model/po"
+		if util.IsWindows() {
+			modelPkgPath = "../model/po"
+		}
+	}
 
 	generator := gen.NewGenerator(gen.Config{
 		OutPath:      outPath,
