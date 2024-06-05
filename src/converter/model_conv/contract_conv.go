@@ -12,12 +12,12 @@ func ConvertContractStatus(status int32) enums.ContractStatus {
 }
 
 // 数据库模型转换为领域模型
-func ConvertContract(thing *po.ContractPO) *do.Contract {
+func ConvertContract(thing *po.ContractPO) *do.ContractDO {
 	if thing == nil {
 		return nil
 	}
 
-	return &do.Contract{
+	return &do.ContractDO{
 		ID:         thing.ID,
 		CreateTime: thing.CreateTime,
 		UpdateTime: thing.UpdateTime,
@@ -32,11 +32,11 @@ func ConvertContract(thing *po.ContractPO) *do.Contract {
 }
 
 // 数据库模型转换为领域模型
-func ConvertContracts(things []*po.ContractPO) []*do.Contract {
+func ConvertContracts(things []*po.ContractPO) []*do.ContractDO {
 	if things == nil {
 		return nil
 	}
-	var results []*do.Contract
+	var results []*do.ContractDO
 	for _, item := range things {
 		results = append(results, ConvertContract(item))
 	}

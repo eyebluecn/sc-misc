@@ -12,12 +12,12 @@ func ConvertColumnStatus(status int32) enums.ColumnStatus {
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumn(thing *po.ColumnPO) *do.Column {
+func ConvertColumn(thing *po.ColumnPO) *do.ColumnDO {
 	if thing == nil {
 		return nil
 	}
 
-	return &do.Column{
+	return &do.ColumnDO{
 		ID:         thing.ID,
 		CreateTime: thing.CreateTime,
 		UpdateTime: thing.UpdateTime,
@@ -28,11 +28,11 @@ func ConvertColumn(thing *po.ColumnPO) *do.Column {
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumns(things []*po.ColumnPO) []*do.Column {
+func ConvertColumns(things []*po.ColumnPO) []*do.ColumnDO {
 	if things == nil {
 		return nil
 	}
-	var readers []*do.Column
+	var readers []*do.ColumnDO
 	for _, item := range things {
 		readers = append(readers, ConvertColumn(item))
 	}

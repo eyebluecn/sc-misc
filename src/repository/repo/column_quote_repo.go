@@ -26,8 +26,8 @@ func NewColumnQuoteRepo() ColumnQuoteRepo {
 // 新建一个ColumnQuote
 func (receiver ColumnQuoteRepo) Insert(
 	ctx context.Context,
-	reader *do.ColumnQuote,
-) (*do.ColumnQuote, error) {
+	reader *do.ColumnQuoteDO,
+) (*do.ColumnQuoteDO, error) {
 	table := dao.Use(config.DB).ColumnQuotePO
 
 	//时间置为当前
@@ -48,7 +48,7 @@ func (receiver ColumnQuoteRepo) Insert(
 func (receiver ColumnQuoteRepo) FindByIds(
 	ctx context.Context,
 	ids []int64,
-) (list []*do.ColumnQuote, err error) {
+) (list []*do.ColumnQuoteDO, err error) {
 
 	table := dao.Use(config.DB).ColumnQuotePO
 	conditions := make([]gen.Condition, 0)
@@ -77,7 +77,7 @@ func (receiver ColumnQuoteRepo) FindByIds(
 func (receiver ColumnQuoteRepo) FindOkByColumnIds(
 	ctx context.Context,
 	columnIds []int64,
-) (list []*do.ColumnQuote, err error) {
+) (list []*do.ColumnQuoteDO, err error) {
 
 	table := dao.Use(config.DB).ColumnQuotePO
 	conditions := make([]gen.Condition, 0)
@@ -107,7 +107,7 @@ func (receiver ColumnQuoteRepo) FindOkByColumnIds(
 func (receiver ColumnQuoteRepo) QueryByColumnId(
 	ctx context.Context,
 	columnId int64,
-) (*do.ColumnQuote, error) {
+) (*do.ColumnQuoteDO, error) {
 	table := dao.Use(config.DB).ColumnQuotePO
 
 	conditions := make([]gen.Condition, 0)

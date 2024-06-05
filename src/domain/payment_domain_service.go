@@ -33,7 +33,7 @@ func (receiver PaymentDomainService) Create(ctx context.Context, orderNo string,
 	}
 
 	//重新构建新的支付单领域对象。
-	payment = &do.Payment{
+	payment = &do.PaymentDO{
 		ID:                 0,
 		CreateTime:         time.Now(),
 		UpdateTime:         time.Now(),
@@ -76,7 +76,7 @@ func (receiver PaymentDomainService) Create(ctx context.Context, orderNo string,
 }
 
 // 支付成功的回调函数。
-func (receiver PaymentDomainService) PaidCallback(ctx context.Context, payment *do.Payment) (*do.Payment, error) {
+func (receiver PaymentDomainService) PaidCallback(ctx context.Context, payment *do.PaymentDO) (*do.PaymentDO, error) {
 
 	//修改支付单状态
 	affectedRows, err := repo.NewPaymentRepo().UpdateStatus(ctx, payment.ID, enums.PaymentStatusPaid)
@@ -101,7 +101,7 @@ func (receiver PaymentDomainService) PaidCallback(ctx context.Context, payment *
 }
 
 // 发送支付成功的领域事件
-func (receiver PaymentDomainService) SendMqPaid(ctx context.Context, payment *do.Payment) error {
+func (receiver PaymentDomainService) SendMqPaid(ctx context.Context, payment *do.PaymentDO) error {
 	//发布领域事件。
 	traceId := util.Uuid()
 	event := sc_misc_api.PaymentMqEvent_PAYMENT_PAID

@@ -27,7 +27,7 @@ func NewReaderRepo() ReaderRepo {
 func (receiver ReaderRepo) Page(
 	ctx context.Context,
 	req ReaderPageRequest,
-) (list []*do.Reader, pagination *universal.Pagination, err error) {
+) (list []*do.ReaderDO, pagination *universal.Pagination, err error) {
 
 	table := dao.Use(config.DB).ReaderPO
 	conditions := make([]gen.Condition, 0)
@@ -74,7 +74,7 @@ func (receiver ReaderRepo) Page(
 func (receiver ReaderRepo) QueryByUsername(
 	ctx context.Context,
 	username string,
-) (*do.Reader, error) {
+) (*do.ReaderDO, error) {
 	table := dao.Use(config.DB).ReaderPO
 
 	conditions := make([]gen.Condition, 0)
@@ -99,8 +99,8 @@ func (receiver ReaderRepo) QueryByUsername(
 // 新建一个Reader
 func (receiver ReaderRepo) Insert(
 	ctx context.Context,
-	reader *do.Reader,
-) (*do.Reader, error) {
+	reader *do.ReaderDO,
+) (*do.ReaderDO, error) {
 	table := dao.Use(config.DB).ReaderPO
 
 	//时间置为当前
@@ -121,7 +121,7 @@ func (receiver ReaderRepo) Insert(
 func (receiver ReaderRepo) QueryById(
 	ctx context.Context,
 	readerId int64,
-) (*do.Reader, error) {
+) (*do.ReaderDO, error) {
 	table := dao.Use(config.DB).ReaderPO
 
 	conditions := make([]gen.Condition, 0)
@@ -147,7 +147,7 @@ func (receiver ReaderRepo) QueryById(
 func (receiver ReaderRepo) CheckById(
 	ctx context.Context,
 	readerId int64,
-) (*do.Reader, error) {
+) (*do.ReaderDO, error) {
 	reader, err := receiver.QueryById(ctx, readerId)
 	if err != nil {
 		return nil, errs.CodeErrorf(errs.StatusCodeUnknown, err.Error())
@@ -162,7 +162,7 @@ func (receiver ReaderRepo) CheckById(
 func (receiver ReaderRepo) QueryByIds(
 	ctx context.Context,
 	ids []int64,
-) (list []*do.Reader, err error) {
+) (list []*do.ReaderDO, err error) {
 
 	table := dao.Use(config.DB).ReaderPO
 	conditions := make([]gen.Condition, 0)

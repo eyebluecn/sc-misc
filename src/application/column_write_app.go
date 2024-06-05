@@ -5,9 +5,9 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/domain"
-	"github.com/eyebluecn/sc-misc/src/model"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/do/enums"
+	"github.com/eyebluecn/sc-misc/src/model/info"
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
@@ -22,7 +22,7 @@ func NewColumnWriteApp() *ColumnWriteApp {
  * 一口气创建 作者，作者合同，专栏，课程文章，专栏报价，编辑
  * 为了保证数据库不出现脏数据
  */
-func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_misc_api.ColumnOmnibusRequest) (*model.RichColumn, error) {
+func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_misc_api.ColumnOmnibusRequest) (*info.RichColumn, error) {
 
 	//手动开启事务
 	//根据作者名，寻找作者。
@@ -32,7 +32,7 @@ func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_mis
 	}
 	if author == nil {
 		//作者注册，简单用密码123456，真名和用户名一样。
-		author = &do.Author{
+		author = &do.AuthorDO{
 			Username: request.AuthorName,
 			Password: "123456",
 			Realname: request.AuthorName,
@@ -50,7 +50,7 @@ func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_mis
 	}
 
 	//创建专栏
-	column := &do.Column{
+	column := &do.ColumnDO{
 		Name:     request.ColumnName,
 		AuthorID: author.ID,
 		Status:   enums.ColumnStatusOk,
@@ -75,7 +75,7 @@ func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_mis
 	klog.CtxInfof(ctx, "完成了混合创建：authorId=%v editorId=%v columnId=%v contractId=%v columnQuoteId=%v",
 		author.ID, editor.ID, column.ID, contract.ID, columnQuote.ID)
 
-	richColumn := &model.RichColumn{
+	richColumn := &info.RichColumn{
 		Column:       column,
 		Author:       author,
 		ColumnQuote:  columnQuote,

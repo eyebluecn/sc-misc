@@ -12,7 +12,7 @@ func ContractStatusToStorage(status enums.ContractStatus) int32 {
 }
 
 // 数据库模型转换为领域模型
-func ConvertContractDO(thing *do.Contract) *po.ContractPO {
+func ConvertContractDO(thing *do.ContractDO) *po.ContractPO {
 	if thing == nil {
 		return nil
 	}
@@ -32,7 +32,7 @@ func ConvertContractDO(thing *do.Contract) *po.ContractPO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertContractDOs(things []*do.Contract) []*po.ContractPO {
+func ConvertContractDOs(things []*do.ContractDO) []*po.ContractPO {
 	if things == nil {
 		return nil
 	}

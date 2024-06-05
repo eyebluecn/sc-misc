@@ -16,7 +16,7 @@ func NewEditorReadApp() *EditorReadApp {
 }
 
 // 使用用户名和密码进行登录。登录成功就返回对象，失败就报错。
-func (r EditorReadApp) Login(ctx context.Context, username string, password string) (*do.Editor, error) {
+func (r EditorReadApp) Login(ctx context.Context, username string, password string) (*do.EditorDO, error) {
 	editor, err := repo.NewEditorRepo().FindByUsername(ctx, username)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func (r EditorReadApp) Login(ctx context.Context, username string, password stri
 	if editor == nil {
 		if username == "demo_editor" && password == "123456" {
 			//测试用户手动创建。
-			editor, err = domain.NewEditorDomainService().Create(ctx, &do.Editor{
+			editor, err = domain.NewEditorDomainService().Create(ctx, &do.EditorDO{
 				Username: username,
 				Password: password,
 			})

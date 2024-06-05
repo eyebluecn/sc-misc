@@ -54,7 +54,7 @@ func (receiver PaymentWriteApp) Prepare(ctx context.Context, paymentId int64) (*
 }
 
 // 第三方支付平台，支付成功后的回调接口。一班是传输的密文过来，需要用证书解密
-func (receiver PaymentWriteApp) PaidCallback(ctx context.Context, orderNo string) (*do.Payment, error) {
+func (receiver PaymentWriteApp) PaidCallback(ctx context.Context, orderNo string) (*do.PaymentDO, error) {
 
 	payment, err := repo.NewPaymentRepo().CheckByOrderNo(ctx, orderNo)
 	if err != nil {

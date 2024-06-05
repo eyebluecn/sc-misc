@@ -12,12 +12,12 @@ func ConvertPaymentStatus(status int32) enums.PaymentStatus {
 }
 
 // 数据库模型转换为领域模型
-func ConvertPayment(thing *po.PaymentPO) *do.Payment {
+func ConvertPayment(thing *po.PaymentPO) *do.PaymentDO {
 	if thing == nil {
 		return nil
 	}
 
-	return &do.Payment{
+	return &do.PaymentDO{
 		ID:                 thing.ID,
 		CreateTime:         thing.CreateTime,
 		UpdateTime:         thing.UpdateTime,
@@ -30,11 +30,11 @@ func ConvertPayment(thing *po.PaymentPO) *do.Payment {
 }
 
 // 数据库模型转换为领域模型
-func ConvertPayments(things []*po.PaymentPO) []*do.Payment {
+func ConvertPayments(things []*po.PaymentPO) []*do.PaymentDO {
 	if things == nil {
 		return nil
 	}
-	var readers []*do.Payment
+	var readers []*do.PaymentDO
 	for _, item := range things {
 		readers = append(readers, ConvertPayment(item))
 	}

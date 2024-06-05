@@ -6,12 +6,12 @@ import (
 )
 
 // 数据库模型转换为领域模型
-func ConvertAuthor(thing *po.AuthorPO) *do.Author {
+func ConvertAuthor(thing *po.AuthorPO) *do.AuthorDO {
 	if thing == nil {
 		return nil
 	}
 
-	return &do.Author{
+	return &do.AuthorDO{
 		ID:         thing.ID,
 		CreateTime: thing.CreateTime,
 		UpdateTime: thing.UpdateTime,
@@ -22,11 +22,11 @@ func ConvertAuthor(thing *po.AuthorPO) *do.Author {
 }
 
 // 数据库模型转换为领域模型
-func ConvertAuthors(things []*po.AuthorPO) []*do.Author {
+func ConvertAuthors(things []*po.AuthorPO) []*do.AuthorDO {
 	if things == nil {
 		return nil
 	}
-	var readers []*do.Author
+	var readers []*do.AuthorDO
 	for _, item := range things {
 		readers = append(readers, ConvertAuthor(item))
 	}

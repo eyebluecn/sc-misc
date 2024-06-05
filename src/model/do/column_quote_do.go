@@ -6,7 +6,7 @@ import (
 )
 
 // 领域模型
-type ColumnQuote struct {
+type ColumnQuoteDO struct {
 	ID         int64                   // 主键
 	CreateTime time.Time               // 创建时间
 	UpdateTime time.Time               // 更新时间

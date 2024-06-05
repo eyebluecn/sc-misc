@@ -28,7 +28,7 @@ func NewEditorRepo() EditorRepo {
 func (receiver EditorRepo) Page(
 	ctx context.Context,
 	req EditorPageRequest,
-) (list []*do.Editor, pagination *universal.Pagination, err error) {
+) (list []*do.EditorDO, pagination *universal.Pagination, err error) {
 
 	table := dao.Use(config.DB).EditorPO
 	conditions := make([]gen.Condition, 0)
@@ -75,7 +75,7 @@ func (receiver EditorRepo) Page(
 func (receiver EditorRepo) FindByUsername(
 	ctx context.Context,
 	username string,
-) (*do.Editor, error) {
+) (*do.EditorDO, error) {
 	table := dao.Use(config.DB).EditorPO
 
 	conditions := make([]gen.Condition, 0)
@@ -101,7 +101,7 @@ func (receiver EditorRepo) FindByUsername(
 func (receiver EditorRepo) FindById(
 	ctx context.Context,
 	id int64,
-) (*do.Editor, error) {
+) (*do.EditorDO, error) {
 	table := dao.Use(config.DB).EditorPO
 
 	conditions := make([]gen.Condition, 0)
@@ -127,7 +127,7 @@ func (receiver EditorRepo) FindById(
 func (receiver EditorRepo) CheckById(
 	ctx context.Context,
 	id int64,
-) (*do.Editor, error) {
+) (*do.EditorDO, error) {
 	editor, err := receiver.FindById(ctx, id)
 	if err != nil {
 		return nil, err
@@ -141,8 +141,8 @@ func (receiver EditorRepo) CheckById(
 // 新建一个Editor
 func (receiver EditorRepo) Insert(
 	ctx context.Context,
-	editor *do.Editor,
-) (*do.Editor, error) {
+	editor *do.EditorDO,
+) (*do.EditorDO, error) {
 	table := dao.Use(config.DB).EditorPO
 
 	//时间置为当前

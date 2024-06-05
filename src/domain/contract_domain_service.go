@@ -18,7 +18,7 @@ func NewContractDomainService() *ContractDomainService {
 }
 
 // 新增用户
-func (receiver ContractDomainService) Create(ctx context.Context, column *do.Column, author *do.Author) (*do.Contract, error) {
+func (receiver ContractDomainService) Create(ctx context.Context, column *do.ColumnDO, author *do.AuthorDO) (*do.ContractDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, column, author)
@@ -26,7 +26,7 @@ func (receiver ContractDomainService) Create(ctx context.Context, column *do.Col
 		return nil, err
 	}
 
-	contract := &do.Contract{
+	contract := &do.ContractDO{
 		Name:       fmt.Sprintf("《%v》合同", column.Name),
 		Content:    "这里是合同的正文内容",
 		ColumnID:   column.ID,
@@ -48,7 +48,7 @@ func (receiver ContractDomainService) Create(ctx context.Context, column *do.Col
 	return contract, nil
 }
 
-func (receiver ContractDomainService) createParamCheck(ctx context.Context, column *do.Column, author *do.Author) error {
+func (receiver ContractDomainService) createParamCheck(ctx context.Context, column *do.ColumnDO, author *do.AuthorDO) error {
 
 	//参数校验。
 	if column == nil {

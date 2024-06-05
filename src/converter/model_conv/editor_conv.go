@@ -6,12 +6,12 @@ import (
 )
 
 // 数据库模型转换为领域模型
-func ConvertEditor(thing *po.EditorPO) *do.Editor {
+func ConvertEditor(thing *po.EditorPO) *do.EditorDO {
 	if thing == nil {
 		return nil
 	}
 
-	return &do.Editor{
+	return &do.EditorDO{
 		ID:         thing.ID,
 		CreateTime: thing.CreateTime,
 		UpdateTime: thing.UpdateTime,
@@ -22,11 +22,11 @@ func ConvertEditor(thing *po.EditorPO) *do.Editor {
 }
 
 // 数据库模型转换为领域模型
-func ConvertEditors(things []*po.EditorPO) []*do.Editor {
+func ConvertEditors(things []*po.EditorPO) []*do.EditorDO {
 	if things == nil {
 		return nil
 	}
-	var readers []*do.Editor
+	var readers []*do.EditorDO
 	for _, item := range things {
 		readers = append(readers, ConvertEditor(item))
 	}

@@ -17,7 +17,7 @@ func NewColumnQuoteDomainService() *ColumnQuoteDomainService {
 }
 
 // 新增用户
-func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *do.Column, price int64, editor *do.Editor) (*do.ColumnQuote, error) {
+func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *do.ColumnDO, price int64, editor *do.EditorDO) (*do.ColumnQuoteDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, column, editor)
@@ -25,7 +25,7 @@ func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *do.
 		return nil, err
 	}
 
-	contract := &do.ColumnQuote{
+	contract := &do.ColumnQuoteDO{
 		ColumnID: column.ID,
 		EditorID: editor.ID,
 		Price:    price,
@@ -44,7 +44,7 @@ func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *do.
 	return contract, nil
 }
 
-func (receiver ColumnQuoteDomainService) createParamCheck(ctx context.Context, column *do.Column, editor *do.Editor) error {
+func (receiver ColumnQuoteDomainService) createParamCheck(ctx context.Context, column *do.ColumnDO, editor *do.EditorDO) error {
 
 	//参数校验。
 	if column == nil {

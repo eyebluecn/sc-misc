@@ -3,7 +3,7 @@ package do
 import "time"
 
 // 小编领域模型
-type Editor struct {
+type EditorDO struct {
 	ID         int64     // 主键
 	CreateTime time.Time // 创建时间
 	UpdateTime time.Time // 更新时间

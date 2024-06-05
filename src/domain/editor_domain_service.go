@@ -16,7 +16,7 @@ func NewEditorDomainService() *EditorDomainService {
 }
 
 // 新增用户
-func (receiver EditorDomainService) Create(ctx context.Context, editor *do.Editor) (*do.Editor, error) {
+func (receiver EditorDomainService) Create(ctx context.Context, editor *do.EditorDO) (*do.EditorDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, editor)
@@ -36,7 +36,7 @@ func (receiver EditorDomainService) Create(ctx context.Context, editor *do.Edito
 	return editor, nil
 }
 
-func (receiver EditorDomainService) createParamCheck(ctx context.Context, editor *do.Editor) error {
+func (receiver EditorDomainService) createParamCheck(ctx context.Context, editor *do.EditorDO) error {
 
 	//参数校验。
 	if editor == nil {

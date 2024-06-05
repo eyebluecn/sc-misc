@@ -6,7 +6,7 @@ import (
 )
 
 // 数据库模型转换为领域模型
-func ConvertEditorDO(thing *do.Editor) *po.EditorPO {
+func ConvertEditorDO(thing *do.EditorDO) *po.EditorPO {
 	if thing == nil {
 		return nil
 	}
@@ -22,7 +22,7 @@ func ConvertEditorDO(thing *do.Editor) *po.EditorPO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertEditorDOs(things []*do.Editor) []*po.EditorPO {
+func ConvertEditorDOs(things []*do.EditorDO) []*po.EditorPO {
 	if things == nil {
 		return nil
 	}

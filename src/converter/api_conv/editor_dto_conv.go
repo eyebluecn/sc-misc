@@ -7,7 +7,7 @@ import (
 )
 
 // 领域模型转为传输模型
-func ConvertEditorDTO(thing *do.Editor) *sc_misc_api.EditorDTO {
+func ConvertEditorDTO(thing *do.EditorDO) *sc_misc_api.EditorDTO {
 	if thing == nil {
 		return nil
 	}
@@ -21,7 +21,7 @@ func ConvertEditorDTO(thing *do.Editor) *sc_misc_api.EditorDTO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertEditorDTOs(things []*do.Editor) []*sc_misc_api.EditorDTO {
+func ConvertEditorDTOs(things []*do.EditorDO) []*sc_misc_api.EditorDTO {
 	if things == nil {
 		return nil
 	}

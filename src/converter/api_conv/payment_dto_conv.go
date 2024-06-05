@@ -13,7 +13,7 @@ func ConvertPaymentStatus(status enums.PaymentStatus) sc_misc_api.PaymentStatus 
 }
 
 // 领域模型转为传输模型
-func ConvertPaymentDTO(thing *do.Payment) *sc_misc_api.PaymentDTO {
+func ConvertPaymentDTO(thing *do.PaymentDO) *sc_misc_api.PaymentDTO {
 	if thing == nil {
 		return nil
 	}
@@ -31,7 +31,7 @@ func ConvertPaymentDTO(thing *do.Payment) *sc_misc_api.PaymentDTO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertPaymentDTOs(things []*do.Payment) []*sc_misc_api.PaymentDTO {
+func ConvertPaymentDTOs(things []*do.PaymentDO) []*sc_misc_api.PaymentDTO {
 	if things == nil {
 		return nil
 	}

@@ -26,7 +26,7 @@ func NewAuthorRepo() AuthorRepo {
 func (receiver AuthorRepo) FindByUsername(
 	ctx context.Context,
 	username string,
-) (*do.Author, error) {
+) (*do.AuthorDO, error) {
 	table := dao.Use(config.DB).AuthorPO
 
 	conditions := make([]gen.Condition, 0)
@@ -51,8 +51,8 @@ func (receiver AuthorRepo) FindByUsername(
 // 新建一个Author
 func (receiver AuthorRepo) Insert(
 	ctx context.Context,
-	reader *do.Author,
-) (*do.Author, error) {
+	reader *do.AuthorDO,
+) (*do.AuthorDO, error) {
 	table := dao.Use(config.DB).AuthorPO
 
 	//时间置为当前
@@ -73,7 +73,7 @@ func (receiver AuthorRepo) Insert(
 func (receiver AuthorRepo) FindByIds(
 	ctx context.Context,
 	ids []int64,
-) (list []*do.Author, err error) {
+) (list []*do.AuthorDO, err error) {
 
 	table := dao.Use(config.DB).AuthorPO
 	conditions := make([]gen.Condition, 0)

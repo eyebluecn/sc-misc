@@ -7,7 +7,7 @@ import (
 )
 
 // 领域模型转为传输模型
-func ConvertAuthorDTO(thing *do.Author) *sc_misc_api.AuthorDTO {
+func ConvertAuthorDTO(thing *do.AuthorDO) *sc_misc_api.AuthorDTO {
 	if thing == nil {
 		return nil
 	}
@@ -21,7 +21,7 @@ func ConvertAuthorDTO(thing *do.Author) *sc_misc_api.AuthorDTO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertAuthorDTOs(things []*do.Author) []*sc_misc_api.AuthorDTO {
+func ConvertAuthorDTOs(things []*do.AuthorDO) []*sc_misc_api.AuthorDTO {
 	if things == nil {
 		return nil
 	}

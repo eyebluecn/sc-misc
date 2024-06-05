@@ -26,8 +26,8 @@ func NewPaymentRepo() PaymentRepo {
 // 新建一个Payment
 func (receiver PaymentRepo) Insert(
 	ctx context.Context,
-	payment *do.Payment,
-) (*do.Payment, error) {
+	payment *do.PaymentDO,
+) (*do.PaymentDO, error) {
 	table := dao.Use(config.DB).PaymentPO
 
 	//时间置为当前
@@ -70,7 +70,7 @@ func (receiver PaymentRepo) UpdateStatus(
 func (receiver PaymentRepo) QueryById(
 	ctx context.Context,
 	paymentId int64,
-) (*do.Payment, error) {
+) (*do.PaymentDO, error) {
 	table := dao.Use(config.DB).PaymentPO
 
 	conditions := make([]gen.Condition, 0)
@@ -97,7 +97,7 @@ func (receiver PaymentRepo) QueryById(
 func (receiver PaymentRepo) CheckById(
 	ctx context.Context,
 	paymentId int64,
-) (*do.Payment, error) {
+) (*do.PaymentDO, error) {
 	payment, err := receiver.QueryById(ctx, paymentId)
 	if err != nil {
 		klog.CtxErrorf(ctx, "db repo error %v", err)
@@ -113,7 +113,7 @@ func (receiver PaymentRepo) CheckById(
 func (receiver PaymentRepo) QueryByOrderNo(
 	ctx context.Context,
 	orderNo string,
-) (*do.Payment, error) {
+) (*do.PaymentDO, error) {
 	table := dao.Use(config.DB).PaymentPO
 
 	conditions := make([]gen.Condition, 0)
@@ -140,7 +140,7 @@ func (receiver PaymentRepo) QueryByOrderNo(
 func (receiver PaymentRepo) CheckByOrderNo(
 	ctx context.Context,
 	orderNo string,
-) (*do.Payment, error) {
+) (*do.PaymentDO, error) {
 	payment, err := receiver.QueryByOrderNo(ctx, orderNo)
 	if err != nil {
 		klog.CtxErrorf(ctx, "db repo error %v", err)

@@ -7,7 +7,7 @@ import (
 )
 
 // 领域模型转为传输模型
-func ConvertReaderDTO(thing *do.Reader) *sc_misc_api.ReaderDTO {
+func ConvertReaderDTO(thing *do.ReaderDO) *sc_misc_api.ReaderDTO {
 	if thing == nil {
 		return nil
 	}
@@ -21,7 +21,7 @@ func ConvertReaderDTO(thing *do.Reader) *sc_misc_api.ReaderDTO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertReaderDTOs(things []*do.Reader) []*sc_misc_api.ReaderDTO {
+func ConvertReaderDTOs(things []*do.ReaderDO) []*sc_misc_api.ReaderDTO {
 	if things == nil {
 		return nil
 	}

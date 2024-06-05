@@ -6,7 +6,7 @@ import (
 )
 
 // 数据库模型转换为领域模型
-func ConvertReaderDO(thing *do.Reader) *po.ReaderPO {
+func ConvertReaderDO(thing *do.ReaderDO) *po.ReaderPO {
 	if thing == nil {
 		return nil
 	}
@@ -21,7 +21,7 @@ func ConvertReaderDO(thing *do.Reader) *po.ReaderPO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertReaderDOs(things []*do.Reader) []*po.ReaderPO {
+func ConvertReaderDOs(things []*do.ReaderDO) []*po.ReaderPO {
 	if things == nil {
 		return nil
 	}

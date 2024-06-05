@@ -12,7 +12,7 @@ func PaymentStatusToStorage(status enums.PaymentStatus) int32 {
 }
 
 // 数据库模型转换为领域模型
-func ConvertPaymentDO(thing *do.Payment) *po.PaymentPO {
+func ConvertPaymentDO(thing *do.PaymentDO) *po.PaymentPO {
 	if thing == nil {
 		return nil
 	}
@@ -30,7 +30,7 @@ func ConvertPaymentDO(thing *do.Payment) *po.PaymentPO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertPaymentDOs(things []*do.Payment) []*po.PaymentPO {
+func ConvertPaymentDOs(things []*do.PaymentDO) []*po.PaymentPO {
 	if things == nil {
 		return nil
 	}

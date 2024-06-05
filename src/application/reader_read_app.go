@@ -16,7 +16,7 @@ func NewReaderReadApp() *ReaderReadApp {
 }
 
 // 使用用户名和密码进行登录。登录成功就返回对象，失败就报错。
-func (receiver ReaderReadApp) Login(ctx context.Context, username string, password string) (*do.Reader, error) {
+func (receiver ReaderReadApp) Login(ctx context.Context, username string, password string) (*do.ReaderDO, error) {
 	reader, err := repo.NewReaderRepo().QueryByUsername(ctx, username)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func (receiver ReaderReadApp) Login(ctx context.Context, username string, passwo
 	if reader == nil {
 		if username == "demo_reader" && password == "123456" {
 			//测试用户手动创建。
-			reader, err = domain.NewReaderDomainService().Create(ctx, &do.Reader{
+			reader, err = domain.NewReaderDomainService().Create(ctx, &do.ReaderDO{
 				Username: username,
 				Password: password,
 			})
@@ -49,7 +49,7 @@ func (receiver ReaderReadApp) Login(ctx context.Context, username string, passwo
 }
 
 // 根据id来查询读者信息
-func (receiver ReaderReadApp) QueryById(ctx context.Context, readerId int64) (*do.Reader, error) {
+func (receiver ReaderReadApp) QueryById(ctx context.Context, readerId int64) (*do.ReaderDO, error) {
 	reader, err := repo.NewReaderRepo().QueryById(ctx, readerId)
 	if err != nil {
 		return nil, err
@@ -58,7 +58,7 @@ func (receiver ReaderReadApp) QueryById(ctx context.Context, readerId int64) (*d
 }
 
 // 根据id来查询读者信息
-func (receiver ReaderReadApp) QueryByIds(ctx context.Context, readerIds []int64) ([]*do.Reader, error) {
+func (receiver ReaderReadApp) QueryByIds(ctx context.Context, readerIds []int64) ([]*do.ReaderDO, error) {
 	readers, err := repo.NewReaderRepo().QueryByIds(ctx, readerIds)
 	if err != nil {
 		return nil, err

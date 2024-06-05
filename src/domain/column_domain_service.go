@@ -16,7 +16,7 @@ func NewColumnDomainService() *ColumnDomainService {
 }
 
 // 新增用户
-func (receiver ColumnDomainService) Create(ctx context.Context, column *do.Column, author *do.Author) (*do.Column, error) {
+func (receiver ColumnDomainService) Create(ctx context.Context, column *do.ColumnDO, author *do.AuthorDO) (*do.ColumnDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, column, author)
@@ -36,7 +36,7 @@ func (receiver ColumnDomainService) Create(ctx context.Context, column *do.Colum
 	return column, nil
 }
 
-func (receiver ColumnDomainService) createParamCheck(ctx context.Context, column *do.Column, author *do.Author) error {
+func (receiver ColumnDomainService) createParamCheck(ctx context.Context, column *do.ColumnDO, author *do.AuthorDO) error {
 
 	//参数校验。
 	if column == nil {

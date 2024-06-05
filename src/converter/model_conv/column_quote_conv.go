@@ -12,12 +12,12 @@ func ConvertColumnQuoteStatus(status int32) enums.ColumnQuoteStatus {
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumnQuote(thing *po.ColumnQuotePO) *do.ColumnQuote {
+func ConvertColumnQuote(thing *po.ColumnQuotePO) *do.ColumnQuoteDO {
 	if thing == nil {
 		return nil
 	}
 
-	return &do.ColumnQuote{
+	return &do.ColumnQuoteDO{
 		ID:         thing.ID,
 		CreateTime: thing.CreateTime,
 		UpdateTime: thing.UpdateTime,
@@ -29,11 +29,11 @@ func ConvertColumnQuote(thing *po.ColumnQuotePO) *do.ColumnQuote {
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumnQuotes(things []*po.ColumnQuotePO) []*do.ColumnQuote {
+func ConvertColumnQuotes(things []*po.ColumnQuotePO) []*do.ColumnQuoteDO {
 	if things == nil {
 		return nil
 	}
-	var readers []*do.ColumnQuote
+	var readers []*do.ColumnQuoteDO
 	for _, item := range things {
 		readers = append(readers, ConvertColumnQuote(item))
 	}

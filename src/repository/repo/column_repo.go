@@ -26,8 +26,8 @@ func NewColumnRepo() ColumnRepo {
 // 新建一个Reader
 func (receiver ColumnRepo) Insert(
 	ctx context.Context,
-	column *do.Column,
-) (*do.Column, error) {
+	column *do.ColumnDO,
+) (*do.ColumnDO, error) {
 	table := dao.Use(config.DB).ColumnPO
 
 	//时间置为当前
@@ -48,7 +48,7 @@ func (receiver ColumnRepo) Insert(
 func (receiver ColumnRepo) Page(
 	ctx context.Context,
 	req ColumnPageRequest,
-) (list []*do.Column, pagination *universal.Pagination, err error) {
+) (list []*do.ColumnDO, pagination *universal.Pagination, err error) {
 
 	table := dao.Use(config.DB).ColumnPO
 	conditions := make([]gen.Condition, 0)
@@ -116,7 +116,7 @@ func (receiver ColumnRepo) Page(
 func (receiver ColumnRepo) QueryById(
 	ctx context.Context,
 	columnId int64,
-) (*do.Column, error) {
+) (*do.ColumnDO, error) {
 	table := dao.Use(config.DB).ColumnPO
 
 	conditions := make([]gen.Condition, 0)
@@ -142,7 +142,7 @@ func (receiver ColumnRepo) QueryById(
 func (receiver ColumnRepo) CheckById(
 	ctx context.Context,
 	columnId int64,
-) (*do.Column, error) {
+) (*do.ColumnDO, error) {
 	column, err := receiver.QueryById(ctx, columnId)
 	if err != nil {
 		return nil, errs.CodeErrorf(errs.StatusCodeUnknown, err.Error())
@@ -157,7 +157,7 @@ func (receiver ColumnRepo) CheckById(
 func (receiver ColumnRepo) QueryByIds(
 	ctx context.Context,
 	ids []int64,
-) (list []*do.Column, err error) {
+) (list []*do.ColumnDO, err error) {
 
 	table := dao.Use(config.DB).ColumnPO
 	conditions := make([]gen.Condition, 0)

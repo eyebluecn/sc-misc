@@ -20,8 +20,8 @@ func NewContractRepo() ContractRepo {
 // 新建一个Reader
 func (receiver ContractRepo) Insert(
 	ctx context.Context,
-	contract *do.Contract,
-) (*do.Contract, error) {
+	contract *do.ContractDO,
+) (*do.ContractDO, error) {
 	table := dao.Use(config.DB).ContractPO
 
 	//时间置为当前

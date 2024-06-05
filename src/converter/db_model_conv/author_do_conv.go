@@ -6,7 +6,7 @@ import (
 )
 
 // 数据库模型转换为领域模型
-func ConvertAuthorDO(thing *do.Author) *po.AuthorPO {
+func ConvertAuthorDO(thing *do.AuthorDO) *po.AuthorPO {
 	if thing == nil {
 		return nil
 	}
@@ -22,7 +22,7 @@ func ConvertAuthorDO(thing *do.Author) *po.AuthorPO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertAuthorDOs(things []*do.Author) []*po.AuthorPO {
+func ConvertAuthorDOs(things []*do.AuthorDO) []*po.AuthorPO {
 	if things == nil {
 		return nil
 	}

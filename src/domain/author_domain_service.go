@@ -16,7 +16,7 @@ func NewAuthorDomainService() *AuthorDomainService {
 }
 
 // 新增用户
-func (receiver AuthorDomainService) Create(ctx context.Context, author *do.Author) (*do.Author, error) {
+func (receiver AuthorDomainService) Create(ctx context.Context, author *do.AuthorDO) (*do.AuthorDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, author)
@@ -36,7 +36,7 @@ func (receiver AuthorDomainService) Create(ctx context.Context, author *do.Autho
 	return author, nil
 }
 
-func (receiver AuthorDomainService) createParamCheck(ctx context.Context, author *do.Author) error {
+func (receiver AuthorDomainService) createParamCheck(ctx context.Context, author *do.AuthorDO) error {
 
 	//参数校验。
 	if author == nil {

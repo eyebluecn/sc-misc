@@ -16,7 +16,7 @@ func NewReaderDomainService() *ReaderDomainService {
 }
 
 // 新增用户
-func (receiver ReaderDomainService) Create(ctx context.Context, reader *do.Reader) (*do.Reader, error) {
+func (receiver ReaderDomainService) Create(ctx context.Context, reader *do.ReaderDO) (*do.ReaderDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, reader)
@@ -36,7 +36,7 @@ func (receiver ReaderDomainService) Create(ctx context.Context, reader *do.Reade
 	return reader, nil
 }
 
-func (receiver ReaderDomainService) createParamCheck(ctx context.Context, reader *do.Reader) error {
+func (receiver ReaderDomainService) createParamCheck(ctx context.Context, reader *do.ReaderDO) error {
 
 	//参数校验。
 	if reader == nil {

@@ -6,12 +6,12 @@ import (
 )
 
 // 数据库模型转换为领域模型
-func ConvertReader(thing *po.ReaderPO) *do.Reader {
+func ConvertReader(thing *po.ReaderPO) *do.ReaderDO {
 	if thing == nil {
 		return nil
 	}
 
-	return &do.Reader{
+	return &do.ReaderDO{
 		ID:         thing.ID,
 		CreateTime: thing.CreateTime,
 		UpdateTime: thing.UpdateTime,
@@ -21,11 +21,11 @@ func ConvertReader(thing *po.ReaderPO) *do.Reader {
 }
 
 // 数据库模型转换为领域模型
-func ConvertReaders(things []*po.ReaderPO) []*do.Reader {
+func ConvertReaders(things []*po.ReaderPO) []*do.ReaderDO {
 	if things == nil {
 		return nil
 	}
-	var readers []*do.Reader
+	var readers []*do.ReaderDO
 	for _, item := range things {
 		readers = append(readers, ConvertReader(item))
 	}

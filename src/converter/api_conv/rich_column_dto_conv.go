@@ -2,11 +2,11 @@ package api_conv
 
 import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/info"
 )
 
 // 领域模型转为传输模型
-func ConvertRichColumnDTO(thing *model.RichColumn) *sc_misc_api.RichColumnDTO {
+func ConvertRichColumnDTO(thing *info.RichColumn) *sc_misc_api.RichColumnDTO {
 	if thing == nil {
 		return nil
 	}
@@ -20,7 +20,7 @@ func ConvertRichColumnDTO(thing *model.RichColumn) *sc_misc_api.RichColumnDTO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertRichColumnDTOs(things []*model.RichColumn) []*sc_misc_api.RichColumnDTO {
+func ConvertRichColumnDTOs(things []*info.RichColumn) []*sc_misc_api.RichColumnDTO {
 	if things == nil {
 		return nil
 	}

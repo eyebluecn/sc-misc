@@ -12,7 +12,7 @@ func ColumnQuoteStatusToStorage(status enums.ColumnQuoteStatus) int32 {
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumnQuoteDO(thing *do.ColumnQuote) *po.ColumnQuotePO {
+func ConvertColumnQuoteDO(thing *do.ColumnQuoteDO) *po.ColumnQuotePO {
 	if thing == nil {
 		return nil
 	}
@@ -30,7 +30,7 @@ func ConvertColumnQuoteDO(thing *do.ColumnQuote) *po.ColumnQuotePO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumnQuoteDOs(things []*do.ColumnQuote) []*po.ColumnQuotePO {
+func ConvertColumnQuoteDOs(things []*do.ColumnQuoteDO) []*po.ColumnQuotePO {
 	if things == nil {
 		return nil
 	}

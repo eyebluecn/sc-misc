@@ -13,7 +13,7 @@ func ConvertColumnQuoteStatus(status enums.ColumnQuoteStatus) sc_misc_api.Column
 }
 
 // 领域模型转为传输模型
-func ConvertColumnQuoteDTO(thing *do.ColumnQuote) *sc_misc_api.ColumnQuoteDTO {
+func ConvertColumnQuoteDTO(thing *do.ColumnQuoteDO) *sc_misc_api.ColumnQuoteDTO {
 	if thing == nil {
 		return nil
 	}
@@ -30,7 +30,7 @@ func ConvertColumnQuoteDTO(thing *do.ColumnQuote) *sc_misc_api.ColumnQuoteDTO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumnQuoteDTOs(things []*do.ColumnQuote) []*sc_misc_api.ColumnQuoteDTO {
+func ConvertColumnQuoteDTOs(things []*do.ColumnQuoteDO) []*sc_misc_api.ColumnQuoteDTO {
 	if things == nil {
 		return nil
 	}
