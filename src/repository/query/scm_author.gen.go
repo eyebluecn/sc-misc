@@ -6,9 +6,6 @@ package query
 
 import (
 	"context"
-	"database/sql"
-	"github.com/eyebluecn/sc-misc/src/model/po"
-	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -16,9 +13,10 @@ import (
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
-	"gorm.io/gen/helper"
 
 	"gorm.io/plugin/dbresolver"
+
+	"github.com/eyebluecn/sc-misc/src/model/po"
 )
 
 func newAuthorPO(db *gorm.DB, opts ...gen.DOOption) authorPO {

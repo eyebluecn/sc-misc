@@ -6,8 +6,6 @@ package query
 
 import (
 	"context"
-	"database/sql"
-	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -15,9 +13,10 @@ import (
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
-	"gorm.io/gen/helper"
 
 	"gorm.io/plugin/dbresolver"
+
+	"github.com/eyebluecn/sc-misc/src/model/po"
 )
 
 func newReaderPO(db *gorm.DB, opts ...gen.DOOption) readerPO {
