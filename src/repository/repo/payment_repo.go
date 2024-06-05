@@ -10,7 +10,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/do/enums"
-	"github.com/eyebluecn/sc-misc/src/repository/query"
+	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"time"
@@ -28,7 +28,7 @@ func (receiver PaymentRepo) Insert(
 	ctx context.Context,
 	payment *do.Payment,
 ) (*do.Payment, error) {
-	table := query.Use(config.DB).PaymentPO
+	table := dao.Use(config.DB).PaymentPO
 
 	//时间置为当前
 	payment.CreateTime = time.Now()
@@ -51,7 +51,7 @@ func (receiver PaymentRepo) UpdateStatus(
 	paymentId int64,
 	paymentStatus enums.PaymentStatus,
 ) (int64, error) {
-	table := query.Use(config.DB).PaymentPO
+	table := dao.Use(config.DB).PaymentPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -71,7 +71,7 @@ func (receiver PaymentRepo) QueryById(
 	ctx context.Context,
 	paymentId int64,
 ) (*do.Payment, error) {
-	table := query.Use(config.DB).PaymentPO
+	table := dao.Use(config.DB).PaymentPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -114,7 +114,7 @@ func (receiver PaymentRepo) QueryByOrderNo(
 	ctx context.Context,
 	orderNo string,
 ) (*do.Payment, error) {
-	table := query.Use(config.DB).PaymentPO
+	table := dao.Use(config.DB).PaymentPO
 
 	conditions := make([]gen.Condition, 0)
 

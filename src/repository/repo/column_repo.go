@@ -10,7 +10,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
-	"github.com/eyebluecn/sc-misc/src/repository/query"
+	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"time"
@@ -28,7 +28,7 @@ func (receiver ColumnRepo) Insert(
 	ctx context.Context,
 	column *do.Column,
 ) (*do.Column, error) {
-	table := query.Use(config.DB).ColumnPO
+	table := dao.Use(config.DB).ColumnPO
 
 	//时间置为当前
 	column.CreateTime = time.Now()
@@ -50,7 +50,7 @@ func (receiver ColumnRepo) Page(
 	req ColumnPageRequest,
 ) (list []*do.Column, pagination *universal.Pagination, err error) {
 
-	table := query.Use(config.DB).ColumnPO
+	table := dao.Use(config.DB).ColumnPO
 	conditions := make([]gen.Condition, 0)
 
 	if !req.CreateTimeGte.IsZero() {
@@ -117,7 +117,7 @@ func (receiver ColumnRepo) QueryById(
 	ctx context.Context,
 	columnId int64,
 ) (*do.Column, error) {
-	table := query.Use(config.DB).ColumnPO
+	table := dao.Use(config.DB).ColumnPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -159,7 +159,7 @@ func (receiver ColumnRepo) QueryByIds(
 	ids []int64,
 ) (list []*do.Column, err error) {
 
-	table := query.Use(config.DB).ColumnPO
+	table := dao.Use(config.DB).ColumnPO
 	conditions := make([]gen.Condition, 0)
 
 	if len(ids) > 0 {

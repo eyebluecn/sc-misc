@@ -11,7 +11,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
-	"github.com/eyebluecn/sc-misc/src/repository/query"
+	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"time"
@@ -30,7 +30,7 @@ func (receiver EditorRepo) Page(
 	req EditorPageRequest,
 ) (list []*do.Editor, pagination *universal.Pagination, err error) {
 
-	table := query.Use(config.DB).EditorPO
+	table := dao.Use(config.DB).EditorPO
 	conditions := make([]gen.Condition, 0)
 
 	if !req.CreateTimeGte.IsZero() {
@@ -76,7 +76,7 @@ func (receiver EditorRepo) FindByUsername(
 	ctx context.Context,
 	username string,
 ) (*do.Editor, error) {
-	table := query.Use(config.DB).EditorPO
+	table := dao.Use(config.DB).EditorPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -102,7 +102,7 @@ func (receiver EditorRepo) FindById(
 	ctx context.Context,
 	id int64,
 ) (*do.Editor, error) {
-	table := query.Use(config.DB).EditorPO
+	table := dao.Use(config.DB).EditorPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -143,7 +143,7 @@ func (receiver EditorRepo) Insert(
 	ctx context.Context,
 	editor *do.Editor,
 ) (*do.Editor, error) {
-	table := query.Use(config.DB).EditorPO
+	table := dao.Use(config.DB).EditorPO
 
 	//时间置为当前
 	editor.CreateTime = time.Now()

@@ -10,7 +10,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/do/enums"
-	"github.com/eyebluecn/sc-misc/src/repository/query"
+	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"time"
@@ -28,7 +28,7 @@ func (receiver ColumnQuoteRepo) Insert(
 	ctx context.Context,
 	reader *do.ColumnQuote,
 ) (*do.ColumnQuote, error) {
-	table := query.Use(config.DB).ColumnQuotePO
+	table := dao.Use(config.DB).ColumnQuotePO
 
 	//时间置为当前
 	reader.CreateTime = time.Now()
@@ -50,7 +50,7 @@ func (receiver ColumnQuoteRepo) FindByIds(
 	ids []int64,
 ) (list []*do.ColumnQuote, err error) {
 
-	table := query.Use(config.DB).ColumnQuotePO
+	table := dao.Use(config.DB).ColumnQuotePO
 	conditions := make([]gen.Condition, 0)
 
 	if len(ids) > 0 {
@@ -79,7 +79,7 @@ func (receiver ColumnQuoteRepo) FindOkByColumnIds(
 	columnIds []int64,
 ) (list []*do.ColumnQuote, err error) {
 
-	table := query.Use(config.DB).ColumnQuotePO
+	table := dao.Use(config.DB).ColumnQuotePO
 	conditions := make([]gen.Condition, 0)
 
 	conditions = append(conditions, table.Status.Eq(db_model_conv.ColumnQuoteStatusToStorage(enums.ColumnQuoteStatusOk)))
@@ -108,7 +108,7 @@ func (receiver ColumnQuoteRepo) QueryByColumnId(
 	ctx context.Context,
 	columnId int64,
 ) (*do.ColumnQuote, error) {
-	table := query.Use(config.DB).ColumnQuotePO
+	table := dao.Use(config.DB).ColumnQuotePO
 
 	conditions := make([]gen.Condition, 0)
 

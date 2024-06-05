@@ -10,7 +10,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
-	"github.com/eyebluecn/sc-misc/src/repository/query"
+	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"time"
@@ -29,7 +29,7 @@ func (receiver ReaderRepo) Page(
 	req ReaderPageRequest,
 ) (list []*do.Reader, pagination *universal.Pagination, err error) {
 
-	table := query.Use(config.DB).ReaderPO
+	table := dao.Use(config.DB).ReaderPO
 	conditions := make([]gen.Condition, 0)
 
 	if !req.CreateTimeGte.IsZero() {
@@ -75,7 +75,7 @@ func (receiver ReaderRepo) QueryByUsername(
 	ctx context.Context,
 	username string,
 ) (*do.Reader, error) {
-	table := query.Use(config.DB).ReaderPO
+	table := dao.Use(config.DB).ReaderPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -101,7 +101,7 @@ func (receiver ReaderRepo) Insert(
 	ctx context.Context,
 	reader *do.Reader,
 ) (*do.Reader, error) {
-	table := query.Use(config.DB).ReaderPO
+	table := dao.Use(config.DB).ReaderPO
 
 	//时间置为当前
 	reader.CreateTime = time.Now()
@@ -122,7 +122,7 @@ func (receiver ReaderRepo) QueryById(
 	ctx context.Context,
 	readerId int64,
 ) (*do.Reader, error) {
-	table := query.Use(config.DB).ReaderPO
+	table := dao.Use(config.DB).ReaderPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -164,7 +164,7 @@ func (receiver ReaderRepo) QueryByIds(
 	ids []int64,
 ) (list []*do.Reader, err error) {
 
-	table := query.Use(config.DB).ReaderPO
+	table := dao.Use(config.DB).ReaderPO
 	conditions := make([]gen.Condition, 0)
 
 	if len(ids) > 0 {

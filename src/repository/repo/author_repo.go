@@ -9,7 +9,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
 	"github.com/eyebluecn/sc-misc/src/model/do"
-	"github.com/eyebluecn/sc-misc/src/repository/query"
+	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
 	"gorm.io/gorm"
 	"time"
@@ -27,7 +27,7 @@ func (receiver AuthorRepo) FindByUsername(
 	ctx context.Context,
 	username string,
 ) (*do.Author, error) {
-	table := query.Use(config.DB).AuthorPO
+	table := dao.Use(config.DB).AuthorPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -53,7 +53,7 @@ func (receiver AuthorRepo) Insert(
 	ctx context.Context,
 	reader *do.Author,
 ) (*do.Author, error) {
-	table := query.Use(config.DB).AuthorPO
+	table := dao.Use(config.DB).AuthorPO
 
 	//时间置为当前
 	reader.CreateTime = time.Now()
@@ -75,7 +75,7 @@ func (receiver AuthorRepo) FindByIds(
 	ids []int64,
 ) (list []*do.Author, err error) {
 
-	table := query.Use(config.DB).AuthorPO
+	table := dao.Use(config.DB).AuthorPO
 	conditions := make([]gen.Condition, 0)
 
 	if len(ids) > 0 {

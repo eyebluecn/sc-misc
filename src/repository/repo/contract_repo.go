@@ -6,7 +6,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
 	"github.com/eyebluecn/sc-misc/src/model/do"
-	"github.com/eyebluecn/sc-misc/src/repository/query"
+	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"time"
 )
 
@@ -22,7 +22,7 @@ func (receiver ContractRepo) Insert(
 	ctx context.Context,
 	contract *do.Contract,
 ) (*do.Contract, error) {
-	table := query.Use(config.DB).ContractPO
+	table := dao.Use(config.DB).ContractPO
 
 	//时间置为当前
 	contract.CreateTime = time.Now()

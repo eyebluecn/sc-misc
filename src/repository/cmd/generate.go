@@ -14,7 +14,7 @@ func main() {
 	ctx := context.Background()
 	outPath := os.Getenv("OUT_PATH")
 	if outPath == "" {
-		outPath = "src/repository/query"
+		outPath = "src/repository/dao"
 	}
 
 	modelPkgPath := os.Getenv("MODEL_PKG_PATH")
