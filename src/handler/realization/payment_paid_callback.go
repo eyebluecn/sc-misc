@@ -43,7 +43,7 @@ func (receiver PaymentPaidCallback) CheckParam(ctx context.Context, request *sc_
 // 参数校验后的真实处理
 func (receiver PaymentPaidCallback) doHandle(ctx context.Context, request sc_misc_api.PaymentPaidCallbackRequest) (r *sc_misc_api.PaymentPaidCallbackResponse, err error) {
 
-	payment, err := application.NewPaymentWriteApp().PaidCallback(ctx, request.OrderNo)
+	payment, err := application.NewPaymentWriteAppSvc().PaidCallback(ctx, request.OrderNo)
 	if err != nil {
 		return nil, err
 	}

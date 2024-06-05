@@ -8,7 +8,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/common/util"
 	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
 	mq2 "github.com/eyebluecn/sc-misc/src/infrastructure/middleware/mq"
-	"github.com/eyebluecn/sc-misc/src/infrastructure/third_party_service/pay"
+	"github.com/eyebluecn/sc-misc/src/infrastructure/third_party/pay"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 	"github.com/eyebluecn/sc-misc/src/model/info"
@@ -16,14 +16,14 @@ import (
 	"time"
 )
 
-type PaymentDomainService struct{}
+type PaymentDomainSvc struct{}
 
-func NewPaymentDomainService() *PaymentDomainService {
-	return &PaymentDomainService{}
+func NewPaymentDomainSvc() *PaymentDomainSvc {
+	return &PaymentDomainSvc{}
 }
 
 // 创建支付单，同时做支付的准备。
-func (receiver PaymentDomainService) Create(ctx context.Context, orderNo string, method string, amount int64) (*info.PreparePaymentInfo, error) {
+func (receiver PaymentDomainSvc) Create(ctx context.Context, orderNo string, method string, amount int64) (*info.PreparePaymentInfo, error) {
 	payment, err := repo.NewPaymentRepo().QueryByOrderNo(ctx, orderNo)
 	if err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func (receiver PaymentDomainService) Create(ctx context.Context, orderNo string,
 }
 
 // 支付成功的回调函数。
-func (receiver PaymentDomainService) PaidCallback(ctx context.Context, payment *do.PaymentDO) (*do.PaymentDO, error) {
+func (receiver PaymentDomainSvc) PaidCallback(ctx context.Context, payment *do.PaymentDO) (*do.PaymentDO, error) {
 
 	//修改支付单状态
 	affectedRows, err := repo.NewPaymentRepo().UpdateStatus(ctx, payment.ID, enums.PaymentStatusPaid)
@@ -101,7 +101,7 @@ func (receiver PaymentDomainService) PaidCallback(ctx context.Context, payment *
 }
 
 // 发送支付成功的领域事件
-func (receiver PaymentDomainService) SendMqPaid(ctx context.Context, payment *do.PaymentDO) error {
+func (receiver PaymentDomainSvc) SendMqPaid(ctx context.Context, payment *do.PaymentDO) error {
 	//发布领域事件。
 	traceId := util.Uuid()
 	event := sc_misc_api.PaymentMqEvent_PAYMENT_PAID
@@ -113,7 +113,7 @@ func (receiver PaymentDomainService) SendMqPaid(ctx context.Context, payment *do
 		OccurTime:  util.Timestamp(time.Now()),
 		PaymentDTO: do2dto.ConvertPaymentDTO(payment),
 	}
-	err := mq2.NewProducer().Publish(ctx, mq2.MqTopicPayment, event.String(), traceId, util.ToJSON(payload))
+	err := mq2.DefaultProducer().Publish(ctx, mq2.MqTopicPayment, event.String(), traceId, util.ToJSON(payload))
 	if err != nil {
 		return err
 	}

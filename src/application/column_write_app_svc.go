@@ -11,10 +11,10 @@ import (
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
-type ColumnWriteApp struct{}
+type ColumnWriteAppSvc struct{}
 
-func NewColumnWriteApp() *ColumnWriteApp {
-	return &ColumnWriteApp{}
+func NewColumnWriteAppSvc() *ColumnWriteAppSvc {
+	return &ColumnWriteAppSvc{}
 }
 
 /**
@@ -22,11 +22,11 @@ func NewColumnWriteApp() *ColumnWriteApp {
  * 一口气创建 作者，作者合同，专栏，课程文章，专栏报价，编辑
  * 为了保证数据库不出现脏数据
  */
-func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_misc_api.ColumnOmnibusRequest) (*info.RichColumn, error) {
+func (receiver ColumnWriteAppSvc) ColumnOmnibus(ctx context.Context, request sc_misc_api.ColumnOmnibusRequest) (*info.RichColumn, error) {
 
 	//手动开启事务
 	//根据作者名，寻找作者。
-	author, err := repo.NewAuthorRepo().FindByUsername(ctx, request.AuthorName)
+	author, err := repo.NewAuthorRepo().QueryByUsername(ctx, request.AuthorName)
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_mis
 			Password: "123456",
 			Realname: request.AuthorName,
 		}
-		author, err = domain.NewAuthorDomainService().Create(ctx, author)
+		author, err = domain.NewAuthorDomainSvc().Create(ctx, author)
 		if err != nil {
 			return nil, err
 		}
@@ -55,19 +55,19 @@ func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_mis
 		AuthorID: author.ID,
 		Status:   enums.ColumnStatusOk,
 	}
-	column, err = domain.NewColumnDomainService().Create(ctx, column, author)
+	column, err = domain.NewColumnDomainSvc().Create(ctx, column, author)
 	if err != nil {
 		return nil, err
 	}
 
 	//创建作者合同
-	contract, err := domain.NewContractDomainService().Create(ctx, column, author)
+	contract, err := domain.NewContractDomainSvc().Create(ctx, column, author)
 	if err != nil {
 		return nil, err
 	}
 
 	//创建专栏保价
-	columnQuote, err := domain.NewColumnQuoteDomainService().Create(ctx, column, request.ColumnPrice, editor)
+	columnQuote, err := domain.NewColumnQuoteDomainSvc().Create(ctx, column, request.ColumnPrice, editor)
 	if err != nil {
 		return nil, err
 	}

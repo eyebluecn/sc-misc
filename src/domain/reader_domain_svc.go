@@ -9,14 +9,14 @@ import (
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
-type ReaderDomainService struct{}
+type ReaderDomainSvc struct{}
 
-func NewReaderDomainService() *ReaderDomainService {
-	return &ReaderDomainService{}
+func NewReaderDomainSvc() *ReaderDomainSvc {
+	return &ReaderDomainSvc{}
 }
 
 // 新增用户
-func (receiver ReaderDomainService) Create(ctx context.Context, reader *do.ReaderDO) (*do.ReaderDO, error) {
+func (receiver ReaderDomainSvc) Create(ctx context.Context, reader *do.ReaderDO) (*do.ReaderDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, reader)
@@ -31,12 +31,12 @@ func (receiver ReaderDomainService) Create(ctx context.Context, reader *do.Reade
 	}
 
 	//发出领域事件
-	_ = mq2.NewProducer().Publish(ctx, mq2.MqTopicReader, "reader", "READER_CREATE", util.ToJSON(reader))
+	_ = mq2.DefaultProducer().Publish(ctx, mq2.MqTopicReader, "reader", "READER_CREATE", util.ToJSON(reader))
 
 	return reader, nil
 }
 
-func (receiver ReaderDomainService) createParamCheck(ctx context.Context, reader *do.ReaderDO) error {
+func (receiver ReaderDomainSvc) createParamCheck(ctx context.Context, reader *do.ReaderDO) error {
 
 	//参数校验。
 	if reader == nil {

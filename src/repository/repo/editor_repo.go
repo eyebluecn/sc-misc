@@ -5,12 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/do2po"
 	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/query"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
+	"github.com/eyebluecn/sc-misc/src/repository/config"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -27,7 +28,7 @@ func NewEditorRepo() EditorRepo {
 // 按照分页查询 1基
 func (receiver EditorRepo) Page(
 	ctx context.Context,
-	req EditorPageRequest,
+	req query.EditorPageQuery,
 ) (list []*do.EditorDO, pagination *universal.Pagination, err error) {
 
 	table := dao.Use(config.DB).EditorPO
@@ -72,7 +73,7 @@ func (receiver EditorRepo) Page(
 }
 
 // 按照用户名查找，找不到返回nil
-func (receiver EditorRepo) FindByUsername(
+func (receiver EditorRepo) QueryByUsername(
 	ctx context.Context,
 	username string,
 ) (*do.EditorDO, error) {
@@ -98,7 +99,7 @@ func (receiver EditorRepo) FindByUsername(
 }
 
 // 按照id查找，找不到返回nil
-func (receiver EditorRepo) FindById(
+func (receiver EditorRepo) QueryById(
 	ctx context.Context,
 	id int64,
 ) (*do.EditorDO, error) {
@@ -128,7 +129,7 @@ func (receiver EditorRepo) CheckById(
 	ctx context.Context,
 	id int64,
 ) (*do.EditorDO, error) {
-	editor, err := receiver.FindById(ctx, id)
+	editor, err := receiver.QueryById(ctx, id)
 	if err != nil {
 		return nil, err
 	}

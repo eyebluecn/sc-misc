@@ -3,11 +3,11 @@ package rpc
 import (
 	"context"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/dto2universal"
 	"github.com/eyebluecn/sc-misc/src/converter/dto2vo"
 	"github.com/eyebluecn/sc-misc/src/converter/po2do"
+	"github.com/eyebluecn/sc-misc/src/infrastructure/rpc/config"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
 	"github.com/eyebluecn/sc-misc/src/model/vo"
 	"github.com/eyebluecn/sc-subscription-idl/kitex_gen/sc_subscription_api"

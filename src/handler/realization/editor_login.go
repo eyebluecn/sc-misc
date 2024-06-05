@@ -39,7 +39,7 @@ func (receiver EditorLogin) CheckParam(ctx context.Context, request *sc_misc_api
 // 参数校验后的真实处理
 func (receiver EditorLogin) doHandle(ctx context.Context, request sc_misc_api.EditorLoginRequest) (r *sc_misc_api.EditorLoginResponse, err error) {
 
-	editor, err := application.NewEditorReadApp().Login(ctx, request.Username, request.Password)
+	editor, err := application.NewEditorReadAppSvc().Login(ctx, request.Username, request.Password)
 	if err != nil {
 		klog.CtxErrorf(ctx, "登录过程出错：%v", err)
 		return nil, err

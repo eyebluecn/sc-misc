@@ -8,7 +8,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
 	"github.com/eyebluecn/sc-misc/src/converter/dto2do"
-	"github.com/eyebluecn/sc-misc/src/repository/repo"
+	"github.com/eyebluecn/sc-misc/src/model/query"
 )
 
 type RichColumnPage struct{}
@@ -48,7 +48,7 @@ func (receiver RichColumnPage) CheckParam(ctx context.Context, request *sc_misc_
 // 参数校验后的真实处理
 func (receiver RichColumnPage) doHandle(ctx context.Context, request sc_misc_api.RichColumnPageRequest) (r *sc_misc_api.RichColumnPageResponse, err error) {
 
-	repoRequest := repo.ColumnPageRequest{
+	repoRequest := query.ColumnPageQuery{
 		Name:     request.Name,
 		AuthorId: request.AuthorId,
 		Status:   dto2do.ConvertColumnStatus(request.Status),
@@ -56,7 +56,7 @@ func (receiver RichColumnPage) doHandle(ctx context.Context, request sc_misc_api
 		PageSize: request.PageSize,
 	}
 
-	richColumns, pagination, err := application.NewColumnReadApp().ReaderColumnList(ctx, *request.Operator, repoRequest)
+	richColumns, pagination, err := application.NewColumnReadAppSvc().ReaderColumnList(ctx, *request.Operator, repoRequest)
 
 	return &sc_misc_api.RichColumnPageResponse{
 		Data:       do2dto.ConvertRichColumnDTOs(richColumns),

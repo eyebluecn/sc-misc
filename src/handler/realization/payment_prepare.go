@@ -43,7 +43,7 @@ func (receiver PaymentPrepare) CheckParam(ctx context.Context, request *sc_misc_
 // 参数校验后的真实处理
 func (receiver PaymentPrepare) doHandle(ctx context.Context, request sc_misc_api.PaymentPrepareRequest) (r *sc_misc_api.PaymentPrepareResponse, err error) {
 
-	preparePaymentInfo, err := application.NewPaymentWriteApp().Prepare(ctx, request.PaymentId)
+	preparePaymentInfo, err := application.NewPaymentWriteAppSvc().Prepare(ctx, request.PaymentId)
 	if err != nil {
 		return nil, err
 	}

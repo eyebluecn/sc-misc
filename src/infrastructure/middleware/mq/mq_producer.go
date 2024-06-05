@@ -5,13 +5,23 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/infrastructure/rpc"
 	"github.com/eyebluecn/sc-subscription-idl/kitex_gen/sc_subscription_api"
+	"sync"
 )
 
 type Producer struct {
 }
 
-func NewProducer() *Producer {
-	return &Producer{}
+var (
+	producer     *Producer
+	producerOnce sync.Once
+)
+
+// 采用单例模型
+func DefaultProducer() *Producer {
+	producerOnce.Do(func() {
+		producer = &Producer{}
+	})
+	return producer
 }
 
 // mq发布。一般一个topic会对应一个producer，这里将本系统的发布者一起收到了这里。

@@ -9,14 +9,14 @@ import (
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
-type AuthorDomainService struct{}
+type AuthorDomainSvc struct{}
 
-func NewAuthorDomainService() *AuthorDomainService {
-	return &AuthorDomainService{}
+func NewAuthorDomainSvc() *AuthorDomainSvc {
+	return &AuthorDomainSvc{}
 }
 
 // 新增用户
-func (receiver AuthorDomainService) Create(ctx context.Context, author *do.AuthorDO) (*do.AuthorDO, error) {
+func (receiver AuthorDomainSvc) Create(ctx context.Context, author *do.AuthorDO) (*do.AuthorDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, author)
@@ -31,12 +31,12 @@ func (receiver AuthorDomainService) Create(ctx context.Context, author *do.Autho
 	}
 
 	//发出领域事件
-	_ = mq2.NewProducer().Publish(ctx, mq2.MqTopicAuthor, "author", "AUTHOR_CREATE", util.ToJSON(author))
+	_ = mq2.DefaultProducer().Publish(ctx, mq2.MqTopicAuthor, "author", "AUTHOR_CREATE", util.ToJSON(author))
 
 	return author, nil
 }
 
-func (receiver AuthorDomainService) createParamCheck(ctx context.Context, author *do.AuthorDO) error {
+func (receiver AuthorDomainSvc) createParamCheck(ctx context.Context, author *do.AuthorDO) error {
 
 	//参数校验。
 	if author == nil {

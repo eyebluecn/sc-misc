@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm/logger"
 	"log"
 	"os"
+	"sync"
 	"time"
 )
 
@@ -16,8 +17,24 @@ var (
 	DB *gorm.DB
 )
 
+type MysqlConfig struct {
+}
+
+var (
+	mysqlConfig     *MysqlConfig
+	mysqlConfigOnce sync.Once
+)
+
+// 采用单例模型
+func DefaultMysqlConfig() *MysqlConfig {
+	mysqlConfigOnce.Do(func() {
+		mysqlConfig = &MysqlConfig{}
+	})
+	return mysqlConfig
+}
+
 // 如果启动参数没有指定mysqlUrl，那么就使用这里的参数配置。
-func getDefaultMysqlUrl() string {
+func (receiver *MysqlConfig) getDefaultMysqlUrl() string {
 
 	var mysqlPort int = 3306
 	var mysqlHost string = "127.0.0.1"
@@ -30,9 +47,9 @@ func getDefaultMysqlUrl() string {
 }
 
 // 从启动参数中解析出mysqlUrl.
-func getMysqlUrl() string {
+func (receiver *MysqlConfig) getMysqlUrl() string {
 
-	var mysqlUrl string = getDefaultMysqlUrl()
+	var mysqlUrl string = receiver.getDefaultMysqlUrl()
 
 	if len(os.Args) >= 2 {
 		mysqlUrl = os.Args[1]
@@ -42,10 +59,10 @@ func getMysqlUrl() string {
 	return mysqlUrl
 }
 
-func InitMySQL() *gorm.DB {
+func (receiver *MysqlConfig) Init() *gorm.DB {
 
 	ctx := context.Background()
-	mysqlUrl := getMysqlUrl()
+	mysqlUrl := receiver.getMysqlUrl()
 	klog.CtxInfof(ctx, "MySQL URL: %v", mysqlUrl)
 
 	//log strategy.

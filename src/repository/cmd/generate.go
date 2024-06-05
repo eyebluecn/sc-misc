@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"github.com/eyebluecn/sc-misc/src/common/config"
+	"github.com/eyebluecn/sc-misc/src/repository/config"
 	"gorm.io/gen"
 	"os"
 
@@ -31,7 +31,7 @@ func main() {
 	klog.CtxInfof(ctx, "outPath: %v", outPath)
 	klog.CtxInfof(ctx, "modelPkgPath: %v", modelPkgPath)
 
-	db := config.InitMySQL()
+	db := config.DefaultMysqlConfig().Init()
 
 	generator.UseDB(db)
 	generator.ApplyBasic(

@@ -2,21 +2,23 @@ package domain
 
 import (
 	"context"
+	"fmt"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/common/util"
 	mq2 "github.com/eyebluecn/sc-misc/src/infrastructure/middleware/mq"
 	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
-type ColumnDomainService struct{}
+type ContractDomainSvc struct{}
 
-func NewColumnDomainService() *ColumnDomainService {
-	return &ColumnDomainService{}
+func NewContractDomainSvc() *ContractDomainSvc {
+	return &ContractDomainSvc{}
 }
 
 // 新增用户
-func (receiver ColumnDomainService) Create(ctx context.Context, column *do.ColumnDO, author *do.AuthorDO) (*do.ColumnDO, error) {
+func (receiver ContractDomainSvc) Create(ctx context.Context, column *do.ColumnDO, author *do.AuthorDO) (*do.ContractDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, column, author)
@@ -24,19 +26,29 @@ func (receiver ColumnDomainService) Create(ctx context.Context, column *do.Colum
 		return nil, err
 	}
 
-	columnRepo := repo.NewColumnRepo()
-	column, err = columnRepo.Insert(ctx, column)
+	contract := &do.ContractDO{
+		Name:       fmt.Sprintf("《%v》合同", column.Name),
+		Content:    "这里是合同的正文内容",
+		ColumnID:   column.ID,
+		AuthorID:   author.ID,
+		Status:     enums.ContractStatusOk,
+		Percentage: 0.4,
+		PaymentDay: "LAST_DAY_OF_MONTH",
+	}
+
+	contractRepo := repo.NewContractRepo()
+	contract, err = contractRepo.Insert(ctx, contract)
 	if err != nil {
 		return nil, err
 	}
 
 	//发出领域事件
-	_ = mq2.NewProducer().Publish(ctx, mq2.MqTopicColumn, "column", "COLUMN_CREATE", util.ToJSON(column))
+	_ = mq2.DefaultProducer().Publish(ctx, mq2.MqTopicContract, "contract", "CONTRACT_CREATE", util.ToJSON(column))
 
-	return column, nil
+	return contract, nil
 }
 
-func (receiver ColumnDomainService) createParamCheck(ctx context.Context, column *do.ColumnDO, author *do.AuthorDO) error {
+func (receiver ContractDomainSvc) createParamCheck(ctx context.Context, column *do.ColumnDO, author *do.AuthorDO) error {
 
 	//参数校验。
 	if column == nil {

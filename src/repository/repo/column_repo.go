@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/do2po"
 	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/query"
+	query2 "github.com/eyebluecn/sc-misc/src/model/query/enums"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
+	"github.com/eyebluecn/sc-misc/src/repository/config"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -47,7 +49,7 @@ func (receiver ColumnRepo) Insert(
 // 按照分页查询 1基
 func (receiver ColumnRepo) Page(
 	ctx context.Context,
-	req ColumnPageRequest,
+	req query.ColumnPageQuery,
 ) (list []*do.ColumnDO, pagination *universal.Pagination, err error) {
 
 	table := dao.Use(config.DB).ColumnPO
@@ -77,11 +79,11 @@ func (receiver ColumnRepo) Page(
 
 	//默认按照创建时间倒序排列
 	orderExpr := table.CreateTime.Desc()
-	if req.OrderBy == OrderByCreateTimeAsc {
+	if req.OrderBy == query2.OrderByCreateTimeAsc {
 		orderExpr = table.CreateTime.Asc()
-	} else if req.OrderBy == OrderByIdDesc {
+	} else if req.OrderBy == query2.OrderByIdDesc {
 		orderExpr = table.CreateTime.Desc()
-	} else if req.OrderBy == OrderByIdAsc {
+	} else if req.OrderBy == query2.OrderByIdAsc {
 		orderExpr = table.CreateTime.Asc()
 	}
 	tableDO = tableDO.Order(orderExpr)
@@ -175,7 +177,7 @@ func (receiver ColumnRepo) QueryByIds(
 
 	listData, err := tableDO.Find()
 	if err != nil {
-		klog.CtxErrorf(ctx, "FindByIds failed, err=%v", err)
+		klog.CtxErrorf(ctx, "QueryByIds failed, err=%v", err)
 		return nil, err
 	}
 

@@ -10,14 +10,14 @@ import (
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
-type ColumnQuoteDomainService struct{}
+type ColumnQuoteDomainSvc struct{}
 
-func NewColumnQuoteDomainService() *ColumnQuoteDomainService {
-	return &ColumnQuoteDomainService{}
+func NewColumnQuoteDomainSvc() *ColumnQuoteDomainSvc {
+	return &ColumnQuoteDomainSvc{}
 }
 
 // 新增用户
-func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *do.ColumnDO, price int64, editor *do.EditorDO) (*do.ColumnQuoteDO, error) {
+func (receiver ColumnQuoteDomainSvc) Create(ctx context.Context, column *do.ColumnDO, price int64, editor *do.EditorDO) (*do.ColumnQuoteDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, column, editor)
@@ -39,12 +39,12 @@ func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *do.
 	}
 
 	//发出领域事件
-	_ = mq2.NewProducer().Publish(ctx, mq2.MqTopicContract, "contract", "CONTRACT_CREATE", util.ToJSON(column))
+	_ = mq2.DefaultProducer().Publish(ctx, mq2.MqTopicContract, "contract", "CONTRACT_CREATE", util.ToJSON(column))
 
 	return contract, nil
 }
 
-func (receiver ColumnQuoteDomainService) createParamCheck(ctx context.Context, column *do.ColumnDO, editor *do.EditorDO) error {
+func (receiver ColumnQuoteDomainSvc) createParamCheck(ctx context.Context, column *do.ColumnDO, editor *do.EditorDO) error {
 
 	//参数校验。
 	if column == nil {

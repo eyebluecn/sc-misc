@@ -1,10 +1,10 @@
-package repo
+package query
 
 import (
 	"time"
 )
 
-type ReaderPageRequest struct {
+type EditorPageQuery struct {
 
 	//创建时间晚于
 	CreateTimeGte time.Time

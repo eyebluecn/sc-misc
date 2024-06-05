@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/util"
+	"github.com/eyebluecn/sc-misc/src/model/info"
 )
 
 // 第三方支付客户端
@@ -15,11 +16,11 @@ func NewPayClient() *PayClient {
 }
 
 // 向第三方支付平台下单。
-func (mq *PayClient) CreateOrder(ctx context.Context, orderNo string) (*ThirdPartyPayInfo, error) {
+func (mq *PayClient) CreateOrder(ctx context.Context, orderNo string) (*info.ThirdPartyPayInfo, error) {
 
 	klog.CtxInfof(ctx, "【模拟】向第三方支付平台发起创建订单 orderNo=%v", orderNo)
 
-	info := &ThirdPartyPayInfo{
+	info := &info.ThirdPartyPayInfo{
 		OrderNo:            orderNo,
 		ThirdTransactionNo: util.RandomString(16),
 		NonceStr:           util.RandomString(10),
@@ -32,7 +33,7 @@ func (mq *PayClient) CreateOrder(ctx context.Context, orderNo string) (*ThirdPar
 }
 
 // 向第三方支付平台查询订单。
-func (mq *PayClient) QueryOrder(ctx context.Context, orderNo string) (*ThirdPartyPayInfo, error) {
+func (mq *PayClient) QueryOrder(ctx context.Context, orderNo string) (*info.ThirdPartyPayInfo, error) {
 
 	//随机返回null，或者查到内容。
 	if util.RandomBoolean() {
@@ -40,7 +41,7 @@ func (mq *PayClient) QueryOrder(ctx context.Context, orderNo string) (*ThirdPart
 		return nil, nil
 	} else {
 		klog.CtxInfof(ctx, "【模拟】向第三方支付平台查询订单 orderNo=%v", orderNo)
-		info := &ThirdPartyPayInfo{
+		info := &info.ThirdPartyPayInfo{
 			OrderNo:            orderNo,
 			ThirdTransactionNo: util.RandomString(16),
 			NonceStr:           util.RandomString(10),

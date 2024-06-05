@@ -9,14 +9,14 @@ import (
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
-type EditorDomainService struct{}
+type EditorDomainSvc struct{}
 
-func NewEditorDomainService() *EditorDomainService {
-	return &EditorDomainService{}
+func NewEditorDomainSvc() *EditorDomainSvc {
+	return &EditorDomainSvc{}
 }
 
 // 新增用户
-func (receiver EditorDomainService) Create(ctx context.Context, editor *do.EditorDO) (*do.EditorDO, error) {
+func (receiver EditorDomainSvc) Create(ctx context.Context, editor *do.EditorDO) (*do.EditorDO, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, editor)
@@ -31,12 +31,12 @@ func (receiver EditorDomainService) Create(ctx context.Context, editor *do.Edito
 	}
 
 	//发出领域事件
-	_ = mq2.NewProducer().Publish(ctx, mq2.MqTopicEditor, "editor", "EDITOR_CREATE", util.ToJSON(editor))
+	_ = mq2.DefaultProducer().Publish(ctx, mq2.MqTopicEditor, "editor", "EDITOR_CREATE", util.ToJSON(editor))
 
 	return editor, nil
 }
 
-func (receiver EditorDomainService) createParamCheck(ctx context.Context, editor *do.EditorDO) error {
+func (receiver EditorDomainSvc) createParamCheck(ctx context.Context, editor *do.EditorDO) error {
 
 	//参数校验。
 	if editor == nil {

@@ -4,12 +4,12 @@ import (
 	"context"
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/do2po"
 	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/do/enums"
+	"github.com/eyebluecn/sc-misc/src/repository/config"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -66,7 +66,7 @@ func (receiver ColumnQuoteRepo) FindByIds(
 
 	listData, err := tableDO.Find()
 	if err != nil {
-		klog.CtxErrorf(ctx, "FindByIds failed, err=%v", err)
+		klog.CtxErrorf(ctx, "QueryByIds failed, err=%v", err)
 		return nil, err
 	}
 
@@ -96,7 +96,7 @@ func (receiver ColumnQuoteRepo) FindOkByColumnIds(
 
 	listData, err := tableDO.Find()
 	if err != nil {
-		klog.CtxErrorf(ctx, "FindByIds failed, err=%v", err)
+		klog.CtxErrorf(ctx, "QueryByIds failed, err=%v", err)
 		return nil, err
 	}
 

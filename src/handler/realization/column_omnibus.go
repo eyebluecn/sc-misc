@@ -53,7 +53,7 @@ func (receiver ColumnOmnibus) CheckParam(ctx context.Context, request *sc_misc_a
 // 参数校验后的真实处理
 func (receiver ColumnOmnibus) doHandle(ctx context.Context, request sc_misc_api.ColumnOmnibusRequest) (r *sc_misc_api.ColumnOmnibusResponse, err error) {
 
-	richColumn, err := application.NewColumnWriteApp().ColumnOmnibus(ctx, request)
+	richColumn, err := application.NewColumnWriteAppSvc().ColumnOmnibus(ctx, request)
 	if err != nil {
 		return nil, err
 	}

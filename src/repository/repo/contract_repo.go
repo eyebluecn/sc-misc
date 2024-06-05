@@ -2,10 +2,10 @@ package repo
 
 import (
 	"context"
-	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/converter/do2po"
 	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/repository/config"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"time"
 )

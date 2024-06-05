@@ -6,6 +6,8 @@ import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api/miscservice"
 	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/handler"
+	config3 "github.com/eyebluecn/sc-misc/src/infrastructure/rpc/config"
+	config2 "github.com/eyebluecn/sc-misc/src/repository/config"
 	"log"
 	"net"
 	"time"
@@ -14,7 +16,7 @@ import (
 func main() {
 
 	//初始化MySQL
-	config.InitMySQL()
+	config2.DefaultMysqlConfig().Init()
 
 	//自定义端口
 	addr, _ := net.ResolveTCPAddr("tcp", fmt.Sprintf("127.0.0.1:%v", config.MiscServerPort))
@@ -25,7 +27,7 @@ func main() {
 	)
 
 	//初始化RPC客户端
-	config.InitRpcClient()
+	config3.DefaultMysqlConfig().Init()
 
 	err := svr.Run()
 	if err != nil {

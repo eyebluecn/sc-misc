@@ -42,7 +42,7 @@ func (receiver PaymentQueryById) CheckParam(ctx context.Context, request *sc_mis
 // 参数校验后的真实处理
 func (receiver PaymentQueryById) doHandle(ctx context.Context, request sc_misc_api.PaymentQueryByIdRequest) (r *sc_misc_api.PaymentQueryByIdResponse, err error) {
 
-	payment, err := application.NewPaymentReadApp().QueryById(ctx, request.PaymentId)
+	payment, err := application.NewPaymentReadAppSvc().QueryById(ctx, request.PaymentId)
 	if err != nil {
 		return nil, err
 	}

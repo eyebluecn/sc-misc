@@ -39,7 +39,7 @@ func (receiver PaymentCreate) CheckParam(ctx context.Context, request *sc_misc_a
 // 参数校验后的真实处理
 func (receiver PaymentCreate) doHandle(ctx context.Context, request sc_misc_api.PaymentCreateRequest) (r *sc_misc_api.PaymentCreateResponse, err error) {
 
-	preparePaymentInfo, err := application.NewPaymentWriteApp().Create(ctx, request.OrderNo, request.Method, request.Amount)
+	preparePaymentInfo, err := application.NewPaymentWriteAppSvc().Create(ctx, request.OrderNo, request.Method, request.Amount)
 	if err != nil {
 		return nil, err
 	}

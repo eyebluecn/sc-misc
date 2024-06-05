@@ -42,7 +42,7 @@ func (receiver ReaderQueryById) CheckParam(ctx context.Context, request *sc_misc
 
 // 参数校验后的真实处理
 func (receiver ReaderQueryById) doHandle(ctx context.Context, request sc_misc_api.ReaderQueryByIdRequest) (r *sc_misc_api.ReaderQueryByIdResponse, err error) {
-	reader, err := application.NewReaderReadApp().QueryById(ctx, request.ReaderId)
+	reader, err := application.NewReaderReadAppSvc().QueryById(ctx, request.ReaderId)
 	if err != nil {
 		return nil, err
 	}

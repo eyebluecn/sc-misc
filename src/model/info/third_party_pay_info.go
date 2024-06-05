@@ -1,4 +1,4 @@
-package pay
+package info
 
 // 第三方支付信息
 type ThirdPartyPayInfo struct {

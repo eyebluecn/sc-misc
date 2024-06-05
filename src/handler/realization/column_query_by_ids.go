@@ -41,7 +41,7 @@ func (receiver ColumnQueryByIds) CheckParam(ctx context.Context, request *sc_mis
 
 // 参数校验后的真实处理
 func (receiver ColumnQueryByIds) doHandle(ctx context.Context, request sc_misc_api.ColumnQueryByIdsRequest) (r *sc_misc_api.ColumnQueryByIdsResponse, err error) {
-	columns, err := application.NewColumnReadApp().QueryByIds(ctx, request.ColumnIds)
+	columns, err := application.NewColumnReadAppSvc().QueryByIds(ctx, request.ColumnIds)
 	if err != nil {
 		return nil, err
 	}

@@ -6,14 +6,14 @@ import (
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
-type PaymentReadApp struct{}
+type PaymentReadAppSvc struct{}
 
-func NewPaymentReadApp() *PaymentReadApp {
-	return &PaymentReadApp{}
+func NewPaymentReadAppSvc() *PaymentReadAppSvc {
+	return &PaymentReadAppSvc{}
 }
 
 // 根据id来查询读者信息
-func (receiver PaymentReadApp) QueryById(ctx context.Context, paymentId int64) (*do.PaymentDO, error) {
+func (receiver PaymentReadAppSvc) QueryById(ctx context.Context, paymentId int64) (*do.PaymentDO, error) {
 	payment, err := repo.NewPaymentRepo().QueryById(ctx, paymentId)
 	if err != nil {
 		return nil, err

@@ -9,14 +9,14 @@ import (
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
-type EditorReadApp struct{}
+type EditorReadAppSvc struct{}
 
-func NewEditorReadApp() *EditorReadApp {
-	return &EditorReadApp{}
+func NewEditorReadAppSvc() *EditorReadAppSvc {
+	return &EditorReadAppSvc{}
 }
 
 // 使用用户名和密码进行登录。登录成功就返回对象，失败就报错。
-func (r EditorReadApp) Login(ctx context.Context, username string, password string) (*do.EditorDO, error) {
+func (r EditorReadAppSvc) Login(ctx context.Context, username string, password string) (*do.EditorDO, error) {
 	editor, err := repo.NewEditorRepo().FindByUsername(ctx, username)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,7 @@ func (r EditorReadApp) Login(ctx context.Context, username string, password stri
 	if editor == nil {
 		if username == "demo_editor" && password == "123456" {
 			//测试用户手动创建。
-			editor, err = domain.NewEditorDomainService().Create(ctx, &do.EditorDO{
+			editor, err = domain.NewEditorDomainSvc().Create(ctx, &do.EditorDO{
 				Username: username,
 				Password: password,
 			})
