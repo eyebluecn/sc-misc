@@ -19,7 +19,7 @@ func main() {
 
 	modelPkgPath := os.Getenv("MODEL_PKG_PATH")
 	if modelPkgPath == "" {
-		modelPkgPath = "src/model/po"
+		modelPkgPath = "../model/po"
 	}
 
 	generator := gen.NewGenerator(gen.Config{

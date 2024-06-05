@@ -17,7 +17,7 @@ func NewEditorReadAppSvc() *EditorReadAppSvc {
 
 // 使用用户名和密码进行登录。登录成功就返回对象，失败就报错。
 func (r EditorReadAppSvc) Login(ctx context.Context, username string, password string) (*do.EditorDO, error) {
-	editor, err := repo.NewEditorRepo().FindByUsername(ctx, username)
+	editor, err := repo.NewEditorRepo().QueryByUsername(ctx, username)
 	if err != nil {
 		return nil, err
 	}
