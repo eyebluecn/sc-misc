@@ -2,7 +2,7 @@ package application
 
 import (
 	"context"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
@@ -13,7 +13,7 @@ func NewPaymentReadApp() *PaymentReadApp {
 }
 
 // 根据id来查询读者信息
-func (receiver PaymentReadApp) QueryById(ctx context.Context, paymentId int64) (*model.Payment, error) {
+func (receiver PaymentReadApp) QueryById(ctx context.Context, paymentId int64) (*do.Payment, error) {
 	payment, err := repo.NewPaymentRepo().QueryById(ctx, paymentId)
 	if err != nil {
 		return nil, err

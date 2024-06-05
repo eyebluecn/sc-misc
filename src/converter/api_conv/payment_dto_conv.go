@@ -2,17 +2,18 @@ package api_conv
 
 import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
-	"github.com/eyebluecn/sc-misc/src/model"
-	"github.com/eyebluecn/sc-misc/src/util"
+	"github.com/eyebluecn/sc-misc/src/common/util"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 )
 
 // 转为枚举
-func ConvertPaymentStatus(status model.PaymentStatus) sc_misc_api.PaymentStatus {
+func ConvertPaymentStatus(status enums.PaymentStatus) sc_misc_api.PaymentStatus {
 	return sc_misc_api.PaymentStatus(status)
 }
 
 // 领域模型转为传输模型
-func ConvertPaymentDTO(thing *model.Payment) *sc_misc_api.PaymentDTO {
+func ConvertPaymentDTO(thing *do.Payment) *sc_misc_api.PaymentDTO {
 	if thing == nil {
 		return nil
 	}
@@ -30,7 +31,7 @@ func ConvertPaymentDTO(thing *model.Payment) *sc_misc_api.PaymentDTO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertPaymentDTOs(things []*model.Payment) []*sc_misc_api.PaymentDTO {
+func ConvertPaymentDTOs(things []*do.Payment) []*sc_misc_api.PaymentDTO {
 	if things == nil {
 		return nil
 	}

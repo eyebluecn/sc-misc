@@ -1,22 +1,23 @@
 package db_model_conv
 
 import (
-	"github.com/eyebluecn/sc-misc/src/model"
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
+	"github.com/eyebluecn/sc-misc/src/model/po"
 )
 
 // 枚举转为存储的整数
-func ColumnQuoteStatusToStorage(status model.ColumnQuoteStatus) int32 {
+func ColumnQuoteStatusToStorage(status enums.ColumnQuoteStatus) int32 {
 	return int32(status)
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumnQuoteDO(thing *model.ColumnQuote) *db_model.ColumnQuoteDO {
+func ConvertColumnQuoteDO(thing *do.ColumnQuote) *po.ColumnQuotePO {
 	if thing == nil {
 		return nil
 	}
 
-	return &db_model.ColumnQuoteDO{
+	return &po.ColumnQuotePO{
 		ID:         thing.ID,
 		CreateTime: thing.CreateTime,
 		UpdateTime: thing.UpdateTime,
@@ -29,11 +30,11 @@ func ConvertColumnQuoteDO(thing *model.ColumnQuote) *db_model.ColumnQuoteDO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumnQuoteDOs(things []*model.ColumnQuote) []*db_model.ColumnQuoteDO {
+func ConvertColumnQuoteDOs(things []*do.ColumnQuote) []*po.ColumnQuotePO {
 	if things == nil {
 		return nil
 	}
-	var readerDOs []*db_model.ColumnQuoteDO
+	var readerDOs []*po.ColumnQuotePO
 	for _, item := range things {
 		readerDOs = append(readerDOs, ConvertColumnQuoteDO(item))
 	}

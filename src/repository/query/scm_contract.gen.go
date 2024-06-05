@@ -6,6 +6,8 @@ package query
 
 import (
 	"context"
+	"database/sql"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,39 +15,38 @@ import (
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
+	"gorm.io/gen/helper"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
 )
 
-func newContractDO(db *gorm.DB, opts ...gen.DOOption) contractDO {
-	_contractDO := contractDO{}
+func newContractPO(db *gorm.DB, opts ...gen.DOOption) contractPO {
+	_contractPO := contractPO{}
 
-	_contractDO.contractDODo.UseDB(db, opts...)
-	_contractDO.contractDODo.UseModel(&db_model.ContractDO{})
+	_contractPO.contractPODo.UseDB(db, opts...)
+	_contractPO.contractPODo.UseModel(&po.ContractPO{})
 
-	tableName := _contractDO.contractDODo.TableName()
-	_contractDO.ALL = field.NewAsterisk(tableName)
-	_contractDO.ID = field.NewInt64(tableName, "id")
-	_contractDO.CreateTime = field.NewTime(tableName, "create_time")
-	_contractDO.UpdateTime = field.NewTime(tableName, "update_time")
-	_contractDO.Name = field.NewString(tableName, "name")
-	_contractDO.Content = field.NewString(tableName, "content")
-	_contractDO.ColumnID = field.NewInt64(tableName, "column_id")
-	_contractDO.AuthorID = field.NewInt64(tableName, "author_id")
-	_contractDO.Status = field.NewInt32(tableName, "status")
-	_contractDO.Percentage = field.NewFloat64(tableName, "percentage")
-	_contractDO.PaymentDay = field.NewString(tableName, "payment_day")
+	tableName := _contractPO.contractPODo.TableName()
+	_contractPO.ALL = field.NewAsterisk(tableName)
+	_contractPO.ID = field.NewInt64(tableName, "id")
+	_contractPO.CreateTime = field.NewTime(tableName, "create_time")
+	_contractPO.UpdateTime = field.NewTime(tableName, "update_time")
+	_contractPO.Name = field.NewString(tableName, "name")
+	_contractPO.Content = field.NewString(tableName, "content")
+	_contractPO.ColumnID = field.NewInt64(tableName, "column_id")
+	_contractPO.AuthorID = field.NewInt64(tableName, "author_id")
+	_contractPO.Status = field.NewInt32(tableName, "status")
+	_contractPO.Percentage = field.NewFloat64(tableName, "percentage")
+	_contractPO.PaymentDay = field.NewString(tableName, "payment_day")
 
-	_contractDO.fillFieldMap()
+	_contractPO.fillFieldMap()
 
-	return _contractDO
+	return _contractPO
 }
 
-// contractDO 作者表
-type contractDO struct {
-	contractDODo contractDODo
+// contractPO 作者表
+type contractPO struct {
+	contractPODo contractPODo
 
 	ALL        field.Asterisk
 	ID         field.Int64   // 主键
@@ -62,17 +63,17 @@ type contractDO struct {
 	fieldMap map[string]field.Expr
 }
 
-func (c contractDO) Table(newTableName string) *contractDO {
-	c.contractDODo.UseTable(newTableName)
+func (c contractPO) Table(newTableName string) *contractPO {
+	c.contractPODo.UseTable(newTableName)
 	return c.updateTableName(newTableName)
 }
 
-func (c contractDO) As(alias string) *contractDO {
-	c.contractDODo.DO = *(c.contractDODo.As(alias).(*gen.DO))
+func (c contractPO) As(alias string) *contractPO {
+	c.contractPODo.DO = *(c.contractPODo.As(alias).(*gen.DO))
 	return c.updateTableName(alias)
 }
 
-func (c *contractDO) updateTableName(table string) *contractDO {
+func (c *contractPO) updateTableName(table string) *contractPO {
 	c.ALL = field.NewAsterisk(table)
 	c.ID = field.NewInt64(table, "id")
 	c.CreateTime = field.NewTime(table, "create_time")
@@ -90,17 +91,17 @@ func (c *contractDO) updateTableName(table string) *contractDO {
 	return c
 }
 
-func (c *contractDO) WithContext(ctx context.Context) *contractDODo {
-	return c.contractDODo.WithContext(ctx)
+func (c *contractPO) WithContext(ctx context.Context) *contractPODo {
+	return c.contractPODo.WithContext(ctx)
 }
 
-func (c contractDO) TableName() string { return c.contractDODo.TableName() }
+func (c contractPO) TableName() string { return c.contractPODo.TableName() }
 
-func (c contractDO) Alias() string { return c.contractDODo.Alias() }
+func (c contractPO) Alias() string { return c.contractPODo.Alias() }
 
-func (c contractDO) Columns(cols ...field.Expr) gen.Columns { return c.contractDODo.Columns(cols...) }
+func (c contractPO) Columns(cols ...field.Expr) gen.Columns { return c.contractPODo.Columns(cols...) }
 
-func (c *contractDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
+func (c *contractPO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := c.fieldMap[fieldName]
 	if !ok || _f == nil {
 		return nil, false
@@ -109,7 +110,7 @@ func (c *contractDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	return _oe, ok
 }
 
-func (c *contractDO) fillFieldMap() {
+func (c *contractPO) fillFieldMap() {
 	c.fieldMap = make(map[string]field.Expr, 10)
 	c.fieldMap["id"] = c.ID
 	c.fieldMap["create_time"] = c.CreateTime
@@ -123,161 +124,161 @@ func (c *contractDO) fillFieldMap() {
 	c.fieldMap["payment_day"] = c.PaymentDay
 }
 
-func (c contractDO) clone(db *gorm.DB) contractDO {
-	c.contractDODo.ReplaceConnPool(db.Statement.ConnPool)
+func (c contractPO) clone(db *gorm.DB) contractPO {
+	c.contractPODo.ReplaceConnPool(db.Statement.ConnPool)
 	return c
 }
 
-func (c contractDO) replaceDB(db *gorm.DB) contractDO {
-	c.contractDODo.ReplaceDB(db)
+func (c contractPO) replaceDB(db *gorm.DB) contractPO {
+	c.contractPODo.ReplaceDB(db)
 	return c
 }
 
-type contractDODo struct{ gen.DO }
+type contractPODo struct{ gen.DO }
 
-func (c contractDODo) Debug() *contractDODo {
+func (c contractPODo) Debug() *contractPODo {
 	return c.withDO(c.DO.Debug())
 }
 
-func (c contractDODo) WithContext(ctx context.Context) *contractDODo {
+func (c contractPODo) WithContext(ctx context.Context) *contractPODo {
 	return c.withDO(c.DO.WithContext(ctx))
 }
 
-func (c contractDODo) ReadDB() *contractDODo {
+func (c contractPODo) ReadDB() *contractPODo {
 	return c.Clauses(dbresolver.Read)
 }
 
-func (c contractDODo) WriteDB() *contractDODo {
+func (c contractPODo) WriteDB() *contractPODo {
 	return c.Clauses(dbresolver.Write)
 }
 
-func (c contractDODo) Session(config *gorm.Session) *contractDODo {
+func (c contractPODo) Session(config *gorm.Session) *contractPODo {
 	return c.withDO(c.DO.Session(config))
 }
 
-func (c contractDODo) Clauses(conds ...clause.Expression) *contractDODo {
+func (c contractPODo) Clauses(conds ...clause.Expression) *contractPODo {
 	return c.withDO(c.DO.Clauses(conds...))
 }
 
-func (c contractDODo) Returning(value interface{}, columns ...string) *contractDODo {
+func (c contractPODo) Returning(value interface{}, columns ...string) *contractPODo {
 	return c.withDO(c.DO.Returning(value, columns...))
 }
 
-func (c contractDODo) Not(conds ...gen.Condition) *contractDODo {
+func (c contractPODo) Not(conds ...gen.Condition) *contractPODo {
 	return c.withDO(c.DO.Not(conds...))
 }
 
-func (c contractDODo) Or(conds ...gen.Condition) *contractDODo {
+func (c contractPODo) Or(conds ...gen.Condition) *contractPODo {
 	return c.withDO(c.DO.Or(conds...))
 }
 
-func (c contractDODo) Select(conds ...field.Expr) *contractDODo {
+func (c contractPODo) Select(conds ...field.Expr) *contractPODo {
 	return c.withDO(c.DO.Select(conds...))
 }
 
-func (c contractDODo) Where(conds ...gen.Condition) *contractDODo {
+func (c contractPODo) Where(conds ...gen.Condition) *contractPODo {
 	return c.withDO(c.DO.Where(conds...))
 }
 
-func (c contractDODo) Order(conds ...field.Expr) *contractDODo {
+func (c contractPODo) Order(conds ...field.Expr) *contractPODo {
 	return c.withDO(c.DO.Order(conds...))
 }
 
-func (c contractDODo) Distinct(cols ...field.Expr) *contractDODo {
+func (c contractPODo) Distinct(cols ...field.Expr) *contractPODo {
 	return c.withDO(c.DO.Distinct(cols...))
 }
 
-func (c contractDODo) Omit(cols ...field.Expr) *contractDODo {
+func (c contractPODo) Omit(cols ...field.Expr) *contractPODo {
 	return c.withDO(c.DO.Omit(cols...))
 }
 
-func (c contractDODo) Join(table schema.Tabler, on ...field.Expr) *contractDODo {
+func (c contractPODo) Join(table schema.Tabler, on ...field.Expr) *contractPODo {
 	return c.withDO(c.DO.Join(table, on...))
 }
 
-func (c contractDODo) LeftJoin(table schema.Tabler, on ...field.Expr) *contractDODo {
+func (c contractPODo) LeftJoin(table schema.Tabler, on ...field.Expr) *contractPODo {
 	return c.withDO(c.DO.LeftJoin(table, on...))
 }
 
-func (c contractDODo) RightJoin(table schema.Tabler, on ...field.Expr) *contractDODo {
+func (c contractPODo) RightJoin(table schema.Tabler, on ...field.Expr) *contractPODo {
 	return c.withDO(c.DO.RightJoin(table, on...))
 }
 
-func (c contractDODo) Group(cols ...field.Expr) *contractDODo {
+func (c contractPODo) Group(cols ...field.Expr) *contractPODo {
 	return c.withDO(c.DO.Group(cols...))
 }
 
-func (c contractDODo) Having(conds ...gen.Condition) *contractDODo {
+func (c contractPODo) Having(conds ...gen.Condition) *contractPODo {
 	return c.withDO(c.DO.Having(conds...))
 }
 
-func (c contractDODo) Limit(limit int) *contractDODo {
+func (c contractPODo) Limit(limit int) *contractPODo {
 	return c.withDO(c.DO.Limit(limit))
 }
 
-func (c contractDODo) Offset(offset int) *contractDODo {
+func (c contractPODo) Offset(offset int) *contractPODo {
 	return c.withDO(c.DO.Offset(offset))
 }
 
-func (c contractDODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *contractDODo {
+func (c contractPODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *contractPODo {
 	return c.withDO(c.DO.Scopes(funcs...))
 }
 
-func (c contractDODo) Unscoped() *contractDODo {
+func (c contractPODo) Unscoped() *contractPODo {
 	return c.withDO(c.DO.Unscoped())
 }
 
-func (c contractDODo) Create(values ...*db_model.ContractDO) error {
+func (c contractPODo) Create(values ...*po.ContractPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Create(values)
 }
 
-func (c contractDODo) CreateInBatches(values []*db_model.ContractDO, batchSize int) error {
+func (c contractPODo) CreateInBatches(values []*po.ContractPO, batchSize int) error {
 	return c.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (c contractDODo) Save(values ...*db_model.ContractDO) error {
+func (c contractPODo) Save(values ...*po.ContractPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Save(values)
 }
 
-func (c contractDODo) First() (*db_model.ContractDO, error) {
+func (c contractPODo) First() (*po.ContractPO, error) {
 	if result, err := c.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ContractDO), nil
+		return result.(*po.ContractPO), nil
 	}
 }
 
-func (c contractDODo) Take() (*db_model.ContractDO, error) {
+func (c contractPODo) Take() (*po.ContractPO, error) {
 	if result, err := c.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ContractDO), nil
+		return result.(*po.ContractPO), nil
 	}
 }
 
-func (c contractDODo) Last() (*db_model.ContractDO, error) {
+func (c contractPODo) Last() (*po.ContractPO, error) {
 	if result, err := c.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ContractDO), nil
+		return result.(*po.ContractPO), nil
 	}
 }
 
-func (c contractDODo) Find() ([]*db_model.ContractDO, error) {
+func (c contractPODo) Find() ([]*po.ContractPO, error) {
 	result, err := c.DO.Find()
-	return result.([]*db_model.ContractDO), err
+	return result.([]*po.ContractPO), err
 }
 
-func (c contractDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.ContractDO, err error) {
-	buf := make([]*db_model.ContractDO, 0, batchSize)
+func (c contractPODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*po.ContractPO, err error) {
+	buf := make([]*po.ContractPO, 0, batchSize)
 	err = c.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -285,49 +286,49 @@ func (c contractDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) 
 	return results, err
 }
 
-func (c contractDODo) FindInBatches(result *[]*db_model.ContractDO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (c contractPODo) FindInBatches(result *[]*po.ContractPO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return c.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (c contractDODo) Attrs(attrs ...field.AssignExpr) *contractDODo {
+func (c contractPODo) Attrs(attrs ...field.AssignExpr) *contractPODo {
 	return c.withDO(c.DO.Attrs(attrs...))
 }
 
-func (c contractDODo) Assign(attrs ...field.AssignExpr) *contractDODo {
+func (c contractPODo) Assign(attrs ...field.AssignExpr) *contractPODo {
 	return c.withDO(c.DO.Assign(attrs...))
 }
 
-func (c contractDODo) Joins(fields ...field.RelationField) *contractDODo {
+func (c contractPODo) Joins(fields ...field.RelationField) *contractPODo {
 	for _, _f := range fields {
 		c = *c.withDO(c.DO.Joins(_f))
 	}
 	return &c
 }
 
-func (c contractDODo) Preload(fields ...field.RelationField) *contractDODo {
+func (c contractPODo) Preload(fields ...field.RelationField) *contractPODo {
 	for _, _f := range fields {
 		c = *c.withDO(c.DO.Preload(_f))
 	}
 	return &c
 }
 
-func (c contractDODo) FirstOrInit() (*db_model.ContractDO, error) {
+func (c contractPODo) FirstOrInit() (*po.ContractPO, error) {
 	if result, err := c.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ContractDO), nil
+		return result.(*po.ContractPO), nil
 	}
 }
 
-func (c contractDODo) FirstOrCreate() (*db_model.ContractDO, error) {
+func (c contractPODo) FirstOrCreate() (*po.ContractPO, error) {
 	if result, err := c.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ContractDO), nil
+		return result.(*po.ContractPO), nil
 	}
 }
 
-func (c contractDODo) FindByPage(offset int, limit int) (result []*db_model.ContractDO, count int64, err error) {
+func (c contractPODo) FindByPage(offset int, limit int) (result []*po.ContractPO, count int64, err error) {
 	result, err = c.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -342,7 +343,7 @@ func (c contractDODo) FindByPage(offset int, limit int) (result []*db_model.Cont
 	return
 }
 
-func (c contractDODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
+func (c contractPODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
 	count, err = c.Count()
 	if err != nil {
 		return
@@ -352,15 +353,15 @@ func (c contractDODo) ScanByPage(result interface{}, offset int, limit int) (cou
 	return
 }
 
-func (c contractDODo) Scan(result interface{}) (err error) {
+func (c contractPODo) Scan(result interface{}) (err error) {
 	return c.DO.Scan(result)
 }
 
-func (c contractDODo) Delete(models ...*db_model.ContractDO) (result gen.ResultInfo, err error) {
+func (c contractPODo) Delete(models ...*po.ContractPO) (result gen.ResultInfo, err error) {
 	return c.DO.Delete(models)
 }
 
-func (c *contractDODo) withDO(do gen.Dao) *contractDODo {
+func (c *contractPODo) withDO(do gen.Dao) *contractPODo {
 	c.DO = *do.(*gen.DO)
 	return c
 }

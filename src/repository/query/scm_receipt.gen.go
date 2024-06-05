@@ -6,6 +6,8 @@ package query
 
 import (
 	"context"
+	"database/sql"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,37 +15,36 @@ import (
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
+	"gorm.io/gen/helper"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
 )
 
-func newReceiptDO(db *gorm.DB, opts ...gen.DOOption) receiptDO {
-	_receiptDO := receiptDO{}
+func newReceiptPO(db *gorm.DB, opts ...gen.DOOption) receiptPO {
+	_receiptPO := receiptPO{}
 
-	_receiptDO.receiptDODo.UseDB(db, opts...)
-	_receiptDO.receiptDODo.UseModel(&db_model.ReceiptDO{})
+	_receiptPO.receiptPODo.UseDB(db, opts...)
+	_receiptPO.receiptPODo.UseModel(&po.ReceiptPO{})
 
-	tableName := _receiptDO.receiptDODo.TableName()
-	_receiptDO.ALL = field.NewAsterisk(tableName)
-	_receiptDO.ID = field.NewInt64(tableName, "id")
-	_receiptDO.CreateTime = field.NewTime(tableName, "create_time")
-	_receiptDO.UpdateTime = field.NewTime(tableName, "update_time")
-	_receiptDO.OrderNo = field.NewString(tableName, "order_no")
-	_receiptDO.Method = field.NewString(tableName, "method")
-	_receiptDO.ThirdTransactionNo = field.NewString(tableName, "third_transaction_no")
-	_receiptDO.Amount = field.NewInt64(tableName, "amount")
-	_receiptDO.Status = field.NewInt32(tableName, "status")
+	tableName := _receiptPO.receiptPODo.TableName()
+	_receiptPO.ALL = field.NewAsterisk(tableName)
+	_receiptPO.ID = field.NewInt64(tableName, "id")
+	_receiptPO.CreateTime = field.NewTime(tableName, "create_time")
+	_receiptPO.UpdateTime = field.NewTime(tableName, "update_time")
+	_receiptPO.OrderNo = field.NewString(tableName, "order_no")
+	_receiptPO.Method = field.NewString(tableName, "method")
+	_receiptPO.ThirdTransactionNo = field.NewString(tableName, "third_transaction_no")
+	_receiptPO.Amount = field.NewInt64(tableName, "amount")
+	_receiptPO.Status = field.NewInt32(tableName, "status")
 
-	_receiptDO.fillFieldMap()
+	_receiptPO.fillFieldMap()
 
-	return _receiptDO
+	return _receiptPO
 }
 
-// receiptDO 收款单，作者从平台收款的单据
-type receiptDO struct {
-	receiptDODo receiptDODo
+// receiptPO 收款单，作者从平台收款的单据
+type receiptPO struct {
+	receiptPODo receiptPODo
 
 	ALL                field.Asterisk
 	ID                 field.Int64  // 主键
@@ -58,17 +59,17 @@ type receiptDO struct {
 	fieldMap map[string]field.Expr
 }
 
-func (r receiptDO) Table(newTableName string) *receiptDO {
-	r.receiptDODo.UseTable(newTableName)
+func (r receiptPO) Table(newTableName string) *receiptPO {
+	r.receiptPODo.UseTable(newTableName)
 	return r.updateTableName(newTableName)
 }
 
-func (r receiptDO) As(alias string) *receiptDO {
-	r.receiptDODo.DO = *(r.receiptDODo.As(alias).(*gen.DO))
+func (r receiptPO) As(alias string) *receiptPO {
+	r.receiptPODo.DO = *(r.receiptPODo.As(alias).(*gen.DO))
 	return r.updateTableName(alias)
 }
 
-func (r *receiptDO) updateTableName(table string) *receiptDO {
+func (r *receiptPO) updateTableName(table string) *receiptPO {
 	r.ALL = field.NewAsterisk(table)
 	r.ID = field.NewInt64(table, "id")
 	r.CreateTime = field.NewTime(table, "create_time")
@@ -84,17 +85,17 @@ func (r *receiptDO) updateTableName(table string) *receiptDO {
 	return r
 }
 
-func (r *receiptDO) WithContext(ctx context.Context) *receiptDODo {
-	return r.receiptDODo.WithContext(ctx)
+func (r *receiptPO) WithContext(ctx context.Context) *receiptPODo {
+	return r.receiptPODo.WithContext(ctx)
 }
 
-func (r receiptDO) TableName() string { return r.receiptDODo.TableName() }
+func (r receiptPO) TableName() string { return r.receiptPODo.TableName() }
 
-func (r receiptDO) Alias() string { return r.receiptDODo.Alias() }
+func (r receiptPO) Alias() string { return r.receiptPODo.Alias() }
 
-func (r receiptDO) Columns(cols ...field.Expr) gen.Columns { return r.receiptDODo.Columns(cols...) }
+func (r receiptPO) Columns(cols ...field.Expr) gen.Columns { return r.receiptPODo.Columns(cols...) }
 
-func (r *receiptDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
+func (r *receiptPO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := r.fieldMap[fieldName]
 	if !ok || _f == nil {
 		return nil, false
@@ -103,7 +104,7 @@ func (r *receiptDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	return _oe, ok
 }
 
-func (r *receiptDO) fillFieldMap() {
+func (r *receiptPO) fillFieldMap() {
 	r.fieldMap = make(map[string]field.Expr, 8)
 	r.fieldMap["id"] = r.ID
 	r.fieldMap["create_time"] = r.CreateTime
@@ -115,161 +116,161 @@ func (r *receiptDO) fillFieldMap() {
 	r.fieldMap["status"] = r.Status
 }
 
-func (r receiptDO) clone(db *gorm.DB) receiptDO {
-	r.receiptDODo.ReplaceConnPool(db.Statement.ConnPool)
+func (r receiptPO) clone(db *gorm.DB) receiptPO {
+	r.receiptPODo.ReplaceConnPool(db.Statement.ConnPool)
 	return r
 }
 
-func (r receiptDO) replaceDB(db *gorm.DB) receiptDO {
-	r.receiptDODo.ReplaceDB(db)
+func (r receiptPO) replaceDB(db *gorm.DB) receiptPO {
+	r.receiptPODo.ReplaceDB(db)
 	return r
 }
 
-type receiptDODo struct{ gen.DO }
+type receiptPODo struct{ gen.DO }
 
-func (r receiptDODo) Debug() *receiptDODo {
+func (r receiptPODo) Debug() *receiptPODo {
 	return r.withDO(r.DO.Debug())
 }
 
-func (r receiptDODo) WithContext(ctx context.Context) *receiptDODo {
+func (r receiptPODo) WithContext(ctx context.Context) *receiptPODo {
 	return r.withDO(r.DO.WithContext(ctx))
 }
 
-func (r receiptDODo) ReadDB() *receiptDODo {
+func (r receiptPODo) ReadDB() *receiptPODo {
 	return r.Clauses(dbresolver.Read)
 }
 
-func (r receiptDODo) WriteDB() *receiptDODo {
+func (r receiptPODo) WriteDB() *receiptPODo {
 	return r.Clauses(dbresolver.Write)
 }
 
-func (r receiptDODo) Session(config *gorm.Session) *receiptDODo {
+func (r receiptPODo) Session(config *gorm.Session) *receiptPODo {
 	return r.withDO(r.DO.Session(config))
 }
 
-func (r receiptDODo) Clauses(conds ...clause.Expression) *receiptDODo {
+func (r receiptPODo) Clauses(conds ...clause.Expression) *receiptPODo {
 	return r.withDO(r.DO.Clauses(conds...))
 }
 
-func (r receiptDODo) Returning(value interface{}, columns ...string) *receiptDODo {
+func (r receiptPODo) Returning(value interface{}, columns ...string) *receiptPODo {
 	return r.withDO(r.DO.Returning(value, columns...))
 }
 
-func (r receiptDODo) Not(conds ...gen.Condition) *receiptDODo {
+func (r receiptPODo) Not(conds ...gen.Condition) *receiptPODo {
 	return r.withDO(r.DO.Not(conds...))
 }
 
-func (r receiptDODo) Or(conds ...gen.Condition) *receiptDODo {
+func (r receiptPODo) Or(conds ...gen.Condition) *receiptPODo {
 	return r.withDO(r.DO.Or(conds...))
 }
 
-func (r receiptDODo) Select(conds ...field.Expr) *receiptDODo {
+func (r receiptPODo) Select(conds ...field.Expr) *receiptPODo {
 	return r.withDO(r.DO.Select(conds...))
 }
 
-func (r receiptDODo) Where(conds ...gen.Condition) *receiptDODo {
+func (r receiptPODo) Where(conds ...gen.Condition) *receiptPODo {
 	return r.withDO(r.DO.Where(conds...))
 }
 
-func (r receiptDODo) Order(conds ...field.Expr) *receiptDODo {
+func (r receiptPODo) Order(conds ...field.Expr) *receiptPODo {
 	return r.withDO(r.DO.Order(conds...))
 }
 
-func (r receiptDODo) Distinct(cols ...field.Expr) *receiptDODo {
+func (r receiptPODo) Distinct(cols ...field.Expr) *receiptPODo {
 	return r.withDO(r.DO.Distinct(cols...))
 }
 
-func (r receiptDODo) Omit(cols ...field.Expr) *receiptDODo {
+func (r receiptPODo) Omit(cols ...field.Expr) *receiptPODo {
 	return r.withDO(r.DO.Omit(cols...))
 }
 
-func (r receiptDODo) Join(table schema.Tabler, on ...field.Expr) *receiptDODo {
+func (r receiptPODo) Join(table schema.Tabler, on ...field.Expr) *receiptPODo {
 	return r.withDO(r.DO.Join(table, on...))
 }
 
-func (r receiptDODo) LeftJoin(table schema.Tabler, on ...field.Expr) *receiptDODo {
+func (r receiptPODo) LeftJoin(table schema.Tabler, on ...field.Expr) *receiptPODo {
 	return r.withDO(r.DO.LeftJoin(table, on...))
 }
 
-func (r receiptDODo) RightJoin(table schema.Tabler, on ...field.Expr) *receiptDODo {
+func (r receiptPODo) RightJoin(table schema.Tabler, on ...field.Expr) *receiptPODo {
 	return r.withDO(r.DO.RightJoin(table, on...))
 }
 
-func (r receiptDODo) Group(cols ...field.Expr) *receiptDODo {
+func (r receiptPODo) Group(cols ...field.Expr) *receiptPODo {
 	return r.withDO(r.DO.Group(cols...))
 }
 
-func (r receiptDODo) Having(conds ...gen.Condition) *receiptDODo {
+func (r receiptPODo) Having(conds ...gen.Condition) *receiptPODo {
 	return r.withDO(r.DO.Having(conds...))
 }
 
-func (r receiptDODo) Limit(limit int) *receiptDODo {
+func (r receiptPODo) Limit(limit int) *receiptPODo {
 	return r.withDO(r.DO.Limit(limit))
 }
 
-func (r receiptDODo) Offset(offset int) *receiptDODo {
+func (r receiptPODo) Offset(offset int) *receiptPODo {
 	return r.withDO(r.DO.Offset(offset))
 }
 
-func (r receiptDODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *receiptDODo {
+func (r receiptPODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *receiptPODo {
 	return r.withDO(r.DO.Scopes(funcs...))
 }
 
-func (r receiptDODo) Unscoped() *receiptDODo {
+func (r receiptPODo) Unscoped() *receiptPODo {
 	return r.withDO(r.DO.Unscoped())
 }
 
-func (r receiptDODo) Create(values ...*db_model.ReceiptDO) error {
+func (r receiptPODo) Create(values ...*po.ReceiptPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return r.DO.Create(values)
 }
 
-func (r receiptDODo) CreateInBatches(values []*db_model.ReceiptDO, batchSize int) error {
+func (r receiptPODo) CreateInBatches(values []*po.ReceiptPO, batchSize int) error {
 	return r.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (r receiptDODo) Save(values ...*db_model.ReceiptDO) error {
+func (r receiptPODo) Save(values ...*po.ReceiptPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return r.DO.Save(values)
 }
 
-func (r receiptDODo) First() (*db_model.ReceiptDO, error) {
+func (r receiptPODo) First() (*po.ReceiptPO, error) {
 	if result, err := r.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReceiptDO), nil
+		return result.(*po.ReceiptPO), nil
 	}
 }
 
-func (r receiptDODo) Take() (*db_model.ReceiptDO, error) {
+func (r receiptPODo) Take() (*po.ReceiptPO, error) {
 	if result, err := r.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReceiptDO), nil
+		return result.(*po.ReceiptPO), nil
 	}
 }
 
-func (r receiptDODo) Last() (*db_model.ReceiptDO, error) {
+func (r receiptPODo) Last() (*po.ReceiptPO, error) {
 	if result, err := r.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReceiptDO), nil
+		return result.(*po.ReceiptPO), nil
 	}
 }
 
-func (r receiptDODo) Find() ([]*db_model.ReceiptDO, error) {
+func (r receiptPODo) Find() ([]*po.ReceiptPO, error) {
 	result, err := r.DO.Find()
-	return result.([]*db_model.ReceiptDO), err
+	return result.([]*po.ReceiptPO), err
 }
 
-func (r receiptDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.ReceiptDO, err error) {
-	buf := make([]*db_model.ReceiptDO, 0, batchSize)
+func (r receiptPODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*po.ReceiptPO, err error) {
+	buf := make([]*po.ReceiptPO, 0, batchSize)
 	err = r.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -277,49 +278,49 @@ func (r receiptDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) e
 	return results, err
 }
 
-func (r receiptDODo) FindInBatches(result *[]*db_model.ReceiptDO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (r receiptPODo) FindInBatches(result *[]*po.ReceiptPO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return r.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (r receiptDODo) Attrs(attrs ...field.AssignExpr) *receiptDODo {
+func (r receiptPODo) Attrs(attrs ...field.AssignExpr) *receiptPODo {
 	return r.withDO(r.DO.Attrs(attrs...))
 }
 
-func (r receiptDODo) Assign(attrs ...field.AssignExpr) *receiptDODo {
+func (r receiptPODo) Assign(attrs ...field.AssignExpr) *receiptPODo {
 	return r.withDO(r.DO.Assign(attrs...))
 }
 
-func (r receiptDODo) Joins(fields ...field.RelationField) *receiptDODo {
+func (r receiptPODo) Joins(fields ...field.RelationField) *receiptPODo {
 	for _, _f := range fields {
 		r = *r.withDO(r.DO.Joins(_f))
 	}
 	return &r
 }
 
-func (r receiptDODo) Preload(fields ...field.RelationField) *receiptDODo {
+func (r receiptPODo) Preload(fields ...field.RelationField) *receiptPODo {
 	for _, _f := range fields {
 		r = *r.withDO(r.DO.Preload(_f))
 	}
 	return &r
 }
 
-func (r receiptDODo) FirstOrInit() (*db_model.ReceiptDO, error) {
+func (r receiptPODo) FirstOrInit() (*po.ReceiptPO, error) {
 	if result, err := r.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReceiptDO), nil
+		return result.(*po.ReceiptPO), nil
 	}
 }
 
-func (r receiptDODo) FirstOrCreate() (*db_model.ReceiptDO, error) {
+func (r receiptPODo) FirstOrCreate() (*po.ReceiptPO, error) {
 	if result, err := r.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReceiptDO), nil
+		return result.(*po.ReceiptPO), nil
 	}
 }
 
-func (r receiptDODo) FindByPage(offset int, limit int) (result []*db_model.ReceiptDO, count int64, err error) {
+func (r receiptPODo) FindByPage(offset int, limit int) (result []*po.ReceiptPO, count int64, err error) {
 	result, err = r.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -334,7 +335,7 @@ func (r receiptDODo) FindByPage(offset int, limit int) (result []*db_model.Recei
 	return
 }
 
-func (r receiptDODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
+func (r receiptPODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
 	count, err = r.Count()
 	if err != nil {
 		return
@@ -344,15 +345,15 @@ func (r receiptDODo) ScanByPage(result interface{}, offset int, limit int) (coun
 	return
 }
 
-func (r receiptDODo) Scan(result interface{}) (err error) {
+func (r receiptPODo) Scan(result interface{}) (err error) {
 	return r.DO.Scan(result)
 }
 
-func (r receiptDODo) Delete(models ...*db_model.ReceiptDO) (result gen.ResultInfo, err error) {
+func (r receiptPODo) Delete(models ...*po.ReceiptPO) (result gen.ResultInfo, err error) {
 	return r.DO.Delete(models)
 }
 
-func (r *receiptDODo) withDO(do gen.Dao) *receiptDODo {
+func (r *receiptPODo) withDO(do gen.Dao) *receiptPODo {
 	r.DO = *do.(*gen.DO)
 	return r
 }

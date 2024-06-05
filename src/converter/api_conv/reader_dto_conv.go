@@ -2,12 +2,12 @@ package api_conv
 
 import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
-	"github.com/eyebluecn/sc-misc/src/model"
-	"github.com/eyebluecn/sc-misc/src/util"
+	"github.com/eyebluecn/sc-misc/src/common/util"
+	"github.com/eyebluecn/sc-misc/src/model/do"
 )
 
 // 领域模型转为传输模型
-func ConvertReaderDTO(thing *model.Reader) *sc_misc_api.ReaderDTO {
+func ConvertReaderDTO(thing *do.Reader) *sc_misc_api.ReaderDTO {
 	if thing == nil {
 		return nil
 	}
@@ -21,7 +21,7 @@ func ConvertReaderDTO(thing *model.Reader) *sc_misc_api.ReaderDTO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertReaderDTOs(things []*model.Reader) []*sc_misc_api.ReaderDTO {
+func ConvertReaderDTOs(things []*do.Reader) []*sc_misc_api.ReaderDTO {
 	if things == nil {
 		return nil
 	}

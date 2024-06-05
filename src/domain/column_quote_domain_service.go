@@ -2,12 +2,12 @@ package domain
 
 import (
 	"context"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/infra/mq"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/common/util"
+	mq2 "github.com/eyebluecn/sc-misc/src/infrastructure/middleware/mq"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
-	"github.com/eyebluecn/sc-misc/src/util"
 )
 
 type ColumnQuoteDomainService struct{}
@@ -17,7 +17,7 @@ func NewColumnQuoteDomainService() *ColumnQuoteDomainService {
 }
 
 // 新增用户
-func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *model.Column, price int64, editor *model.Editor) (*model.ColumnQuote, error) {
+func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *do.Column, price int64, editor *do.Editor) (*do.ColumnQuote, error) {
 
 	//参数校验
 	err := receiver.createParamCheck(ctx, column, editor)
@@ -25,11 +25,11 @@ func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *mod
 		return nil, err
 	}
 
-	contract := &model.ColumnQuote{
+	contract := &do.ColumnQuote{
 		ColumnID: column.ID,
 		EditorID: editor.ID,
 		Price:    price,
-		Status:   model.ColumnQuoteStatusOk,
+		Status:   enums.ColumnQuoteStatusOk,
 	}
 
 	contractRepo := repo.NewColumnQuoteRepo()
@@ -39,22 +39,22 @@ func (receiver ColumnQuoteDomainService) Create(ctx context.Context, column *mod
 	}
 
 	//发出领域事件
-	_ = mq.NewProducer().Publish(ctx, mq.MqTopicContract, "contract", "CONTRACT_CREATE", util.ToJSON(column))
+	_ = mq2.NewProducer().Publish(ctx, mq2.MqTopicContract, "contract", "CONTRACT_CREATE", util.ToJSON(column))
 
 	return contract, nil
 }
 
-func (receiver ColumnQuoteDomainService) createParamCheck(ctx context.Context, column *model.Column, editor *model.Editor) error {
+func (receiver ColumnQuoteDomainService) createParamCheck(ctx context.Context, column *do.Column, editor *do.Editor) error {
 
 	//参数校验。
 	if column == nil {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "column is nil")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "column is nil")
 	}
 	if editor == nil {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "author is nil")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "author is nil")
 	}
 	if column.Name == "" {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "用户名不能为空")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "用户名不能为空")
 	}
 
 	return nil

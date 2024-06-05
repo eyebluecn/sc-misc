@@ -1,22 +1,23 @@
 package model_conv
 
 import (
-	"github.com/eyebluecn/sc-misc/src/model"
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
+	"github.com/eyebluecn/sc-misc/src/model/po"
 )
 
 // 转为枚举
-func ConvertPaymentStatus(status int32) model.PaymentStatus {
-	return model.PaymentStatus(status)
+func ConvertPaymentStatus(status int32) enums.PaymentStatus {
+	return enums.PaymentStatus(status)
 }
 
 // 数据库模型转换为领域模型
-func ConvertPayment(thing *db_model.PaymentDO) *model.Payment {
+func ConvertPayment(thing *po.PaymentPO) *do.Payment {
 	if thing == nil {
 		return nil
 	}
 
-	return &model.Payment{
+	return &do.Payment{
 		ID:                 thing.ID,
 		CreateTime:         thing.CreateTime,
 		UpdateTime:         thing.UpdateTime,
@@ -29,11 +30,11 @@ func ConvertPayment(thing *db_model.PaymentDO) *model.Payment {
 }
 
 // 数据库模型转换为领域模型
-func ConvertPayments(things []*db_model.PaymentDO) []*model.Payment {
+func ConvertPayments(things []*po.PaymentPO) []*do.Payment {
 	if things == nil {
 		return nil
 	}
-	var readers []*model.Payment
+	var readers []*do.Payment
 	for _, item := range things {
 		readers = append(readers, ConvertPayment(item))
 	}

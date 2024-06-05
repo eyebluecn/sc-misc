@@ -1,7 +1,7 @@
 package repo
 
 import (
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 	"time"
 )
 
@@ -14,7 +14,7 @@ type ColumnPageRequest struct {
 	//作者
 	AuthorId *int64
 	//状态
-	Status *model.ColumnStatus
+	Status *enums.ColumnStatus
 
 	//按照时间排序
 	OrderBy ColumnPageOrderBy

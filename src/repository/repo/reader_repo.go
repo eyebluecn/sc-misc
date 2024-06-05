@@ -5,11 +5,11 @@ import (
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/universal"
 	"github.com/eyebluecn/sc-misc/src/repository/query"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -27,9 +27,9 @@ func NewReaderRepo() ReaderRepo {
 func (receiver ReaderRepo) Page(
 	ctx context.Context,
 	req ReaderPageRequest,
-) (list []*model.Reader, pagination *model.Pagination, err error) {
+) (list []*do.Reader, pagination *universal.Pagination, err error) {
 
-	table := query.Use(config.DB).ReaderDO
+	table := query.Use(config.DB).ReaderPO
 	conditions := make([]gen.Condition, 0)
 
 	if !req.CreateTimeGte.IsZero() {
@@ -62,7 +62,7 @@ func (receiver ReaderRepo) Page(
 		return nil, nil, err
 	}
 
-	pagination = &model.Pagination{
+	pagination = &universal.Pagination{
 		PageNum:    req.PageNum,
 		PageSize:   req.PageSize,
 		TotalItems: total,
@@ -74,8 +74,8 @@ func (receiver ReaderRepo) Page(
 func (receiver ReaderRepo) QueryByUsername(
 	ctx context.Context,
 	username string,
-) (*model.Reader, error) {
-	table := query.Use(config.DB).ReaderDO
+) (*do.Reader, error) {
+	table := query.Use(config.DB).ReaderPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -99,9 +99,9 @@ func (receiver ReaderRepo) QueryByUsername(
 // 新建一个Reader
 func (receiver ReaderRepo) Insert(
 	ctx context.Context,
-	reader *model.Reader,
-) (*model.Reader, error) {
-	table := query.Use(config.DB).ReaderDO
+	reader *do.Reader,
+) (*do.Reader, error) {
+	table := query.Use(config.DB).ReaderPO
 
 	//时间置为当前
 	reader.CreateTime = time.Now()
@@ -121,8 +121,8 @@ func (receiver ReaderRepo) Insert(
 func (receiver ReaderRepo) QueryById(
 	ctx context.Context,
 	readerId int64,
-) (*model.Reader, error) {
-	table := query.Use(config.DB).ReaderDO
+) (*do.Reader, error) {
+	table := query.Use(config.DB).ReaderPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -147,13 +147,13 @@ func (receiver ReaderRepo) QueryById(
 func (receiver ReaderRepo) CheckById(
 	ctx context.Context,
 	readerId int64,
-) (*model.Reader, error) {
+) (*do.Reader, error) {
 	reader, err := receiver.QueryById(ctx, readerId)
 	if err != nil {
-		return nil, errs.CodeErrorf(enums.StatusCodeUnknown, err.Error())
+		return nil, errs.CodeErrorf(errs.StatusCodeUnknown, err.Error())
 	}
 	if reader == nil {
-		return nil, errs.CodeErrorf(enums.StatusCodeNotFound, "没有找到%v对应的记录", readerId)
+		return nil, errs.CodeErrorf(errs.StatusCodeNotFound, "没有找到%v对应的记录", readerId)
 	}
 	return reader, nil
 }
@@ -162,15 +162,15 @@ func (receiver ReaderRepo) CheckById(
 func (receiver ReaderRepo) QueryByIds(
 	ctx context.Context,
 	ids []int64,
-) (list []*model.Reader, err error) {
+) (list []*do.Reader, err error) {
 
-	table := query.Use(config.DB).ReaderDO
+	table := query.Use(config.DB).ReaderPO
 	conditions := make([]gen.Condition, 0)
 
 	if len(ids) > 0 {
 		conditions = append(conditions, table.ID.In(ids...))
 	} else {
-		return nil, errs.CodeErrorf(enums.StatusCodeParamsError, "ids列表不能为空")
+		return nil, errs.CodeErrorf(errs.StatusCodeParamsError, "ids列表不能为空")
 	}
 
 	tableDO := table.WithContext(ctx).Debug()

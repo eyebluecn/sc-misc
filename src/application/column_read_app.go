@@ -3,11 +3,13 @@ package application
 import (
 	"context"
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_base"
-	"github.com/eyebluecn/sc-misc/src/infra/rpc"
+	"github.com/eyebluecn/sc-misc/src/common/util"
+	"github.com/eyebluecn/sc-misc/src/infrastructure/rpc"
 	"github.com/eyebluecn/sc-misc/src/model"
-	"github.com/eyebluecn/sc-misc/src/model/vo_model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/universal"
+	"github.com/eyebluecn/sc-misc/src/model/vo"
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
-	"github.com/eyebluecn/sc-misc/src/util"
 )
 
 type ColumnReadApp struct{}
@@ -17,7 +19,7 @@ func NewColumnReadApp() *ColumnReadApp {
 }
 
 // 获取某位读者查看到的专栏列表。
-func (receiver ColumnReadApp) ReaderColumnList(ctx context.Context, operator sc_misc_base.Operator, repoRequest repo.ColumnPageRequest) ([]*model.RichColumn, *model.Pagination, error) {
+func (receiver ColumnReadApp) ReaderColumnList(ctx context.Context, operator sc_misc_base.Operator, repoRequest repo.ColumnPageRequest) ([]*model.RichColumn, *universal.Pagination, error) {
 
 	columns, pagination, err := repo.NewColumnRepo().Page(ctx, repoRequest)
 	if err != nil {
@@ -84,7 +86,7 @@ func (receiver ColumnReadApp) PopulateAuthor(ctx context.Context, richColumns []
 }
 
 // 从列表中找到对应的作者
-func (receiver ColumnReadApp) findAuthor(ctx context.Context, authorList []*model.Author, authorId int64) *model.Author {
+func (receiver ColumnReadApp) findAuthor(ctx context.Context, authorList []*do.Author, authorId int64) *do.Author {
 	for _, author := range authorList {
 		if author.ID == authorId {
 			return author
@@ -123,7 +125,7 @@ func (receiver ColumnReadApp) PopulateColumnQuote(ctx context.Context, richColum
 }
 
 // 从列表中找到对应的作者
-func (receiver ColumnReadApp) findColumnQuote(ctx context.Context, columnQuotes []*model.ColumnQuote, columnId int64) *model.ColumnQuote {
+func (receiver ColumnReadApp) findColumnQuote(ctx context.Context, columnQuotes []*do.ColumnQuote, columnId int64) *do.ColumnQuote {
 	for _, columnQuote := range columnQuotes {
 		if columnQuote.ID == columnId {
 			return columnQuote
@@ -163,7 +165,7 @@ func (receiver ColumnReadApp) PopulateSubscription(ctx context.Context, richColu
 }
 
 // 从列表中找到对应的作者
-func (receiver ColumnReadApp) findSubscription(ctx context.Context, subscriptionList []*vo_model.SubscriptionVO, columnId int64) *vo_model.SubscriptionVO {
+func (receiver ColumnReadApp) findSubscription(ctx context.Context, subscriptionList []*vo.SubscriptionVO, columnId int64) *vo.SubscriptionVO {
 	for _, subscription := range subscriptionList {
 		if subscription.ColumnID == columnId {
 			return subscription
@@ -173,7 +175,7 @@ func (receiver ColumnReadApp) findSubscription(ctx context.Context, subscription
 }
 
 // 根据id来查询专栏信息
-func (receiver ColumnReadApp) QueryById(ctx context.Context, columnId int64) (*model.Column, error) {
+func (receiver ColumnReadApp) QueryById(ctx context.Context, columnId int64) (*do.Column, error) {
 	column, err := repo.NewColumnRepo().QueryById(ctx, columnId)
 	if err != nil {
 		return nil, err
@@ -182,7 +184,7 @@ func (receiver ColumnReadApp) QueryById(ctx context.Context, columnId int64) (*m
 }
 
 // 根据id来查询专栏信息
-func (receiver ColumnReadApp) QueryByIds(ctx context.Context, columnIds []int64) ([]*model.Column, error) {
+func (receiver ColumnReadApp) QueryByIds(ctx context.Context, columnIds []int64) ([]*do.Column, error) {
 	columns, err := repo.NewColumnRepo().QueryByIds(ctx, columnIds)
 	if err != nil {
 		return nil, err

@@ -1,11 +1,14 @@
 package model
 
-import "github.com/eyebluecn/sc-misc/src/model/vo_model"
+import (
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/vo"
+)
 
 // 专栏领域模型  这个只是视图模型。
 type RichColumn struct {
-	Column       *Column
-	Author       *Author
-	ColumnQuote  *ColumnQuote
-	Subscription *vo_model.SubscriptionVO
+	Column       *do.Column
+	Author       *do.Author
+	ColumnQuote  *do.ColumnQuote
+	Subscription *vo.SubscriptionVO
 }

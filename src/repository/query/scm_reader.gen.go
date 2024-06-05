@@ -6,6 +6,8 @@ package query
 
 import (
 	"context"
+	"database/sql"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,34 +15,33 @@ import (
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
+	"gorm.io/gen/helper"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
 )
 
-func newReaderDO(db *gorm.DB, opts ...gen.DOOption) readerDO {
-	_readerDO := readerDO{}
+func newReaderPO(db *gorm.DB, opts ...gen.DOOption) readerPO {
+	_readerPO := readerPO{}
 
-	_readerDO.readerDODo.UseDB(db, opts...)
-	_readerDO.readerDODo.UseModel(&db_model.ReaderDO{})
+	_readerPO.readerPODo.UseDB(db, opts...)
+	_readerPO.readerPODo.UseModel(&po.ReaderPO{})
 
-	tableName := _readerDO.readerDODo.TableName()
-	_readerDO.ALL = field.NewAsterisk(tableName)
-	_readerDO.ID = field.NewInt64(tableName, "id")
-	_readerDO.CreateTime = field.NewTime(tableName, "create_time")
-	_readerDO.UpdateTime = field.NewTime(tableName, "update_time")
-	_readerDO.Username = field.NewString(tableName, "username")
-	_readerDO.Password = field.NewString(tableName, "password")
+	tableName := _readerPO.readerPODo.TableName()
+	_readerPO.ALL = field.NewAsterisk(tableName)
+	_readerPO.ID = field.NewInt64(tableName, "id")
+	_readerPO.CreateTime = field.NewTime(tableName, "create_time")
+	_readerPO.UpdateTime = field.NewTime(tableName, "update_time")
+	_readerPO.Username = field.NewString(tableName, "username")
+	_readerPO.Password = field.NewString(tableName, "password")
 
-	_readerDO.fillFieldMap()
+	_readerPO.fillFieldMap()
 
-	return _readerDO
+	return _readerPO
 }
 
-// readerDO 读者表
-type readerDO struct {
-	readerDODo readerDODo
+// readerPO 读者表
+type readerPO struct {
+	readerPODo readerPODo
 
 	ALL        field.Asterisk
 	ID         field.Int64  // 主键
@@ -52,17 +53,17 @@ type readerDO struct {
 	fieldMap map[string]field.Expr
 }
 
-func (r readerDO) Table(newTableName string) *readerDO {
-	r.readerDODo.UseTable(newTableName)
+func (r readerPO) Table(newTableName string) *readerPO {
+	r.readerPODo.UseTable(newTableName)
 	return r.updateTableName(newTableName)
 }
 
-func (r readerDO) As(alias string) *readerDO {
-	r.readerDODo.DO = *(r.readerDODo.As(alias).(*gen.DO))
+func (r readerPO) As(alias string) *readerPO {
+	r.readerPODo.DO = *(r.readerPODo.As(alias).(*gen.DO))
 	return r.updateTableName(alias)
 }
 
-func (r *readerDO) updateTableName(table string) *readerDO {
+func (r *readerPO) updateTableName(table string) *readerPO {
 	r.ALL = field.NewAsterisk(table)
 	r.ID = field.NewInt64(table, "id")
 	r.CreateTime = field.NewTime(table, "create_time")
@@ -75,15 +76,15 @@ func (r *readerDO) updateTableName(table string) *readerDO {
 	return r
 }
 
-func (r *readerDO) WithContext(ctx context.Context) *readerDODo { return r.readerDODo.WithContext(ctx) }
+func (r *readerPO) WithContext(ctx context.Context) *readerPODo { return r.readerPODo.WithContext(ctx) }
 
-func (r readerDO) TableName() string { return r.readerDODo.TableName() }
+func (r readerPO) TableName() string { return r.readerPODo.TableName() }
 
-func (r readerDO) Alias() string { return r.readerDODo.Alias() }
+func (r readerPO) Alias() string { return r.readerPODo.Alias() }
 
-func (r readerDO) Columns(cols ...field.Expr) gen.Columns { return r.readerDODo.Columns(cols...) }
+func (r readerPO) Columns(cols ...field.Expr) gen.Columns { return r.readerPODo.Columns(cols...) }
 
-func (r *readerDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
+func (r *readerPO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := r.fieldMap[fieldName]
 	if !ok || _f == nil {
 		return nil, false
@@ -92,7 +93,7 @@ func (r *readerDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	return _oe, ok
 }
 
-func (r *readerDO) fillFieldMap() {
+func (r *readerPO) fillFieldMap() {
 	r.fieldMap = make(map[string]field.Expr, 5)
 	r.fieldMap["id"] = r.ID
 	r.fieldMap["create_time"] = r.CreateTime
@@ -101,161 +102,161 @@ func (r *readerDO) fillFieldMap() {
 	r.fieldMap["password"] = r.Password
 }
 
-func (r readerDO) clone(db *gorm.DB) readerDO {
-	r.readerDODo.ReplaceConnPool(db.Statement.ConnPool)
+func (r readerPO) clone(db *gorm.DB) readerPO {
+	r.readerPODo.ReplaceConnPool(db.Statement.ConnPool)
 	return r
 }
 
-func (r readerDO) replaceDB(db *gorm.DB) readerDO {
-	r.readerDODo.ReplaceDB(db)
+func (r readerPO) replaceDB(db *gorm.DB) readerPO {
+	r.readerPODo.ReplaceDB(db)
 	return r
 }
 
-type readerDODo struct{ gen.DO }
+type readerPODo struct{ gen.DO }
 
-func (r readerDODo) Debug() *readerDODo {
+func (r readerPODo) Debug() *readerPODo {
 	return r.withDO(r.DO.Debug())
 }
 
-func (r readerDODo) WithContext(ctx context.Context) *readerDODo {
+func (r readerPODo) WithContext(ctx context.Context) *readerPODo {
 	return r.withDO(r.DO.WithContext(ctx))
 }
 
-func (r readerDODo) ReadDB() *readerDODo {
+func (r readerPODo) ReadDB() *readerPODo {
 	return r.Clauses(dbresolver.Read)
 }
 
-func (r readerDODo) WriteDB() *readerDODo {
+func (r readerPODo) WriteDB() *readerPODo {
 	return r.Clauses(dbresolver.Write)
 }
 
-func (r readerDODo) Session(config *gorm.Session) *readerDODo {
+func (r readerPODo) Session(config *gorm.Session) *readerPODo {
 	return r.withDO(r.DO.Session(config))
 }
 
-func (r readerDODo) Clauses(conds ...clause.Expression) *readerDODo {
+func (r readerPODo) Clauses(conds ...clause.Expression) *readerPODo {
 	return r.withDO(r.DO.Clauses(conds...))
 }
 
-func (r readerDODo) Returning(value interface{}, columns ...string) *readerDODo {
+func (r readerPODo) Returning(value interface{}, columns ...string) *readerPODo {
 	return r.withDO(r.DO.Returning(value, columns...))
 }
 
-func (r readerDODo) Not(conds ...gen.Condition) *readerDODo {
+func (r readerPODo) Not(conds ...gen.Condition) *readerPODo {
 	return r.withDO(r.DO.Not(conds...))
 }
 
-func (r readerDODo) Or(conds ...gen.Condition) *readerDODo {
+func (r readerPODo) Or(conds ...gen.Condition) *readerPODo {
 	return r.withDO(r.DO.Or(conds...))
 }
 
-func (r readerDODo) Select(conds ...field.Expr) *readerDODo {
+func (r readerPODo) Select(conds ...field.Expr) *readerPODo {
 	return r.withDO(r.DO.Select(conds...))
 }
 
-func (r readerDODo) Where(conds ...gen.Condition) *readerDODo {
+func (r readerPODo) Where(conds ...gen.Condition) *readerPODo {
 	return r.withDO(r.DO.Where(conds...))
 }
 
-func (r readerDODo) Order(conds ...field.Expr) *readerDODo {
+func (r readerPODo) Order(conds ...field.Expr) *readerPODo {
 	return r.withDO(r.DO.Order(conds...))
 }
 
-func (r readerDODo) Distinct(cols ...field.Expr) *readerDODo {
+func (r readerPODo) Distinct(cols ...field.Expr) *readerPODo {
 	return r.withDO(r.DO.Distinct(cols...))
 }
 
-func (r readerDODo) Omit(cols ...field.Expr) *readerDODo {
+func (r readerPODo) Omit(cols ...field.Expr) *readerPODo {
 	return r.withDO(r.DO.Omit(cols...))
 }
 
-func (r readerDODo) Join(table schema.Tabler, on ...field.Expr) *readerDODo {
+func (r readerPODo) Join(table schema.Tabler, on ...field.Expr) *readerPODo {
 	return r.withDO(r.DO.Join(table, on...))
 }
 
-func (r readerDODo) LeftJoin(table schema.Tabler, on ...field.Expr) *readerDODo {
+func (r readerPODo) LeftJoin(table schema.Tabler, on ...field.Expr) *readerPODo {
 	return r.withDO(r.DO.LeftJoin(table, on...))
 }
 
-func (r readerDODo) RightJoin(table schema.Tabler, on ...field.Expr) *readerDODo {
+func (r readerPODo) RightJoin(table schema.Tabler, on ...field.Expr) *readerPODo {
 	return r.withDO(r.DO.RightJoin(table, on...))
 }
 
-func (r readerDODo) Group(cols ...field.Expr) *readerDODo {
+func (r readerPODo) Group(cols ...field.Expr) *readerPODo {
 	return r.withDO(r.DO.Group(cols...))
 }
 
-func (r readerDODo) Having(conds ...gen.Condition) *readerDODo {
+func (r readerPODo) Having(conds ...gen.Condition) *readerPODo {
 	return r.withDO(r.DO.Having(conds...))
 }
 
-func (r readerDODo) Limit(limit int) *readerDODo {
+func (r readerPODo) Limit(limit int) *readerPODo {
 	return r.withDO(r.DO.Limit(limit))
 }
 
-func (r readerDODo) Offset(offset int) *readerDODo {
+func (r readerPODo) Offset(offset int) *readerPODo {
 	return r.withDO(r.DO.Offset(offset))
 }
 
-func (r readerDODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *readerDODo {
+func (r readerPODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *readerPODo {
 	return r.withDO(r.DO.Scopes(funcs...))
 }
 
-func (r readerDODo) Unscoped() *readerDODo {
+func (r readerPODo) Unscoped() *readerPODo {
 	return r.withDO(r.DO.Unscoped())
 }
 
-func (r readerDODo) Create(values ...*db_model.ReaderDO) error {
+func (r readerPODo) Create(values ...*po.ReaderPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return r.DO.Create(values)
 }
 
-func (r readerDODo) CreateInBatches(values []*db_model.ReaderDO, batchSize int) error {
+func (r readerPODo) CreateInBatches(values []*po.ReaderPO, batchSize int) error {
 	return r.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (r readerDODo) Save(values ...*db_model.ReaderDO) error {
+func (r readerPODo) Save(values ...*po.ReaderPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return r.DO.Save(values)
 }
 
-func (r readerDODo) First() (*db_model.ReaderDO, error) {
+func (r readerPODo) First() (*po.ReaderPO, error) {
 	if result, err := r.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReaderDO), nil
+		return result.(*po.ReaderPO), nil
 	}
 }
 
-func (r readerDODo) Take() (*db_model.ReaderDO, error) {
+func (r readerPODo) Take() (*po.ReaderPO, error) {
 	if result, err := r.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReaderDO), nil
+		return result.(*po.ReaderPO), nil
 	}
 }
 
-func (r readerDODo) Last() (*db_model.ReaderDO, error) {
+func (r readerPODo) Last() (*po.ReaderPO, error) {
 	if result, err := r.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReaderDO), nil
+		return result.(*po.ReaderPO), nil
 	}
 }
 
-func (r readerDODo) Find() ([]*db_model.ReaderDO, error) {
+func (r readerPODo) Find() ([]*po.ReaderPO, error) {
 	result, err := r.DO.Find()
-	return result.([]*db_model.ReaderDO), err
+	return result.([]*po.ReaderPO), err
 }
 
-func (r readerDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.ReaderDO, err error) {
-	buf := make([]*db_model.ReaderDO, 0, batchSize)
+func (r readerPODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*po.ReaderPO, err error) {
+	buf := make([]*po.ReaderPO, 0, batchSize)
 	err = r.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -263,49 +264,49 @@ func (r readerDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) er
 	return results, err
 }
 
-func (r readerDODo) FindInBatches(result *[]*db_model.ReaderDO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (r readerPODo) FindInBatches(result *[]*po.ReaderPO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return r.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (r readerDODo) Attrs(attrs ...field.AssignExpr) *readerDODo {
+func (r readerPODo) Attrs(attrs ...field.AssignExpr) *readerPODo {
 	return r.withDO(r.DO.Attrs(attrs...))
 }
 
-func (r readerDODo) Assign(attrs ...field.AssignExpr) *readerDODo {
+func (r readerPODo) Assign(attrs ...field.AssignExpr) *readerPODo {
 	return r.withDO(r.DO.Assign(attrs...))
 }
 
-func (r readerDODo) Joins(fields ...field.RelationField) *readerDODo {
+func (r readerPODo) Joins(fields ...field.RelationField) *readerPODo {
 	for _, _f := range fields {
 		r = *r.withDO(r.DO.Joins(_f))
 	}
 	return &r
 }
 
-func (r readerDODo) Preload(fields ...field.RelationField) *readerDODo {
+func (r readerPODo) Preload(fields ...field.RelationField) *readerPODo {
 	for _, _f := range fields {
 		r = *r.withDO(r.DO.Preload(_f))
 	}
 	return &r
 }
 
-func (r readerDODo) FirstOrInit() (*db_model.ReaderDO, error) {
+func (r readerPODo) FirstOrInit() (*po.ReaderPO, error) {
 	if result, err := r.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReaderDO), nil
+		return result.(*po.ReaderPO), nil
 	}
 }
 
-func (r readerDODo) FirstOrCreate() (*db_model.ReaderDO, error) {
+func (r readerPODo) FirstOrCreate() (*po.ReaderPO, error) {
 	if result, err := r.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ReaderDO), nil
+		return result.(*po.ReaderPO), nil
 	}
 }
 
-func (r readerDODo) FindByPage(offset int, limit int) (result []*db_model.ReaderDO, count int64, err error) {
+func (r readerPODo) FindByPage(offset int, limit int) (result []*po.ReaderPO, count int64, err error) {
 	result, err = r.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -320,7 +321,7 @@ func (r readerDODo) FindByPage(offset int, limit int) (result []*db_model.Reader
 	return
 }
 
-func (r readerDODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
+func (r readerPODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
 	count, err = r.Count()
 	if err != nil {
 		return
@@ -330,15 +331,15 @@ func (r readerDODo) ScanByPage(result interface{}, offset int, limit int) (count
 	return
 }
 
-func (r readerDODo) Scan(result interface{}) (err error) {
+func (r readerPODo) Scan(result interface{}) (err error) {
 	return r.DO.Scan(result)
 }
 
-func (r readerDODo) Delete(models ...*db_model.ReaderDO) (result gen.ResultInfo, err error) {
+func (r readerPODo) Delete(models ...*po.ReaderPO) (result gen.ResultInfo, err error) {
 	return r.DO.Delete(models)
 }
 
-func (r *readerDODo) withDO(do gen.Dao) *readerDODo {
+func (r *readerPODo) withDO(do gen.Dao) *readerPODo {
 	r.DO = *do.(*gen.DO)
 	return r
 }

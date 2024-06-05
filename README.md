@@ -27,6 +27,10 @@ go env -w GOPROXY=https://goproxy.io,direct
 smart.classroom.subscription "your_username:your_password@tcp(your_host:3306)/your_schema?charset=utf8mb4&parseTime=True&loc=Local"
 ```
 
+### 代码生成
+本项目中使用了gorm，可以自动生成数据库模型和基础查询代码，在命令行执行 `script/gen-gorm.sh` 即可，产出物放置于
+`model/po`和`repository/query`。
+
 
 ## 日常启动
 执行`main.go`中的main函数即可启动。

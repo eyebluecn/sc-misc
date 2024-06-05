@@ -1,22 +1,23 @@
 package db_model_conv
 
 import (
-	"github.com/eyebluecn/sc-misc/src/model"
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
+	"github.com/eyebluecn/sc-misc/src/model/po"
 )
 
 // 枚举转为存储的整数
-func ContractStatusToStorage(status model.ContractStatus) int32 {
+func ContractStatusToStorage(status enums.ContractStatus) int32 {
 	return int32(status)
 }
 
 // 数据库模型转换为领域模型
-func ConvertContractDO(thing *model.Contract) *db_model.ContractDO {
+func ConvertContractDO(thing *do.Contract) *po.ContractPO {
 	if thing == nil {
 		return nil
 	}
 
-	return &db_model.ContractDO{
+	return &po.ContractPO{
 		ID:         thing.ID,
 		CreateTime: thing.CreateTime,
 		UpdateTime: thing.UpdateTime,
@@ -31,11 +32,11 @@ func ConvertContractDO(thing *model.Contract) *db_model.ContractDO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertContractDOs(things []*model.Contract) []*db_model.ContractDO {
+func ConvertContractDOs(things []*do.Contract) []*po.ContractPO {
 	if things == nil {
 		return nil
 	}
-	var results []*db_model.ContractDO
+	var results []*po.ContractPO
 	for _, item := range things {
 		results = append(results, ConvertContractDO(item))
 	}

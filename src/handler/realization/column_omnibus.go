@@ -5,7 +5,6 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/application"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
 )
@@ -32,20 +31,20 @@ func (receiver ColumnOmnibus) Handle(ctx context.Context, request *sc_misc_api.C
 // 校验参数
 func (receiver ColumnOmnibus) CheckParam(ctx context.Context, request *sc_misc_api.ColumnOmnibusRequest) error {
 	if request == nil {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "request 不能为空")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "request 不能为空")
 	}
 	if request.AuthorName == "" {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "request.AuthorName 不能为空")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "request.AuthorName 不能为空")
 	}
 	if request.ColumnName == "" {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "request.ColumnName 不能为空")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "request.ColumnName 不能为空")
 	}
 	if request.ColumnPrice <= 0 {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "request.ColumnPrice 必须是正数")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "request.ColumnPrice 必须是正数")
 	}
 
 	if request.Operator == nil {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "request.Operator 必填")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "request.Operator 必填")
 	}
 
 	return nil

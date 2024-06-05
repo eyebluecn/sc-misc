@@ -5,11 +5,10 @@ import (
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/repository/query"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -27,8 +26,8 @@ func NewAuthorRepo() AuthorRepo {
 func (receiver AuthorRepo) FindByUsername(
 	ctx context.Context,
 	username string,
-) (*model.Author, error) {
-	table := query.Use(config.DB).AuthorDO
+) (*do.Author, error) {
+	table := query.Use(config.DB).AuthorPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -52,9 +51,9 @@ func (receiver AuthorRepo) FindByUsername(
 // 新建一个Author
 func (receiver AuthorRepo) Insert(
 	ctx context.Context,
-	reader *model.Author,
-) (*model.Author, error) {
-	table := query.Use(config.DB).AuthorDO
+	reader *do.Author,
+) (*do.Author, error) {
+	table := query.Use(config.DB).AuthorPO
 
 	//时间置为当前
 	reader.CreateTime = time.Now()
@@ -74,15 +73,15 @@ func (receiver AuthorRepo) Insert(
 func (receiver AuthorRepo) FindByIds(
 	ctx context.Context,
 	ids []int64,
-) (list []*model.Author, err error) {
+) (list []*do.Author, err error) {
 
-	table := query.Use(config.DB).AuthorDO
+	table := query.Use(config.DB).AuthorPO
 	conditions := make([]gen.Condition, 0)
 
 	if len(ids) > 0 {
 		conditions = append(conditions, table.ID.In(ids...))
 	} else {
-		return nil, errs.CodeErrorf(enums.StatusCodeParamsError, "ids列表不能为空")
+		return nil, errs.CodeErrorf(errs.StatusCodeParamsError, "ids列表不能为空")
 	}
 
 	tableDO := table.WithContext(ctx).Debug()

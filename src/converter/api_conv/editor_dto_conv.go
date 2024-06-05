@@ -2,12 +2,12 @@ package api_conv
 
 import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
-	"github.com/eyebluecn/sc-misc/src/model"
-	"github.com/eyebluecn/sc-misc/src/util"
+	"github.com/eyebluecn/sc-misc/src/common/util"
+	"github.com/eyebluecn/sc-misc/src/model/do"
 )
 
 // 领域模型转为传输模型
-func ConvertEditorDTO(thing *model.Editor) *sc_misc_api.EditorDTO {
+func ConvertEditorDTO(thing *do.Editor) *sc_misc_api.EditorDTO {
 	if thing == nil {
 		return nil
 	}
@@ -21,7 +21,7 @@ func ConvertEditorDTO(thing *model.Editor) *sc_misc_api.EditorDTO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertEditorDTOs(things []*model.Editor) []*sc_misc_api.EditorDTO {
+func ConvertEditorDTOs(things []*do.Editor) []*sc_misc_api.EditorDTO {
 	if things == nil {
 		return nil
 	}

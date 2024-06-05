@@ -2,13 +2,12 @@ package errs
 
 import (
 	"fmt"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 )
 
 // 项目自定义的错误
 type CommonError struct {
-	Code enums.StatusCode //错误码
-	Msg  string           //错误描述
+	Code StatusCode //错误码
+	Msg  string     //错误描述
 }
 
 func (receiver CommonError) Error() string {
@@ -18,11 +17,11 @@ func (receiver CommonError) Error() string {
 // 按照格式，产出Err
 func Errorf(format string, a ...any) *CommonError {
 	msg := fmt.Sprintf(format, a...)
-	return &CommonError{Code: enums.StatusCodeUnknown, Msg: msg}
+	return &CommonError{Code: StatusCodeUnknown, Msg: msg}
 }
 
 // 按照格式，产出带CodeErr
-func CodeErrorf(code enums.StatusCode, format string, a ...any) *CommonError {
+func CodeErrorf(code StatusCode, format string, a ...any) *CommonError {
 	msg := fmt.Sprintf(format, a...)
 	return &CommonError{Code: code, Msg: msg}
 }
@@ -30,13 +29,13 @@ func CodeErrorf(code enums.StatusCode, format string, a ...any) *CommonError {
 // 快速构造特定code的错误
 func BadRequestErrorf(format string, a ...any) *CommonError {
 	msg := fmt.Sprintf(format, a...)
-	return &CommonError{Code: enums.StatusCodeBadRequest, Msg: msg}
+	return &CommonError{Code: StatusCodeBadRequest, Msg: msg}
 }
 
 // 快速构造特定code的错误
 func NotFoundErrorf(format string, a ...any) *CommonError {
 	msg := fmt.Sprintf(format, a...)
-	return &CommonError{Code: enums.StatusCodeNotFound, Msg: msg}
+	return &CommonError{Code: StatusCodeNotFound, Msg: msg}
 }
 
 // 尝试转为CommonError

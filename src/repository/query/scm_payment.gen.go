@@ -6,6 +6,8 @@ package query
 
 import (
 	"context"
+	"database/sql"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,37 +15,36 @@ import (
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
+	"gorm.io/gen/helper"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
 )
 
-func newPaymentDO(db *gorm.DB, opts ...gen.DOOption) paymentDO {
-	_paymentDO := paymentDO{}
+func newPaymentPO(db *gorm.DB, opts ...gen.DOOption) paymentPO {
+	_paymentPO := paymentPO{}
 
-	_paymentDO.paymentDODo.UseDB(db, opts...)
-	_paymentDO.paymentDODo.UseModel(&db_model.PaymentDO{})
+	_paymentPO.paymentPODo.UseDB(db, opts...)
+	_paymentPO.paymentPODo.UseModel(&po.PaymentPO{})
 
-	tableName := _paymentDO.paymentDODo.TableName()
-	_paymentDO.ALL = field.NewAsterisk(tableName)
-	_paymentDO.ID = field.NewInt64(tableName, "id")
-	_paymentDO.CreateTime = field.NewTime(tableName, "create_time")
-	_paymentDO.UpdateTime = field.NewTime(tableName, "update_time")
-	_paymentDO.OrderNo = field.NewString(tableName, "order_no")
-	_paymentDO.Method = field.NewString(tableName, "method")
-	_paymentDO.ThirdTransactionNo = field.NewString(tableName, "third_transaction_no")
-	_paymentDO.Amount = field.NewInt64(tableName, "amount")
-	_paymentDO.Status = field.NewInt32(tableName, "status")
+	tableName := _paymentPO.paymentPODo.TableName()
+	_paymentPO.ALL = field.NewAsterisk(tableName)
+	_paymentPO.ID = field.NewInt64(tableName, "id")
+	_paymentPO.CreateTime = field.NewTime(tableName, "create_time")
+	_paymentPO.UpdateTime = field.NewTime(tableName, "update_time")
+	_paymentPO.OrderNo = field.NewString(tableName, "order_no")
+	_paymentPO.Method = field.NewString(tableName, "method")
+	_paymentPO.ThirdTransactionNo = field.NewString(tableName, "third_transaction_no")
+	_paymentPO.Amount = field.NewInt64(tableName, "amount")
+	_paymentPO.Status = field.NewInt32(tableName, "status")
 
-	_paymentDO.fillFieldMap()
+	_paymentPO.fillFieldMap()
 
-	return _paymentDO
+	return _paymentPO
 }
 
-// paymentDO 支付单，用户支付给平台的单据
-type paymentDO struct {
-	paymentDODo paymentDODo
+// paymentPO 支付单，用户支付给平台的单据
+type paymentPO struct {
+	paymentPODo paymentPODo
 
 	ALL                field.Asterisk
 	ID                 field.Int64  // 主键
@@ -58,17 +59,17 @@ type paymentDO struct {
 	fieldMap map[string]field.Expr
 }
 
-func (p paymentDO) Table(newTableName string) *paymentDO {
-	p.paymentDODo.UseTable(newTableName)
+func (p paymentPO) Table(newTableName string) *paymentPO {
+	p.paymentPODo.UseTable(newTableName)
 	return p.updateTableName(newTableName)
 }
 
-func (p paymentDO) As(alias string) *paymentDO {
-	p.paymentDODo.DO = *(p.paymentDODo.As(alias).(*gen.DO))
+func (p paymentPO) As(alias string) *paymentPO {
+	p.paymentPODo.DO = *(p.paymentPODo.As(alias).(*gen.DO))
 	return p.updateTableName(alias)
 }
 
-func (p *paymentDO) updateTableName(table string) *paymentDO {
+func (p *paymentPO) updateTableName(table string) *paymentPO {
 	p.ALL = field.NewAsterisk(table)
 	p.ID = field.NewInt64(table, "id")
 	p.CreateTime = field.NewTime(table, "create_time")
@@ -84,17 +85,17 @@ func (p *paymentDO) updateTableName(table string) *paymentDO {
 	return p
 }
 
-func (p *paymentDO) WithContext(ctx context.Context) *paymentDODo {
-	return p.paymentDODo.WithContext(ctx)
+func (p *paymentPO) WithContext(ctx context.Context) *paymentPODo {
+	return p.paymentPODo.WithContext(ctx)
 }
 
-func (p paymentDO) TableName() string { return p.paymentDODo.TableName() }
+func (p paymentPO) TableName() string { return p.paymentPODo.TableName() }
 
-func (p paymentDO) Alias() string { return p.paymentDODo.Alias() }
+func (p paymentPO) Alias() string { return p.paymentPODo.Alias() }
 
-func (p paymentDO) Columns(cols ...field.Expr) gen.Columns { return p.paymentDODo.Columns(cols...) }
+func (p paymentPO) Columns(cols ...field.Expr) gen.Columns { return p.paymentPODo.Columns(cols...) }
 
-func (p *paymentDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
+func (p *paymentPO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := p.fieldMap[fieldName]
 	if !ok || _f == nil {
 		return nil, false
@@ -103,7 +104,7 @@ func (p *paymentDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	return _oe, ok
 }
 
-func (p *paymentDO) fillFieldMap() {
+func (p *paymentPO) fillFieldMap() {
 	p.fieldMap = make(map[string]field.Expr, 8)
 	p.fieldMap["id"] = p.ID
 	p.fieldMap["create_time"] = p.CreateTime
@@ -115,161 +116,161 @@ func (p *paymentDO) fillFieldMap() {
 	p.fieldMap["status"] = p.Status
 }
 
-func (p paymentDO) clone(db *gorm.DB) paymentDO {
-	p.paymentDODo.ReplaceConnPool(db.Statement.ConnPool)
+func (p paymentPO) clone(db *gorm.DB) paymentPO {
+	p.paymentPODo.ReplaceConnPool(db.Statement.ConnPool)
 	return p
 }
 
-func (p paymentDO) replaceDB(db *gorm.DB) paymentDO {
-	p.paymentDODo.ReplaceDB(db)
+func (p paymentPO) replaceDB(db *gorm.DB) paymentPO {
+	p.paymentPODo.ReplaceDB(db)
 	return p
 }
 
-type paymentDODo struct{ gen.DO }
+type paymentPODo struct{ gen.DO }
 
-func (p paymentDODo) Debug() *paymentDODo {
+func (p paymentPODo) Debug() *paymentPODo {
 	return p.withDO(p.DO.Debug())
 }
 
-func (p paymentDODo) WithContext(ctx context.Context) *paymentDODo {
+func (p paymentPODo) WithContext(ctx context.Context) *paymentPODo {
 	return p.withDO(p.DO.WithContext(ctx))
 }
 
-func (p paymentDODo) ReadDB() *paymentDODo {
+func (p paymentPODo) ReadDB() *paymentPODo {
 	return p.Clauses(dbresolver.Read)
 }
 
-func (p paymentDODo) WriteDB() *paymentDODo {
+func (p paymentPODo) WriteDB() *paymentPODo {
 	return p.Clauses(dbresolver.Write)
 }
 
-func (p paymentDODo) Session(config *gorm.Session) *paymentDODo {
+func (p paymentPODo) Session(config *gorm.Session) *paymentPODo {
 	return p.withDO(p.DO.Session(config))
 }
 
-func (p paymentDODo) Clauses(conds ...clause.Expression) *paymentDODo {
+func (p paymentPODo) Clauses(conds ...clause.Expression) *paymentPODo {
 	return p.withDO(p.DO.Clauses(conds...))
 }
 
-func (p paymentDODo) Returning(value interface{}, columns ...string) *paymentDODo {
+func (p paymentPODo) Returning(value interface{}, columns ...string) *paymentPODo {
 	return p.withDO(p.DO.Returning(value, columns...))
 }
 
-func (p paymentDODo) Not(conds ...gen.Condition) *paymentDODo {
+func (p paymentPODo) Not(conds ...gen.Condition) *paymentPODo {
 	return p.withDO(p.DO.Not(conds...))
 }
 
-func (p paymentDODo) Or(conds ...gen.Condition) *paymentDODo {
+func (p paymentPODo) Or(conds ...gen.Condition) *paymentPODo {
 	return p.withDO(p.DO.Or(conds...))
 }
 
-func (p paymentDODo) Select(conds ...field.Expr) *paymentDODo {
+func (p paymentPODo) Select(conds ...field.Expr) *paymentPODo {
 	return p.withDO(p.DO.Select(conds...))
 }
 
-func (p paymentDODo) Where(conds ...gen.Condition) *paymentDODo {
+func (p paymentPODo) Where(conds ...gen.Condition) *paymentPODo {
 	return p.withDO(p.DO.Where(conds...))
 }
 
-func (p paymentDODo) Order(conds ...field.Expr) *paymentDODo {
+func (p paymentPODo) Order(conds ...field.Expr) *paymentPODo {
 	return p.withDO(p.DO.Order(conds...))
 }
 
-func (p paymentDODo) Distinct(cols ...field.Expr) *paymentDODo {
+func (p paymentPODo) Distinct(cols ...field.Expr) *paymentPODo {
 	return p.withDO(p.DO.Distinct(cols...))
 }
 
-func (p paymentDODo) Omit(cols ...field.Expr) *paymentDODo {
+func (p paymentPODo) Omit(cols ...field.Expr) *paymentPODo {
 	return p.withDO(p.DO.Omit(cols...))
 }
 
-func (p paymentDODo) Join(table schema.Tabler, on ...field.Expr) *paymentDODo {
+func (p paymentPODo) Join(table schema.Tabler, on ...field.Expr) *paymentPODo {
 	return p.withDO(p.DO.Join(table, on...))
 }
 
-func (p paymentDODo) LeftJoin(table schema.Tabler, on ...field.Expr) *paymentDODo {
+func (p paymentPODo) LeftJoin(table schema.Tabler, on ...field.Expr) *paymentPODo {
 	return p.withDO(p.DO.LeftJoin(table, on...))
 }
 
-func (p paymentDODo) RightJoin(table schema.Tabler, on ...field.Expr) *paymentDODo {
+func (p paymentPODo) RightJoin(table schema.Tabler, on ...field.Expr) *paymentPODo {
 	return p.withDO(p.DO.RightJoin(table, on...))
 }
 
-func (p paymentDODo) Group(cols ...field.Expr) *paymentDODo {
+func (p paymentPODo) Group(cols ...field.Expr) *paymentPODo {
 	return p.withDO(p.DO.Group(cols...))
 }
 
-func (p paymentDODo) Having(conds ...gen.Condition) *paymentDODo {
+func (p paymentPODo) Having(conds ...gen.Condition) *paymentPODo {
 	return p.withDO(p.DO.Having(conds...))
 }
 
-func (p paymentDODo) Limit(limit int) *paymentDODo {
+func (p paymentPODo) Limit(limit int) *paymentPODo {
 	return p.withDO(p.DO.Limit(limit))
 }
 
-func (p paymentDODo) Offset(offset int) *paymentDODo {
+func (p paymentPODo) Offset(offset int) *paymentPODo {
 	return p.withDO(p.DO.Offset(offset))
 }
 
-func (p paymentDODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *paymentDODo {
+func (p paymentPODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *paymentPODo {
 	return p.withDO(p.DO.Scopes(funcs...))
 }
 
-func (p paymentDODo) Unscoped() *paymentDODo {
+func (p paymentPODo) Unscoped() *paymentPODo {
 	return p.withDO(p.DO.Unscoped())
 }
 
-func (p paymentDODo) Create(values ...*db_model.PaymentDO) error {
+func (p paymentPODo) Create(values ...*po.PaymentPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return p.DO.Create(values)
 }
 
-func (p paymentDODo) CreateInBatches(values []*db_model.PaymentDO, batchSize int) error {
+func (p paymentPODo) CreateInBatches(values []*po.PaymentPO, batchSize int) error {
 	return p.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (p paymentDODo) Save(values ...*db_model.PaymentDO) error {
+func (p paymentPODo) Save(values ...*po.PaymentPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return p.DO.Save(values)
 }
 
-func (p paymentDODo) First() (*db_model.PaymentDO, error) {
+func (p paymentPODo) First() (*po.PaymentPO, error) {
 	if result, err := p.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.PaymentDO), nil
+		return result.(*po.PaymentPO), nil
 	}
 }
 
-func (p paymentDODo) Take() (*db_model.PaymentDO, error) {
+func (p paymentPODo) Take() (*po.PaymentPO, error) {
 	if result, err := p.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.PaymentDO), nil
+		return result.(*po.PaymentPO), nil
 	}
 }
 
-func (p paymentDODo) Last() (*db_model.PaymentDO, error) {
+func (p paymentPODo) Last() (*po.PaymentPO, error) {
 	if result, err := p.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.PaymentDO), nil
+		return result.(*po.PaymentPO), nil
 	}
 }
 
-func (p paymentDODo) Find() ([]*db_model.PaymentDO, error) {
+func (p paymentPODo) Find() ([]*po.PaymentPO, error) {
 	result, err := p.DO.Find()
-	return result.([]*db_model.PaymentDO), err
+	return result.([]*po.PaymentPO), err
 }
 
-func (p paymentDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.PaymentDO, err error) {
-	buf := make([]*db_model.PaymentDO, 0, batchSize)
+func (p paymentPODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*po.PaymentPO, err error) {
+	buf := make([]*po.PaymentPO, 0, batchSize)
 	err = p.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -277,49 +278,49 @@ func (p paymentDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) e
 	return results, err
 }
 
-func (p paymentDODo) FindInBatches(result *[]*db_model.PaymentDO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (p paymentPODo) FindInBatches(result *[]*po.PaymentPO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return p.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (p paymentDODo) Attrs(attrs ...field.AssignExpr) *paymentDODo {
+func (p paymentPODo) Attrs(attrs ...field.AssignExpr) *paymentPODo {
 	return p.withDO(p.DO.Attrs(attrs...))
 }
 
-func (p paymentDODo) Assign(attrs ...field.AssignExpr) *paymentDODo {
+func (p paymentPODo) Assign(attrs ...field.AssignExpr) *paymentPODo {
 	return p.withDO(p.DO.Assign(attrs...))
 }
 
-func (p paymentDODo) Joins(fields ...field.RelationField) *paymentDODo {
+func (p paymentPODo) Joins(fields ...field.RelationField) *paymentPODo {
 	for _, _f := range fields {
 		p = *p.withDO(p.DO.Joins(_f))
 	}
 	return &p
 }
 
-func (p paymentDODo) Preload(fields ...field.RelationField) *paymentDODo {
+func (p paymentPODo) Preload(fields ...field.RelationField) *paymentPODo {
 	for _, _f := range fields {
 		p = *p.withDO(p.DO.Preload(_f))
 	}
 	return &p
 }
 
-func (p paymentDODo) FirstOrInit() (*db_model.PaymentDO, error) {
+func (p paymentPODo) FirstOrInit() (*po.PaymentPO, error) {
 	if result, err := p.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.PaymentDO), nil
+		return result.(*po.PaymentPO), nil
 	}
 }
 
-func (p paymentDODo) FirstOrCreate() (*db_model.PaymentDO, error) {
+func (p paymentPODo) FirstOrCreate() (*po.PaymentPO, error) {
 	if result, err := p.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.PaymentDO), nil
+		return result.(*po.PaymentPO), nil
 	}
 }
 
-func (p paymentDODo) FindByPage(offset int, limit int) (result []*db_model.PaymentDO, count int64, err error) {
+func (p paymentPODo) FindByPage(offset int, limit int) (result []*po.PaymentPO, count int64, err error) {
 	result, err = p.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -334,7 +335,7 @@ func (p paymentDODo) FindByPage(offset int, limit int) (result []*db_model.Payme
 	return
 }
 
-func (p paymentDODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
+func (p paymentPODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
 	count, err = p.Count()
 	if err != nil {
 		return
@@ -344,15 +345,15 @@ func (p paymentDODo) ScanByPage(result interface{}, offset int, limit int) (coun
 	return
 }
 
-func (p paymentDODo) Scan(result interface{}) (err error) {
+func (p paymentPODo) Scan(result interface{}) (err error) {
 	return p.DO.Scan(result)
 }
 
-func (p paymentDODo) Delete(models ...*db_model.PaymentDO) (result gen.ResultInfo, err error) {
+func (p paymentPODo) Delete(models ...*po.PaymentPO) (result gen.ResultInfo, err error) {
 	return p.DO.Delete(models)
 }
 
-func (p *paymentDODo) withDO(do gen.Dao) *paymentDODo {
+func (p *paymentPODo) withDO(do gen.Dao) *paymentPODo {
 	p.DO = *do.(*gen.DO)
 	return p
 }

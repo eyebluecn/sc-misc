@@ -2,17 +2,18 @@ package api_conv
 
 import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
-	"github.com/eyebluecn/sc-misc/src/model/vo_model"
-	"github.com/eyebluecn/sc-misc/src/util"
+	"github.com/eyebluecn/sc-misc/src/common/util"
+	"github.com/eyebluecn/sc-misc/src/model/vo"
+	"github.com/eyebluecn/sc-misc/src/model/vo/enums"
 )
 
 // 转为枚举
-func ConvertSubscriptionStatus(status vo_model.SubscriptionStatus) sc_misc_api.SubscriptionStatus {
+func ConvertSubscriptionStatus(status enums.SubscriptionStatus) sc_misc_api.SubscriptionStatus {
 	return sc_misc_api.SubscriptionStatus(status)
 }
 
 // 领域模型转为传输模型
-func ConvertSubscriptionDTO(thing *vo_model.SubscriptionVO) *sc_misc_api.SubscriptionDTO {
+func ConvertSubscriptionDTO(thing *vo.SubscriptionVO) *sc_misc_api.SubscriptionDTO {
 	if thing == nil {
 		return nil
 	}
@@ -29,7 +30,7 @@ func ConvertSubscriptionDTO(thing *vo_model.SubscriptionVO) *sc_misc_api.Subscri
 }
 
 // 数据库模型转换为领域模型
-func ConvertSubscriptionDTOs(things []*vo_model.SubscriptionVO) []*sc_misc_api.SubscriptionDTO {
+func ConvertSubscriptionDTOs(things []*vo.SubscriptionVO) []*sc_misc_api.SubscriptionDTO {
 	if things == nil {
 		return nil
 	}

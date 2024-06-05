@@ -6,6 +6,8 @@ package query
 
 import (
 	"context"
+	"database/sql"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,36 +15,35 @@ import (
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
+	"gorm.io/gen/helper"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
 )
 
-func newColumnQuoteDO(db *gorm.DB, opts ...gen.DOOption) columnQuoteDO {
-	_columnQuoteDO := columnQuoteDO{}
+func newColumnQuotePO(db *gorm.DB, opts ...gen.DOOption) columnQuotePO {
+	_columnQuotePO := columnQuotePO{}
 
-	_columnQuoteDO.columnQuoteDODo.UseDB(db, opts...)
-	_columnQuoteDO.columnQuoteDODo.UseModel(&db_model.ColumnQuoteDO{})
+	_columnQuotePO.columnQuotePODo.UseDB(db, opts...)
+	_columnQuotePO.columnQuotePODo.UseModel(&po.ColumnQuotePO{})
 
-	tableName := _columnQuoteDO.columnQuoteDODo.TableName()
-	_columnQuoteDO.ALL = field.NewAsterisk(tableName)
-	_columnQuoteDO.ID = field.NewInt64(tableName, "id")
-	_columnQuoteDO.CreateTime = field.NewTime(tableName, "create_time")
-	_columnQuoteDO.UpdateTime = field.NewTime(tableName, "update_time")
-	_columnQuoteDO.ColumnID = field.NewInt64(tableName, "column_id")
-	_columnQuoteDO.EditorID = field.NewInt64(tableName, "editor_id")
-	_columnQuoteDO.Price = field.NewInt64(tableName, "price")
-	_columnQuoteDO.Status = field.NewInt32(tableName, "status")
+	tableName := _columnQuotePO.columnQuotePODo.TableName()
+	_columnQuotePO.ALL = field.NewAsterisk(tableName)
+	_columnQuotePO.ID = field.NewInt64(tableName, "id")
+	_columnQuotePO.CreateTime = field.NewTime(tableName, "create_time")
+	_columnQuotePO.UpdateTime = field.NewTime(tableName, "update_time")
+	_columnQuotePO.ColumnID = field.NewInt64(tableName, "column_id")
+	_columnQuotePO.EditorID = field.NewInt64(tableName, "editor_id")
+	_columnQuotePO.Price = field.NewInt64(tableName, "price")
+	_columnQuotePO.Status = field.NewInt32(tableName, "status")
 
-	_columnQuoteDO.fillFieldMap()
+	_columnQuotePO.fillFieldMap()
 
-	return _columnQuoteDO
+	return _columnQuotePO
 }
 
-// columnQuoteDO 专栏报价表
-type columnQuoteDO struct {
-	columnQuoteDODo columnQuoteDODo
+// columnQuotePO 专栏报价表
+type columnQuotePO struct {
+	columnQuotePODo columnQuotePODo
 
 	ALL        field.Asterisk
 	ID         field.Int64 // 主键
@@ -56,17 +57,17 @@ type columnQuoteDO struct {
 	fieldMap map[string]field.Expr
 }
 
-func (c columnQuoteDO) Table(newTableName string) *columnQuoteDO {
-	c.columnQuoteDODo.UseTable(newTableName)
+func (c columnQuotePO) Table(newTableName string) *columnQuotePO {
+	c.columnQuotePODo.UseTable(newTableName)
 	return c.updateTableName(newTableName)
 }
 
-func (c columnQuoteDO) As(alias string) *columnQuoteDO {
-	c.columnQuoteDODo.DO = *(c.columnQuoteDODo.As(alias).(*gen.DO))
+func (c columnQuotePO) As(alias string) *columnQuotePO {
+	c.columnQuotePODo.DO = *(c.columnQuotePODo.As(alias).(*gen.DO))
 	return c.updateTableName(alias)
 }
 
-func (c *columnQuoteDO) updateTableName(table string) *columnQuoteDO {
+func (c *columnQuotePO) updateTableName(table string) *columnQuotePO {
 	c.ALL = field.NewAsterisk(table)
 	c.ID = field.NewInt64(table, "id")
 	c.CreateTime = field.NewTime(table, "create_time")
@@ -81,19 +82,19 @@ func (c *columnQuoteDO) updateTableName(table string) *columnQuoteDO {
 	return c
 }
 
-func (c *columnQuoteDO) WithContext(ctx context.Context) *columnQuoteDODo {
-	return c.columnQuoteDODo.WithContext(ctx)
+func (c *columnQuotePO) WithContext(ctx context.Context) *columnQuotePODo {
+	return c.columnQuotePODo.WithContext(ctx)
 }
 
-func (c columnQuoteDO) TableName() string { return c.columnQuoteDODo.TableName() }
+func (c columnQuotePO) TableName() string { return c.columnQuotePODo.TableName() }
 
-func (c columnQuoteDO) Alias() string { return c.columnQuoteDODo.Alias() }
+func (c columnQuotePO) Alias() string { return c.columnQuotePODo.Alias() }
 
-func (c columnQuoteDO) Columns(cols ...field.Expr) gen.Columns {
-	return c.columnQuoteDODo.Columns(cols...)
+func (c columnQuotePO) Columns(cols ...field.Expr) gen.Columns {
+	return c.columnQuotePODo.Columns(cols...)
 }
 
-func (c *columnQuoteDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
+func (c *columnQuotePO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := c.fieldMap[fieldName]
 	if !ok || _f == nil {
 		return nil, false
@@ -102,7 +103,7 @@ func (c *columnQuoteDO) GetFieldByName(fieldName string) (field.OrderExpr, bool)
 	return _oe, ok
 }
 
-func (c *columnQuoteDO) fillFieldMap() {
+func (c *columnQuotePO) fillFieldMap() {
 	c.fieldMap = make(map[string]field.Expr, 7)
 	c.fieldMap["id"] = c.ID
 	c.fieldMap["create_time"] = c.CreateTime
@@ -113,161 +114,161 @@ func (c *columnQuoteDO) fillFieldMap() {
 	c.fieldMap["status"] = c.Status
 }
 
-func (c columnQuoteDO) clone(db *gorm.DB) columnQuoteDO {
-	c.columnQuoteDODo.ReplaceConnPool(db.Statement.ConnPool)
+func (c columnQuotePO) clone(db *gorm.DB) columnQuotePO {
+	c.columnQuotePODo.ReplaceConnPool(db.Statement.ConnPool)
 	return c
 }
 
-func (c columnQuoteDO) replaceDB(db *gorm.DB) columnQuoteDO {
-	c.columnQuoteDODo.ReplaceDB(db)
+func (c columnQuotePO) replaceDB(db *gorm.DB) columnQuotePO {
+	c.columnQuotePODo.ReplaceDB(db)
 	return c
 }
 
-type columnQuoteDODo struct{ gen.DO }
+type columnQuotePODo struct{ gen.DO }
 
-func (c columnQuoteDODo) Debug() *columnQuoteDODo {
+func (c columnQuotePODo) Debug() *columnQuotePODo {
 	return c.withDO(c.DO.Debug())
 }
 
-func (c columnQuoteDODo) WithContext(ctx context.Context) *columnQuoteDODo {
+func (c columnQuotePODo) WithContext(ctx context.Context) *columnQuotePODo {
 	return c.withDO(c.DO.WithContext(ctx))
 }
 
-func (c columnQuoteDODo) ReadDB() *columnQuoteDODo {
+func (c columnQuotePODo) ReadDB() *columnQuotePODo {
 	return c.Clauses(dbresolver.Read)
 }
 
-func (c columnQuoteDODo) WriteDB() *columnQuoteDODo {
+func (c columnQuotePODo) WriteDB() *columnQuotePODo {
 	return c.Clauses(dbresolver.Write)
 }
 
-func (c columnQuoteDODo) Session(config *gorm.Session) *columnQuoteDODo {
+func (c columnQuotePODo) Session(config *gorm.Session) *columnQuotePODo {
 	return c.withDO(c.DO.Session(config))
 }
 
-func (c columnQuoteDODo) Clauses(conds ...clause.Expression) *columnQuoteDODo {
+func (c columnQuotePODo) Clauses(conds ...clause.Expression) *columnQuotePODo {
 	return c.withDO(c.DO.Clauses(conds...))
 }
 
-func (c columnQuoteDODo) Returning(value interface{}, columns ...string) *columnQuoteDODo {
+func (c columnQuotePODo) Returning(value interface{}, columns ...string) *columnQuotePODo {
 	return c.withDO(c.DO.Returning(value, columns...))
 }
 
-func (c columnQuoteDODo) Not(conds ...gen.Condition) *columnQuoteDODo {
+func (c columnQuotePODo) Not(conds ...gen.Condition) *columnQuotePODo {
 	return c.withDO(c.DO.Not(conds...))
 }
 
-func (c columnQuoteDODo) Or(conds ...gen.Condition) *columnQuoteDODo {
+func (c columnQuotePODo) Or(conds ...gen.Condition) *columnQuotePODo {
 	return c.withDO(c.DO.Or(conds...))
 }
 
-func (c columnQuoteDODo) Select(conds ...field.Expr) *columnQuoteDODo {
+func (c columnQuotePODo) Select(conds ...field.Expr) *columnQuotePODo {
 	return c.withDO(c.DO.Select(conds...))
 }
 
-func (c columnQuoteDODo) Where(conds ...gen.Condition) *columnQuoteDODo {
+func (c columnQuotePODo) Where(conds ...gen.Condition) *columnQuotePODo {
 	return c.withDO(c.DO.Where(conds...))
 }
 
-func (c columnQuoteDODo) Order(conds ...field.Expr) *columnQuoteDODo {
+func (c columnQuotePODo) Order(conds ...field.Expr) *columnQuotePODo {
 	return c.withDO(c.DO.Order(conds...))
 }
 
-func (c columnQuoteDODo) Distinct(cols ...field.Expr) *columnQuoteDODo {
+func (c columnQuotePODo) Distinct(cols ...field.Expr) *columnQuotePODo {
 	return c.withDO(c.DO.Distinct(cols...))
 }
 
-func (c columnQuoteDODo) Omit(cols ...field.Expr) *columnQuoteDODo {
+func (c columnQuotePODo) Omit(cols ...field.Expr) *columnQuotePODo {
 	return c.withDO(c.DO.Omit(cols...))
 }
 
-func (c columnQuoteDODo) Join(table schema.Tabler, on ...field.Expr) *columnQuoteDODo {
+func (c columnQuotePODo) Join(table schema.Tabler, on ...field.Expr) *columnQuotePODo {
 	return c.withDO(c.DO.Join(table, on...))
 }
 
-func (c columnQuoteDODo) LeftJoin(table schema.Tabler, on ...field.Expr) *columnQuoteDODo {
+func (c columnQuotePODo) LeftJoin(table schema.Tabler, on ...field.Expr) *columnQuotePODo {
 	return c.withDO(c.DO.LeftJoin(table, on...))
 }
 
-func (c columnQuoteDODo) RightJoin(table schema.Tabler, on ...field.Expr) *columnQuoteDODo {
+func (c columnQuotePODo) RightJoin(table schema.Tabler, on ...field.Expr) *columnQuotePODo {
 	return c.withDO(c.DO.RightJoin(table, on...))
 }
 
-func (c columnQuoteDODo) Group(cols ...field.Expr) *columnQuoteDODo {
+func (c columnQuotePODo) Group(cols ...field.Expr) *columnQuotePODo {
 	return c.withDO(c.DO.Group(cols...))
 }
 
-func (c columnQuoteDODo) Having(conds ...gen.Condition) *columnQuoteDODo {
+func (c columnQuotePODo) Having(conds ...gen.Condition) *columnQuotePODo {
 	return c.withDO(c.DO.Having(conds...))
 }
 
-func (c columnQuoteDODo) Limit(limit int) *columnQuoteDODo {
+func (c columnQuotePODo) Limit(limit int) *columnQuotePODo {
 	return c.withDO(c.DO.Limit(limit))
 }
 
-func (c columnQuoteDODo) Offset(offset int) *columnQuoteDODo {
+func (c columnQuotePODo) Offset(offset int) *columnQuotePODo {
 	return c.withDO(c.DO.Offset(offset))
 }
 
-func (c columnQuoteDODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *columnQuoteDODo {
+func (c columnQuotePODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *columnQuotePODo {
 	return c.withDO(c.DO.Scopes(funcs...))
 }
 
-func (c columnQuoteDODo) Unscoped() *columnQuoteDODo {
+func (c columnQuotePODo) Unscoped() *columnQuotePODo {
 	return c.withDO(c.DO.Unscoped())
 }
 
-func (c columnQuoteDODo) Create(values ...*db_model.ColumnQuoteDO) error {
+func (c columnQuotePODo) Create(values ...*po.ColumnQuotePO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Create(values)
 }
 
-func (c columnQuoteDODo) CreateInBatches(values []*db_model.ColumnQuoteDO, batchSize int) error {
+func (c columnQuotePODo) CreateInBatches(values []*po.ColumnQuotePO, batchSize int) error {
 	return c.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (c columnQuoteDODo) Save(values ...*db_model.ColumnQuoteDO) error {
+func (c columnQuotePODo) Save(values ...*po.ColumnQuotePO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Save(values)
 }
 
-func (c columnQuoteDODo) First() (*db_model.ColumnQuoteDO, error) {
+func (c columnQuotePODo) First() (*po.ColumnQuotePO, error) {
 	if result, err := c.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ColumnQuoteDO), nil
+		return result.(*po.ColumnQuotePO), nil
 	}
 }
 
-func (c columnQuoteDODo) Take() (*db_model.ColumnQuoteDO, error) {
+func (c columnQuotePODo) Take() (*po.ColumnQuotePO, error) {
 	if result, err := c.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ColumnQuoteDO), nil
+		return result.(*po.ColumnQuotePO), nil
 	}
 }
 
-func (c columnQuoteDODo) Last() (*db_model.ColumnQuoteDO, error) {
+func (c columnQuotePODo) Last() (*po.ColumnQuotePO, error) {
 	if result, err := c.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ColumnQuoteDO), nil
+		return result.(*po.ColumnQuotePO), nil
 	}
 }
 
-func (c columnQuoteDODo) Find() ([]*db_model.ColumnQuoteDO, error) {
+func (c columnQuotePODo) Find() ([]*po.ColumnQuotePO, error) {
 	result, err := c.DO.Find()
-	return result.([]*db_model.ColumnQuoteDO), err
+	return result.([]*po.ColumnQuotePO), err
 }
 
-func (c columnQuoteDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.ColumnQuoteDO, err error) {
-	buf := make([]*db_model.ColumnQuoteDO, 0, batchSize)
+func (c columnQuotePODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*po.ColumnQuotePO, err error) {
+	buf := make([]*po.ColumnQuotePO, 0, batchSize)
 	err = c.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -275,49 +276,49 @@ func (c columnQuoteDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch in
 	return results, err
 }
 
-func (c columnQuoteDODo) FindInBatches(result *[]*db_model.ColumnQuoteDO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (c columnQuotePODo) FindInBatches(result *[]*po.ColumnQuotePO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return c.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (c columnQuoteDODo) Attrs(attrs ...field.AssignExpr) *columnQuoteDODo {
+func (c columnQuotePODo) Attrs(attrs ...field.AssignExpr) *columnQuotePODo {
 	return c.withDO(c.DO.Attrs(attrs...))
 }
 
-func (c columnQuoteDODo) Assign(attrs ...field.AssignExpr) *columnQuoteDODo {
+func (c columnQuotePODo) Assign(attrs ...field.AssignExpr) *columnQuotePODo {
 	return c.withDO(c.DO.Assign(attrs...))
 }
 
-func (c columnQuoteDODo) Joins(fields ...field.RelationField) *columnQuoteDODo {
+func (c columnQuotePODo) Joins(fields ...field.RelationField) *columnQuotePODo {
 	for _, _f := range fields {
 		c = *c.withDO(c.DO.Joins(_f))
 	}
 	return &c
 }
 
-func (c columnQuoteDODo) Preload(fields ...field.RelationField) *columnQuoteDODo {
+func (c columnQuotePODo) Preload(fields ...field.RelationField) *columnQuotePODo {
 	for _, _f := range fields {
 		c = *c.withDO(c.DO.Preload(_f))
 	}
 	return &c
 }
 
-func (c columnQuoteDODo) FirstOrInit() (*db_model.ColumnQuoteDO, error) {
+func (c columnQuotePODo) FirstOrInit() (*po.ColumnQuotePO, error) {
 	if result, err := c.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ColumnQuoteDO), nil
+		return result.(*po.ColumnQuotePO), nil
 	}
 }
 
-func (c columnQuoteDODo) FirstOrCreate() (*db_model.ColumnQuoteDO, error) {
+func (c columnQuotePODo) FirstOrCreate() (*po.ColumnQuotePO, error) {
 	if result, err := c.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.ColumnQuoteDO), nil
+		return result.(*po.ColumnQuotePO), nil
 	}
 }
 
-func (c columnQuoteDODo) FindByPage(offset int, limit int) (result []*db_model.ColumnQuoteDO, count int64, err error) {
+func (c columnQuotePODo) FindByPage(offset int, limit int) (result []*po.ColumnQuotePO, count int64, err error) {
 	result, err = c.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -332,7 +333,7 @@ func (c columnQuoteDODo) FindByPage(offset int, limit int) (result []*db_model.C
 	return
 }
 
-func (c columnQuoteDODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
+func (c columnQuotePODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
 	count, err = c.Count()
 	if err != nil {
 		return
@@ -342,15 +343,15 @@ func (c columnQuoteDODo) ScanByPage(result interface{}, offset int, limit int) (
 	return
 }
 
-func (c columnQuoteDODo) Scan(result interface{}) (err error) {
+func (c columnQuotePODo) Scan(result interface{}) (err error) {
 	return c.DO.Scan(result)
 }
 
-func (c columnQuoteDODo) Delete(models ...*db_model.ColumnQuoteDO) (result gen.ResultInfo, err error) {
+func (c columnQuotePODo) Delete(models ...*po.ColumnQuotePO) (result gen.ResultInfo, err error) {
 	return c.DO.Delete(models)
 }
 
-func (c *columnQuoteDODo) withDO(do gen.Dao) *columnQuoteDODo {
+func (c *columnQuotePODo) withDO(do gen.Dao) *columnQuotePODo {
 	c.DO = *do.(*gen.DO)
 	return c
 }

@@ -6,6 +6,8 @@ package query
 
 import (
 	"context"
+	"database/sql"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,39 +15,38 @@ import (
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
+	"gorm.io/gen/helper"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
 )
 
-func newCommissionDO(db *gorm.DB, opts ...gen.DOOption) commissionDO {
-	_commissionDO := commissionDO{}
+func newCommissionPO(db *gorm.DB, opts ...gen.DOOption) commissionPO {
+	_commissionPO := commissionPO{}
 
-	_commissionDO.commissionDODo.UseDB(db, opts...)
-	_commissionDO.commissionDODo.UseModel(&db_model.CommissionDO{})
+	_commissionPO.commissionPODo.UseDB(db, opts...)
+	_commissionPO.commissionPODo.UseModel(&po.CommissionPO{})
 
-	tableName := _commissionDO.commissionDODo.TableName()
-	_commissionDO.ALL = field.NewAsterisk(tableName)
-	_commissionDO.ID = field.NewInt64(tableName, "id")
-	_commissionDO.CreateTime = field.NewTime(tableName, "create_time")
-	_commissionDO.UpdateTime = field.NewTime(tableName, "update_time")
-	_commissionDO.Name = field.NewString(tableName, "name")
-	_commissionDO.Amount = field.NewInt64(tableName, "amount")
-	_commissionDO.ContractID = field.NewInt64(tableName, "contract_id")
-	_commissionDO.AuthorID = field.NewInt64(tableName, "author_id")
-	_commissionDO.ReceiptID = field.NewInt64(tableName, "receipt_id")
-	_commissionDO.PaymentDays = field.NewString(tableName, "payment_days")
-	_commissionDO.Status = field.NewInt32(tableName, "status")
+	tableName := _commissionPO.commissionPODo.TableName()
+	_commissionPO.ALL = field.NewAsterisk(tableName)
+	_commissionPO.ID = field.NewInt64(tableName, "id")
+	_commissionPO.CreateTime = field.NewTime(tableName, "create_time")
+	_commissionPO.UpdateTime = field.NewTime(tableName, "update_time")
+	_commissionPO.Name = field.NewString(tableName, "name")
+	_commissionPO.Amount = field.NewInt64(tableName, "amount")
+	_commissionPO.ContractID = field.NewInt64(tableName, "contract_id")
+	_commissionPO.AuthorID = field.NewInt64(tableName, "author_id")
+	_commissionPO.ReceiptID = field.NewInt64(tableName, "receipt_id")
+	_commissionPO.PaymentDays = field.NewString(tableName, "payment_days")
+	_commissionPO.Status = field.NewInt32(tableName, "status")
 
-	_commissionDO.fillFieldMap()
+	_commissionPO.fillFieldMap()
 
-	return _commissionDO
+	return _commissionPO
 }
 
-// commissionDO 佣金表
-type commissionDO struct {
-	commissionDODo commissionDODo
+// commissionPO 佣金表
+type commissionPO struct {
+	commissionPODo commissionPODo
 
 	ALL         field.Asterisk
 	ID          field.Int64  // 主键
@@ -62,17 +63,17 @@ type commissionDO struct {
 	fieldMap map[string]field.Expr
 }
 
-func (c commissionDO) Table(newTableName string) *commissionDO {
-	c.commissionDODo.UseTable(newTableName)
+func (c commissionPO) Table(newTableName string) *commissionPO {
+	c.commissionPODo.UseTable(newTableName)
 	return c.updateTableName(newTableName)
 }
 
-func (c commissionDO) As(alias string) *commissionDO {
-	c.commissionDODo.DO = *(c.commissionDODo.As(alias).(*gen.DO))
+func (c commissionPO) As(alias string) *commissionPO {
+	c.commissionPODo.DO = *(c.commissionPODo.As(alias).(*gen.DO))
 	return c.updateTableName(alias)
 }
 
-func (c *commissionDO) updateTableName(table string) *commissionDO {
+func (c *commissionPO) updateTableName(table string) *commissionPO {
 	c.ALL = field.NewAsterisk(table)
 	c.ID = field.NewInt64(table, "id")
 	c.CreateTime = field.NewTime(table, "create_time")
@@ -90,19 +91,19 @@ func (c *commissionDO) updateTableName(table string) *commissionDO {
 	return c
 }
 
-func (c *commissionDO) WithContext(ctx context.Context) *commissionDODo {
-	return c.commissionDODo.WithContext(ctx)
+func (c *commissionPO) WithContext(ctx context.Context) *commissionPODo {
+	return c.commissionPODo.WithContext(ctx)
 }
 
-func (c commissionDO) TableName() string { return c.commissionDODo.TableName() }
+func (c commissionPO) TableName() string { return c.commissionPODo.TableName() }
 
-func (c commissionDO) Alias() string { return c.commissionDODo.Alias() }
+func (c commissionPO) Alias() string { return c.commissionPODo.Alias() }
 
-func (c commissionDO) Columns(cols ...field.Expr) gen.Columns {
-	return c.commissionDODo.Columns(cols...)
+func (c commissionPO) Columns(cols ...field.Expr) gen.Columns {
+	return c.commissionPODo.Columns(cols...)
 }
 
-func (c *commissionDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
+func (c *commissionPO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := c.fieldMap[fieldName]
 	if !ok || _f == nil {
 		return nil, false
@@ -111,7 +112,7 @@ func (c *commissionDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) 
 	return _oe, ok
 }
 
-func (c *commissionDO) fillFieldMap() {
+func (c *commissionPO) fillFieldMap() {
 	c.fieldMap = make(map[string]field.Expr, 10)
 	c.fieldMap["id"] = c.ID
 	c.fieldMap["create_time"] = c.CreateTime
@@ -125,161 +126,161 @@ func (c *commissionDO) fillFieldMap() {
 	c.fieldMap["status"] = c.Status
 }
 
-func (c commissionDO) clone(db *gorm.DB) commissionDO {
-	c.commissionDODo.ReplaceConnPool(db.Statement.ConnPool)
+func (c commissionPO) clone(db *gorm.DB) commissionPO {
+	c.commissionPODo.ReplaceConnPool(db.Statement.ConnPool)
 	return c
 }
 
-func (c commissionDO) replaceDB(db *gorm.DB) commissionDO {
-	c.commissionDODo.ReplaceDB(db)
+func (c commissionPO) replaceDB(db *gorm.DB) commissionPO {
+	c.commissionPODo.ReplaceDB(db)
 	return c
 }
 
-type commissionDODo struct{ gen.DO }
+type commissionPODo struct{ gen.DO }
 
-func (c commissionDODo) Debug() *commissionDODo {
+func (c commissionPODo) Debug() *commissionPODo {
 	return c.withDO(c.DO.Debug())
 }
 
-func (c commissionDODo) WithContext(ctx context.Context) *commissionDODo {
+func (c commissionPODo) WithContext(ctx context.Context) *commissionPODo {
 	return c.withDO(c.DO.WithContext(ctx))
 }
 
-func (c commissionDODo) ReadDB() *commissionDODo {
+func (c commissionPODo) ReadDB() *commissionPODo {
 	return c.Clauses(dbresolver.Read)
 }
 
-func (c commissionDODo) WriteDB() *commissionDODo {
+func (c commissionPODo) WriteDB() *commissionPODo {
 	return c.Clauses(dbresolver.Write)
 }
 
-func (c commissionDODo) Session(config *gorm.Session) *commissionDODo {
+func (c commissionPODo) Session(config *gorm.Session) *commissionPODo {
 	return c.withDO(c.DO.Session(config))
 }
 
-func (c commissionDODo) Clauses(conds ...clause.Expression) *commissionDODo {
+func (c commissionPODo) Clauses(conds ...clause.Expression) *commissionPODo {
 	return c.withDO(c.DO.Clauses(conds...))
 }
 
-func (c commissionDODo) Returning(value interface{}, columns ...string) *commissionDODo {
+func (c commissionPODo) Returning(value interface{}, columns ...string) *commissionPODo {
 	return c.withDO(c.DO.Returning(value, columns...))
 }
 
-func (c commissionDODo) Not(conds ...gen.Condition) *commissionDODo {
+func (c commissionPODo) Not(conds ...gen.Condition) *commissionPODo {
 	return c.withDO(c.DO.Not(conds...))
 }
 
-func (c commissionDODo) Or(conds ...gen.Condition) *commissionDODo {
+func (c commissionPODo) Or(conds ...gen.Condition) *commissionPODo {
 	return c.withDO(c.DO.Or(conds...))
 }
 
-func (c commissionDODo) Select(conds ...field.Expr) *commissionDODo {
+func (c commissionPODo) Select(conds ...field.Expr) *commissionPODo {
 	return c.withDO(c.DO.Select(conds...))
 }
 
-func (c commissionDODo) Where(conds ...gen.Condition) *commissionDODo {
+func (c commissionPODo) Where(conds ...gen.Condition) *commissionPODo {
 	return c.withDO(c.DO.Where(conds...))
 }
 
-func (c commissionDODo) Order(conds ...field.Expr) *commissionDODo {
+func (c commissionPODo) Order(conds ...field.Expr) *commissionPODo {
 	return c.withDO(c.DO.Order(conds...))
 }
 
-func (c commissionDODo) Distinct(cols ...field.Expr) *commissionDODo {
+func (c commissionPODo) Distinct(cols ...field.Expr) *commissionPODo {
 	return c.withDO(c.DO.Distinct(cols...))
 }
 
-func (c commissionDODo) Omit(cols ...field.Expr) *commissionDODo {
+func (c commissionPODo) Omit(cols ...field.Expr) *commissionPODo {
 	return c.withDO(c.DO.Omit(cols...))
 }
 
-func (c commissionDODo) Join(table schema.Tabler, on ...field.Expr) *commissionDODo {
+func (c commissionPODo) Join(table schema.Tabler, on ...field.Expr) *commissionPODo {
 	return c.withDO(c.DO.Join(table, on...))
 }
 
-func (c commissionDODo) LeftJoin(table schema.Tabler, on ...field.Expr) *commissionDODo {
+func (c commissionPODo) LeftJoin(table schema.Tabler, on ...field.Expr) *commissionPODo {
 	return c.withDO(c.DO.LeftJoin(table, on...))
 }
 
-func (c commissionDODo) RightJoin(table schema.Tabler, on ...field.Expr) *commissionDODo {
+func (c commissionPODo) RightJoin(table schema.Tabler, on ...field.Expr) *commissionPODo {
 	return c.withDO(c.DO.RightJoin(table, on...))
 }
 
-func (c commissionDODo) Group(cols ...field.Expr) *commissionDODo {
+func (c commissionPODo) Group(cols ...field.Expr) *commissionPODo {
 	return c.withDO(c.DO.Group(cols...))
 }
 
-func (c commissionDODo) Having(conds ...gen.Condition) *commissionDODo {
+func (c commissionPODo) Having(conds ...gen.Condition) *commissionPODo {
 	return c.withDO(c.DO.Having(conds...))
 }
 
-func (c commissionDODo) Limit(limit int) *commissionDODo {
+func (c commissionPODo) Limit(limit int) *commissionPODo {
 	return c.withDO(c.DO.Limit(limit))
 }
 
-func (c commissionDODo) Offset(offset int) *commissionDODo {
+func (c commissionPODo) Offset(offset int) *commissionPODo {
 	return c.withDO(c.DO.Offset(offset))
 }
 
-func (c commissionDODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *commissionDODo {
+func (c commissionPODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *commissionPODo {
 	return c.withDO(c.DO.Scopes(funcs...))
 }
 
-func (c commissionDODo) Unscoped() *commissionDODo {
+func (c commissionPODo) Unscoped() *commissionPODo {
 	return c.withDO(c.DO.Unscoped())
 }
 
-func (c commissionDODo) Create(values ...*db_model.CommissionDO) error {
+func (c commissionPODo) Create(values ...*po.CommissionPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Create(values)
 }
 
-func (c commissionDODo) CreateInBatches(values []*db_model.CommissionDO, batchSize int) error {
+func (c commissionPODo) CreateInBatches(values []*po.CommissionPO, batchSize int) error {
 	return c.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (c commissionDODo) Save(values ...*db_model.CommissionDO) error {
+func (c commissionPODo) Save(values ...*po.CommissionPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return c.DO.Save(values)
 }
 
-func (c commissionDODo) First() (*db_model.CommissionDO, error) {
+func (c commissionPODo) First() (*po.CommissionPO, error) {
 	if result, err := c.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.CommissionDO), nil
+		return result.(*po.CommissionPO), nil
 	}
 }
 
-func (c commissionDODo) Take() (*db_model.CommissionDO, error) {
+func (c commissionPODo) Take() (*po.CommissionPO, error) {
 	if result, err := c.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.CommissionDO), nil
+		return result.(*po.CommissionPO), nil
 	}
 }
 
-func (c commissionDODo) Last() (*db_model.CommissionDO, error) {
+func (c commissionPODo) Last() (*po.CommissionPO, error) {
 	if result, err := c.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.CommissionDO), nil
+		return result.(*po.CommissionPO), nil
 	}
 }
 
-func (c commissionDODo) Find() ([]*db_model.CommissionDO, error) {
+func (c commissionPODo) Find() ([]*po.CommissionPO, error) {
 	result, err := c.DO.Find()
-	return result.([]*db_model.CommissionDO), err
+	return result.([]*po.CommissionPO), err
 }
 
-func (c commissionDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.CommissionDO, err error) {
-	buf := make([]*db_model.CommissionDO, 0, batchSize)
+func (c commissionPODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*po.CommissionPO, err error) {
+	buf := make([]*po.CommissionPO, 0, batchSize)
 	err = c.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -287,49 +288,49 @@ func (c commissionDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int
 	return results, err
 }
 
-func (c commissionDODo) FindInBatches(result *[]*db_model.CommissionDO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (c commissionPODo) FindInBatches(result *[]*po.CommissionPO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return c.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (c commissionDODo) Attrs(attrs ...field.AssignExpr) *commissionDODo {
+func (c commissionPODo) Attrs(attrs ...field.AssignExpr) *commissionPODo {
 	return c.withDO(c.DO.Attrs(attrs...))
 }
 
-func (c commissionDODo) Assign(attrs ...field.AssignExpr) *commissionDODo {
+func (c commissionPODo) Assign(attrs ...field.AssignExpr) *commissionPODo {
 	return c.withDO(c.DO.Assign(attrs...))
 }
 
-func (c commissionDODo) Joins(fields ...field.RelationField) *commissionDODo {
+func (c commissionPODo) Joins(fields ...field.RelationField) *commissionPODo {
 	for _, _f := range fields {
 		c = *c.withDO(c.DO.Joins(_f))
 	}
 	return &c
 }
 
-func (c commissionDODo) Preload(fields ...field.RelationField) *commissionDODo {
+func (c commissionPODo) Preload(fields ...field.RelationField) *commissionPODo {
 	for _, _f := range fields {
 		c = *c.withDO(c.DO.Preload(_f))
 	}
 	return &c
 }
 
-func (c commissionDODo) FirstOrInit() (*db_model.CommissionDO, error) {
+func (c commissionPODo) FirstOrInit() (*po.CommissionPO, error) {
 	if result, err := c.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.CommissionDO), nil
+		return result.(*po.CommissionPO), nil
 	}
 }
 
-func (c commissionDODo) FirstOrCreate() (*db_model.CommissionDO, error) {
+func (c commissionPODo) FirstOrCreate() (*po.CommissionPO, error) {
 	if result, err := c.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.CommissionDO), nil
+		return result.(*po.CommissionPO), nil
 	}
 }
 
-func (c commissionDODo) FindByPage(offset int, limit int) (result []*db_model.CommissionDO, count int64, err error) {
+func (c commissionPODo) FindByPage(offset int, limit int) (result []*po.CommissionPO, count int64, err error) {
 	result, err = c.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -344,7 +345,7 @@ func (c commissionDODo) FindByPage(offset int, limit int) (result []*db_model.Co
 	return
 }
 
-func (c commissionDODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
+func (c commissionPODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
 	count, err = c.Count()
 	if err != nil {
 		return
@@ -354,15 +355,15 @@ func (c commissionDODo) ScanByPage(result interface{}, offset int, limit int) (c
 	return
 }
 
-func (c commissionDODo) Scan(result interface{}) (err error) {
+func (c commissionPODo) Scan(result interface{}) (err error) {
 	return c.DO.Scan(result)
 }
 
-func (c commissionDODo) Delete(models ...*db_model.CommissionDO) (result gen.ResultInfo, err error) {
+func (c commissionPODo) Delete(models ...*po.CommissionPO) (result gen.ResultInfo, err error) {
 	return c.DO.Delete(models)
 }
 
-func (c *commissionDODo) withDO(do gen.Dao) *commissionDODo {
+func (c *commissionPODo) withDO(do gen.Dao) *commissionPODo {
 	c.DO = *do.(*gen.DO)
 	return c
 }

@@ -5,7 +5,6 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/application"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/api2model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
@@ -34,13 +33,13 @@ func (receiver RichColumnPage) Handle(ctx context.Context, request *sc_misc_api.
 // 校验参数
 func (receiver RichColumnPage) CheckParam(ctx context.Context, request *sc_misc_api.RichColumnPageRequest) error {
 	if request == nil {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "request 不能为空")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "request 不能为空")
 	}
 	if request.Operator == nil {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "request.Operator 不能为空")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "request.Operator 不能为空")
 	}
 	if request.Operator.OperatorId == 0 {
-		return errs.CodeErrorf(enums.StatusCodeParamsError, "request.Operator.OperatorId 不能为空")
+		return errs.CodeErrorf(errs.StatusCodeParamsError, "request.Operator.OperatorId 不能为空")
 	}
 
 	return nil

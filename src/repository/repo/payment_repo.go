@@ -5,11 +5,11 @@ import (
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 	"github.com/eyebluecn/sc-misc/src/repository/query"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -26,9 +26,9 @@ func NewPaymentRepo() PaymentRepo {
 // 新建一个Payment
 func (receiver PaymentRepo) Insert(
 	ctx context.Context,
-	payment *model.Payment,
-) (*model.Payment, error) {
-	table := query.Use(config.DB).PaymentDO
+	payment *do.Payment,
+) (*do.Payment, error) {
+	table := query.Use(config.DB).PaymentPO
 
 	//时间置为当前
 	payment.CreateTime = time.Now()
@@ -49,9 +49,9 @@ func (receiver PaymentRepo) Insert(
 func (receiver PaymentRepo) UpdateStatus(
 	ctx context.Context,
 	paymentId int64,
-	paymentStatus model.PaymentStatus,
+	paymentStatus enums.PaymentStatus,
 ) (int64, error) {
-	table := query.Use(config.DB).PaymentDO
+	table := query.Use(config.DB).PaymentPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -70,8 +70,8 @@ func (receiver PaymentRepo) UpdateStatus(
 func (receiver PaymentRepo) QueryById(
 	ctx context.Context,
 	paymentId int64,
-) (*model.Payment, error) {
-	table := query.Use(config.DB).PaymentDO
+) (*do.Payment, error) {
+	table := query.Use(config.DB).PaymentPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -97,14 +97,14 @@ func (receiver PaymentRepo) QueryById(
 func (receiver PaymentRepo) CheckById(
 	ctx context.Context,
 	paymentId int64,
-) (*model.Payment, error) {
+) (*do.Payment, error) {
 	payment, err := receiver.QueryById(ctx, paymentId)
 	if err != nil {
 		klog.CtxErrorf(ctx, "db repo error %v", err)
-		return nil, errs.CodeErrorf(enums.StatusCodeUnknown, err.Error())
+		return nil, errs.CodeErrorf(errs.StatusCodeUnknown, err.Error())
 	}
 	if payment == nil {
-		return nil, errs.CodeErrorf(enums.StatusCodeNotFound, "没有找到%v对应的记录", paymentId)
+		return nil, errs.CodeErrorf(errs.StatusCodeNotFound, "没有找到%v对应的记录", paymentId)
 	}
 	return payment, nil
 }
@@ -113,8 +113,8 @@ func (receiver PaymentRepo) CheckById(
 func (receiver PaymentRepo) QueryByOrderNo(
 	ctx context.Context,
 	orderNo string,
-) (*model.Payment, error) {
-	table := query.Use(config.DB).PaymentDO
+) (*do.Payment, error) {
+	table := query.Use(config.DB).PaymentPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -140,14 +140,14 @@ func (receiver PaymentRepo) QueryByOrderNo(
 func (receiver PaymentRepo) CheckByOrderNo(
 	ctx context.Context,
 	orderNo string,
-) (*model.Payment, error) {
+) (*do.Payment, error) {
 	payment, err := receiver.QueryByOrderNo(ctx, orderNo)
 	if err != nil {
 		klog.CtxErrorf(ctx, "db repo error %v", err)
-		return nil, errs.CodeErrorf(enums.StatusCodeUnknown, err.Error())
+		return nil, errs.CodeErrorf(errs.StatusCodeUnknown, err.Error())
 	}
 	if payment == nil {
-		return nil, errs.CodeErrorf(enums.StatusCodeNotFound, "没有找到orderNo=%v对应的记录", orderNo)
+		return nil, errs.CodeErrorf(errs.StatusCodeNotFound, "没有找到orderNo=%v对应的记录", orderNo)
 	}
 	return payment, nil
 }

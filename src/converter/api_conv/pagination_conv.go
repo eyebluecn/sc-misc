@@ -2,11 +2,11 @@ package api_conv
 
 import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_base"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/universal"
 )
 
 // 领域模型转为传输模型
-func ConvertPagination(thing *model.Pagination) *sc_misc_base.Pagination {
+func ConvertPagination(thing *universal.Pagination) *sc_misc_base.Pagination {
 	if thing == nil {
 		return nil
 	}

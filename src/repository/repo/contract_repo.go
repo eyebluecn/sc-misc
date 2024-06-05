@@ -5,7 +5,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/repository/query"
 	"time"
 )
@@ -20,9 +20,9 @@ func NewContractRepo() ContractRepo {
 // 新建一个Reader
 func (receiver ContractRepo) Insert(
 	ctx context.Context,
-	contract *model.Contract,
-) (*model.Contract, error) {
-	table := query.Use(config.DB).ContractDO
+	contract *do.Contract,
+) (*do.Contract, error) {
+	table := query.Use(config.DB).ContractPO
 
 	//时间置为当前
 	contract.CreateTime = time.Now()

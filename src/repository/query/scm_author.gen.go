@@ -6,6 +6,9 @@ package query
 
 import (
 	"context"
+	"database/sql"
+	"github.com/eyebluecn/sc-misc/src/model/po"
+	"strings"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -13,35 +16,34 @@ import (
 
 	"gorm.io/gen"
 	"gorm.io/gen/field"
+	"gorm.io/gen/helper"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
 )
 
-func newAuthorDO(db *gorm.DB, opts ...gen.DOOption) authorDO {
-	_authorDO := authorDO{}
+func newAuthorPO(db *gorm.DB, opts ...gen.DOOption) authorPO {
+	_authorPO := authorPO{}
 
-	_authorDO.authorDODo.UseDB(db, opts...)
-	_authorDO.authorDODo.UseModel(&db_model.AuthorDO{})
+	_authorPO.authorPODo.UseDB(db, opts...)
+	_authorPO.authorPODo.UseModel(&po.AuthorPO{})
 
-	tableName := _authorDO.authorDODo.TableName()
-	_authorDO.ALL = field.NewAsterisk(tableName)
-	_authorDO.ID = field.NewInt64(tableName, "id")
-	_authorDO.CreateTime = field.NewTime(tableName, "create_time")
-	_authorDO.UpdateTime = field.NewTime(tableName, "update_time")
-	_authorDO.Username = field.NewString(tableName, "username")
-	_authorDO.Password = field.NewString(tableName, "password")
-	_authorDO.Realname = field.NewString(tableName, "realname")
+	tableName := _authorPO.authorPODo.TableName()
+	_authorPO.ALL = field.NewAsterisk(tableName)
+	_authorPO.ID = field.NewInt64(tableName, "id")
+	_authorPO.CreateTime = field.NewTime(tableName, "create_time")
+	_authorPO.UpdateTime = field.NewTime(tableName, "update_time")
+	_authorPO.Username = field.NewString(tableName, "username")
+	_authorPO.Password = field.NewString(tableName, "password")
+	_authorPO.Realname = field.NewString(tableName, "realname")
 
-	_authorDO.fillFieldMap()
+	_authorPO.fillFieldMap()
 
-	return _authorDO
+	return _authorPO
 }
 
-// authorDO 作者表
-type authorDO struct {
-	authorDODo authorDODo
+// authorPO 作者表
+type authorPO struct {
+	authorPODo authorPODo
 
 	ALL        field.Asterisk
 	ID         field.Int64  // 主键
@@ -54,17 +56,17 @@ type authorDO struct {
 	fieldMap map[string]field.Expr
 }
 
-func (a authorDO) Table(newTableName string) *authorDO {
-	a.authorDODo.UseTable(newTableName)
+func (a authorPO) Table(newTableName string) *authorPO {
+	a.authorPODo.UseTable(newTableName)
 	return a.updateTableName(newTableName)
 }
 
-func (a authorDO) As(alias string) *authorDO {
-	a.authorDODo.DO = *(a.authorDODo.As(alias).(*gen.DO))
+func (a authorPO) As(alias string) *authorPO {
+	a.authorPODo.DO = *(a.authorPODo.As(alias).(*gen.DO))
 	return a.updateTableName(alias)
 }
 
-func (a *authorDO) updateTableName(table string) *authorDO {
+func (a *authorPO) updateTableName(table string) *authorPO {
 	a.ALL = field.NewAsterisk(table)
 	a.ID = field.NewInt64(table, "id")
 	a.CreateTime = field.NewTime(table, "create_time")
@@ -78,15 +80,15 @@ func (a *authorDO) updateTableName(table string) *authorDO {
 	return a
 }
 
-func (a *authorDO) WithContext(ctx context.Context) *authorDODo { return a.authorDODo.WithContext(ctx) }
+func (a *authorPO) WithContext(ctx context.Context) *authorPODo { return a.authorPODo.WithContext(ctx) }
 
-func (a authorDO) TableName() string { return a.authorDODo.TableName() }
+func (a authorPO) TableName() string { return a.authorPODo.TableName() }
 
-func (a authorDO) Alias() string { return a.authorDODo.Alias() }
+func (a authorPO) Alias() string { return a.authorPODo.Alias() }
 
-func (a authorDO) Columns(cols ...field.Expr) gen.Columns { return a.authorDODo.Columns(cols...) }
+func (a authorPO) Columns(cols ...field.Expr) gen.Columns { return a.authorPODo.Columns(cols...) }
 
-func (a *authorDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
+func (a *authorPO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	_f, ok := a.fieldMap[fieldName]
 	if !ok || _f == nil {
 		return nil, false
@@ -95,7 +97,7 @@ func (a *authorDO) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 	return _oe, ok
 }
 
-func (a *authorDO) fillFieldMap() {
+func (a *authorPO) fillFieldMap() {
 	a.fieldMap = make(map[string]field.Expr, 6)
 	a.fieldMap["id"] = a.ID
 	a.fieldMap["create_time"] = a.CreateTime
@@ -105,161 +107,161 @@ func (a *authorDO) fillFieldMap() {
 	a.fieldMap["realname"] = a.Realname
 }
 
-func (a authorDO) clone(db *gorm.DB) authorDO {
-	a.authorDODo.ReplaceConnPool(db.Statement.ConnPool)
+func (a authorPO) clone(db *gorm.DB) authorPO {
+	a.authorPODo.ReplaceConnPool(db.Statement.ConnPool)
 	return a
 }
 
-func (a authorDO) replaceDB(db *gorm.DB) authorDO {
-	a.authorDODo.ReplaceDB(db)
+func (a authorPO) replaceDB(db *gorm.DB) authorPO {
+	a.authorPODo.ReplaceDB(db)
 	return a
 }
 
-type authorDODo struct{ gen.DO }
+type authorPODo struct{ gen.DO }
 
-func (a authorDODo) Debug() *authorDODo {
+func (a authorPODo) Debug() *authorPODo {
 	return a.withDO(a.DO.Debug())
 }
 
-func (a authorDODo) WithContext(ctx context.Context) *authorDODo {
+func (a authorPODo) WithContext(ctx context.Context) *authorPODo {
 	return a.withDO(a.DO.WithContext(ctx))
 }
 
-func (a authorDODo) ReadDB() *authorDODo {
+func (a authorPODo) ReadDB() *authorPODo {
 	return a.Clauses(dbresolver.Read)
 }
 
-func (a authorDODo) WriteDB() *authorDODo {
+func (a authorPODo) WriteDB() *authorPODo {
 	return a.Clauses(dbresolver.Write)
 }
 
-func (a authorDODo) Session(config *gorm.Session) *authorDODo {
+func (a authorPODo) Session(config *gorm.Session) *authorPODo {
 	return a.withDO(a.DO.Session(config))
 }
 
-func (a authorDODo) Clauses(conds ...clause.Expression) *authorDODo {
+func (a authorPODo) Clauses(conds ...clause.Expression) *authorPODo {
 	return a.withDO(a.DO.Clauses(conds...))
 }
 
-func (a authorDODo) Returning(value interface{}, columns ...string) *authorDODo {
+func (a authorPODo) Returning(value interface{}, columns ...string) *authorPODo {
 	return a.withDO(a.DO.Returning(value, columns...))
 }
 
-func (a authorDODo) Not(conds ...gen.Condition) *authorDODo {
+func (a authorPODo) Not(conds ...gen.Condition) *authorPODo {
 	return a.withDO(a.DO.Not(conds...))
 }
 
-func (a authorDODo) Or(conds ...gen.Condition) *authorDODo {
+func (a authorPODo) Or(conds ...gen.Condition) *authorPODo {
 	return a.withDO(a.DO.Or(conds...))
 }
 
-func (a authorDODo) Select(conds ...field.Expr) *authorDODo {
+func (a authorPODo) Select(conds ...field.Expr) *authorPODo {
 	return a.withDO(a.DO.Select(conds...))
 }
 
-func (a authorDODo) Where(conds ...gen.Condition) *authorDODo {
+func (a authorPODo) Where(conds ...gen.Condition) *authorPODo {
 	return a.withDO(a.DO.Where(conds...))
 }
 
-func (a authorDODo) Order(conds ...field.Expr) *authorDODo {
+func (a authorPODo) Order(conds ...field.Expr) *authorPODo {
 	return a.withDO(a.DO.Order(conds...))
 }
 
-func (a authorDODo) Distinct(cols ...field.Expr) *authorDODo {
+func (a authorPODo) Distinct(cols ...field.Expr) *authorPODo {
 	return a.withDO(a.DO.Distinct(cols...))
 }
 
-func (a authorDODo) Omit(cols ...field.Expr) *authorDODo {
+func (a authorPODo) Omit(cols ...field.Expr) *authorPODo {
 	return a.withDO(a.DO.Omit(cols...))
 }
 
-func (a authorDODo) Join(table schema.Tabler, on ...field.Expr) *authorDODo {
+func (a authorPODo) Join(table schema.Tabler, on ...field.Expr) *authorPODo {
 	return a.withDO(a.DO.Join(table, on...))
 }
 
-func (a authorDODo) LeftJoin(table schema.Tabler, on ...field.Expr) *authorDODo {
+func (a authorPODo) LeftJoin(table schema.Tabler, on ...field.Expr) *authorPODo {
 	return a.withDO(a.DO.LeftJoin(table, on...))
 }
 
-func (a authorDODo) RightJoin(table schema.Tabler, on ...field.Expr) *authorDODo {
+func (a authorPODo) RightJoin(table schema.Tabler, on ...field.Expr) *authorPODo {
 	return a.withDO(a.DO.RightJoin(table, on...))
 }
 
-func (a authorDODo) Group(cols ...field.Expr) *authorDODo {
+func (a authorPODo) Group(cols ...field.Expr) *authorPODo {
 	return a.withDO(a.DO.Group(cols...))
 }
 
-func (a authorDODo) Having(conds ...gen.Condition) *authorDODo {
+func (a authorPODo) Having(conds ...gen.Condition) *authorPODo {
 	return a.withDO(a.DO.Having(conds...))
 }
 
-func (a authorDODo) Limit(limit int) *authorDODo {
+func (a authorPODo) Limit(limit int) *authorPODo {
 	return a.withDO(a.DO.Limit(limit))
 }
 
-func (a authorDODo) Offset(offset int) *authorDODo {
+func (a authorPODo) Offset(offset int) *authorPODo {
 	return a.withDO(a.DO.Offset(offset))
 }
 
-func (a authorDODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *authorDODo {
+func (a authorPODo) Scopes(funcs ...func(gen.Dao) gen.Dao) *authorPODo {
 	return a.withDO(a.DO.Scopes(funcs...))
 }
 
-func (a authorDODo) Unscoped() *authorDODo {
+func (a authorPODo) Unscoped() *authorPODo {
 	return a.withDO(a.DO.Unscoped())
 }
 
-func (a authorDODo) Create(values ...*db_model.AuthorDO) error {
+func (a authorPODo) Create(values ...*po.AuthorPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Create(values)
 }
 
-func (a authorDODo) CreateInBatches(values []*db_model.AuthorDO, batchSize int) error {
+func (a authorPODo) CreateInBatches(values []*po.AuthorPO, batchSize int) error {
 	return a.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (a authorDODo) Save(values ...*db_model.AuthorDO) error {
+func (a authorPODo) Save(values ...*po.AuthorPO) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return a.DO.Save(values)
 }
 
-func (a authorDODo) First() (*db_model.AuthorDO, error) {
+func (a authorPODo) First() (*po.AuthorPO, error) {
 	if result, err := a.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.AuthorDO), nil
+		return result.(*po.AuthorPO), nil
 	}
 }
 
-func (a authorDODo) Take() (*db_model.AuthorDO, error) {
+func (a authorPODo) Take() (*po.AuthorPO, error) {
 	if result, err := a.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.AuthorDO), nil
+		return result.(*po.AuthorPO), nil
 	}
 }
 
-func (a authorDODo) Last() (*db_model.AuthorDO, error) {
+func (a authorPODo) Last() (*po.AuthorPO, error) {
 	if result, err := a.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.AuthorDO), nil
+		return result.(*po.AuthorPO), nil
 	}
 }
 
-func (a authorDODo) Find() ([]*db_model.AuthorDO, error) {
+func (a authorPODo) Find() ([]*po.AuthorPO, error) {
 	result, err := a.DO.Find()
-	return result.([]*db_model.AuthorDO), err
+	return result.([]*po.AuthorPO), err
 }
 
-func (a authorDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*db_model.AuthorDO, err error) {
-	buf := make([]*db_model.AuthorDO, 0, batchSize)
+func (a authorPODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*po.AuthorPO, err error) {
+	buf := make([]*po.AuthorPO, 0, batchSize)
 	err = a.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -267,49 +269,49 @@ func (a authorDODo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) er
 	return results, err
 }
 
-func (a authorDODo) FindInBatches(result *[]*db_model.AuthorDO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (a authorPODo) FindInBatches(result *[]*po.AuthorPO, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return a.DO.FindInBatches(result, batchSize, fc)
 }
 
-func (a authorDODo) Attrs(attrs ...field.AssignExpr) *authorDODo {
+func (a authorPODo) Attrs(attrs ...field.AssignExpr) *authorPODo {
 	return a.withDO(a.DO.Attrs(attrs...))
 }
 
-func (a authorDODo) Assign(attrs ...field.AssignExpr) *authorDODo {
+func (a authorPODo) Assign(attrs ...field.AssignExpr) *authorPODo {
 	return a.withDO(a.DO.Assign(attrs...))
 }
 
-func (a authorDODo) Joins(fields ...field.RelationField) *authorDODo {
+func (a authorPODo) Joins(fields ...field.RelationField) *authorPODo {
 	for _, _f := range fields {
 		a = *a.withDO(a.DO.Joins(_f))
 	}
 	return &a
 }
 
-func (a authorDODo) Preload(fields ...field.RelationField) *authorDODo {
+func (a authorPODo) Preload(fields ...field.RelationField) *authorPODo {
 	for _, _f := range fields {
 		a = *a.withDO(a.DO.Preload(_f))
 	}
 	return &a
 }
 
-func (a authorDODo) FirstOrInit() (*db_model.AuthorDO, error) {
+func (a authorPODo) FirstOrInit() (*po.AuthorPO, error) {
 	if result, err := a.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.AuthorDO), nil
+		return result.(*po.AuthorPO), nil
 	}
 }
 
-func (a authorDODo) FirstOrCreate() (*db_model.AuthorDO, error) {
+func (a authorPODo) FirstOrCreate() (*po.AuthorPO, error) {
 	if result, err := a.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*db_model.AuthorDO), nil
+		return result.(*po.AuthorPO), nil
 	}
 }
 
-func (a authorDODo) FindByPage(offset int, limit int) (result []*db_model.AuthorDO, count int64, err error) {
+func (a authorPODo) FindByPage(offset int, limit int) (result []*po.AuthorPO, count int64, err error) {
 	result, err = a.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -324,7 +326,7 @@ func (a authorDODo) FindByPage(offset int, limit int) (result []*db_model.Author
 	return
 }
 
-func (a authorDODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
+func (a authorPODo) ScanByPage(result interface{}, offset int, limit int) (count int64, err error) {
 	count, err = a.Count()
 	if err != nil {
 		return
@@ -334,15 +336,15 @@ func (a authorDODo) ScanByPage(result interface{}, offset int, limit int) (count
 	return
 }
 
-func (a authorDODo) Scan(result interface{}) (err error) {
+func (a authorPODo) Scan(result interface{}) (err error) {
 	return a.DO.Scan(result)
 }
 
-func (a authorDODo) Delete(models ...*db_model.AuthorDO) (result gen.ResultInfo, err error) {
+func (a authorPODo) Delete(models ...*po.AuthorPO) (result gen.ResultInfo, err error) {
 	return a.DO.Delete(models)
 }
 
-func (a *authorDODo) withDO(do gen.Dao) *authorDODo {
+func (a *authorPODo) withDO(do gen.Dao) *authorPODo {
 	a.DO = *do.(*gen.DO)
 	return a
 }

@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 )
 
@@ -39,6 +38,6 @@ func (receiver PaymentPublishMq) CheckParam(ctx context.Context, request *sc_mis
 // 参数校验后的真实处理
 func (receiver PaymentPublishMq) doHandle(ctx context.Context, request sc_misc_api.PaymentPublishMqRequest) (r *sc_misc_api.PaymentPublishMqResponse, err error) {
 
-	return nil, errs.CodeErrorf(enums.StatusCodeServer, "不支持直接调用RPC接口发送MQ消息")
+	return nil, errs.CodeErrorf(errs.StatusCodeServer, "不支持直接调用RPC接口发送MQ消息")
 
 }

@@ -1,17 +1,17 @@
 package db_model_conv
 
 import (
-	"github.com/eyebluecn/sc-misc/src/model"
-	"github.com/eyebluecn/sc-misc/src/repository/db_model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/po"
 )
 
 // 数据库模型转换为领域模型
-func ConvertAuthorDO(thing *model.Author) *db_model.AuthorDO {
+func ConvertAuthorDO(thing *do.Author) *po.AuthorPO {
 	if thing == nil {
 		return nil
 	}
 
-	return &db_model.AuthorDO{
+	return &po.AuthorPO{
 		ID:         thing.ID,
 		CreateTime: thing.CreateTime,
 		UpdateTime: thing.UpdateTime,
@@ -22,11 +22,11 @@ func ConvertAuthorDO(thing *model.Author) *db_model.AuthorDO {
 }
 
 // 数据库模型转换为领域模型
-func ConvertAuthorDOs(things []*model.Author) []*db_model.AuthorDO {
+func ConvertAuthorDOs(things []*do.Author) []*po.AuthorPO {
 	if things == nil {
 		return nil
 	}
-	var readerDOs []*db_model.AuthorDO
+	var readerDOs []*po.AuthorPO
 	for _, item := range things {
 		readerDOs = append(readerDOs, ConvertAuthorDO(item))
 	}

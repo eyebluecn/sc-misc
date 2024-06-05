@@ -5,11 +5,11 @@ import (
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 	"github.com/eyebluecn/sc-misc/src/repository/query"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -26,9 +26,9 @@ func NewColumnQuoteRepo() ColumnQuoteRepo {
 // 新建一个ColumnQuote
 func (receiver ColumnQuoteRepo) Insert(
 	ctx context.Context,
-	reader *model.ColumnQuote,
-) (*model.ColumnQuote, error) {
-	table := query.Use(config.DB).ColumnQuoteDO
+	reader *do.ColumnQuote,
+) (*do.ColumnQuote, error) {
+	table := query.Use(config.DB).ColumnQuotePO
 
 	//时间置为当前
 	reader.CreateTime = time.Now()
@@ -48,15 +48,15 @@ func (receiver ColumnQuoteRepo) Insert(
 func (receiver ColumnQuoteRepo) FindByIds(
 	ctx context.Context,
 	ids []int64,
-) (list []*model.ColumnQuote, err error) {
+) (list []*do.ColumnQuote, err error) {
 
-	table := query.Use(config.DB).ColumnQuoteDO
+	table := query.Use(config.DB).ColumnQuotePO
 	conditions := make([]gen.Condition, 0)
 
 	if len(ids) > 0 {
 		conditions = append(conditions, table.ID.In(ids...))
 	} else {
-		return nil, errs.CodeErrorf(enums.StatusCodeParamsError, "ids列表不能为空")
+		return nil, errs.CodeErrorf(errs.StatusCodeParamsError, "ids列表不能为空")
 	}
 
 	tableDO := table.WithContext(ctx).Debug()
@@ -77,16 +77,16 @@ func (receiver ColumnQuoteRepo) FindByIds(
 func (receiver ColumnQuoteRepo) FindOkByColumnIds(
 	ctx context.Context,
 	columnIds []int64,
-) (list []*model.ColumnQuote, err error) {
+) (list []*do.ColumnQuote, err error) {
 
-	table := query.Use(config.DB).ColumnQuoteDO
+	table := query.Use(config.DB).ColumnQuotePO
 	conditions := make([]gen.Condition, 0)
 
-	conditions = append(conditions, table.Status.Eq(db_model_conv.ColumnQuoteStatusToStorage(model.ColumnQuoteStatusOk)))
+	conditions = append(conditions, table.Status.Eq(db_model_conv.ColumnQuoteStatusToStorage(enums.ColumnQuoteStatusOk)))
 	if len(columnIds) > 0 {
 		conditions = append(conditions, table.ColumnID.In(columnIds...))
 	} else {
-		return nil, errs.CodeErrorf(enums.StatusCodeParamsError, "ids列表不能为空")
+		return nil, errs.CodeErrorf(errs.StatusCodeParamsError, "ids列表不能为空")
 	}
 
 	tableDO := table.WithContext(ctx).Debug()
@@ -107,8 +107,8 @@ func (receiver ColumnQuoteRepo) FindOkByColumnIds(
 func (receiver ColumnQuoteRepo) QueryByColumnId(
 	ctx context.Context,
 	columnId int64,
-) (*model.ColumnQuote, error) {
-	table := query.Use(config.DB).ColumnQuoteDO
+) (*do.ColumnQuote, error) {
+	table := query.Use(config.DB).ColumnQuotePO
 
 	conditions := make([]gen.Condition, 0)
 

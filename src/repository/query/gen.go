@@ -17,57 +17,57 @@ import (
 
 var (
 	Q             = new(Query)
-	AuthorDO      *authorDO
-	ColumnDO      *columnDO
-	ColumnQuoteDO *columnQuoteDO
-	CommissionDO  *commissionDO
-	ContractDO    *contractDO
-	EditorDO      *editorDO
-	PaymentDO     *paymentDO
-	ReaderDO      *readerDO
-	ReceiptDO     *receiptDO
+	AuthorPO      *authorPO
+	ColumnPO      *columnPO
+	ColumnQuotePO *columnQuotePO
+	CommissionPO  *commissionPO
+	ContractPO    *contractPO
+	EditorPO      *editorPO
+	PaymentPO     *paymentPO
+	ReaderPO      *readerPO
+	ReceiptPO     *receiptPO
 )
 
 func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
 	*Q = *Use(db, opts...)
-	AuthorDO = &Q.AuthorDO
-	ColumnDO = &Q.ColumnDO
-	ColumnQuoteDO = &Q.ColumnQuoteDO
-	CommissionDO = &Q.CommissionDO
-	ContractDO = &Q.ContractDO
-	EditorDO = &Q.EditorDO
-	PaymentDO = &Q.PaymentDO
-	ReaderDO = &Q.ReaderDO
-	ReceiptDO = &Q.ReceiptDO
+	AuthorPO = &Q.AuthorPO
+	ColumnPO = &Q.ColumnPO
+	ColumnQuotePO = &Q.ColumnQuotePO
+	CommissionPO = &Q.CommissionPO
+	ContractPO = &Q.ContractPO
+	EditorPO = &Q.EditorPO
+	PaymentPO = &Q.PaymentPO
+	ReaderPO = &Q.ReaderPO
+	ReceiptPO = &Q.ReceiptPO
 }
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:            db,
-		AuthorDO:      newAuthorDO(db, opts...),
-		ColumnDO:      newColumnDO(db, opts...),
-		ColumnQuoteDO: newColumnQuoteDO(db, opts...),
-		CommissionDO:  newCommissionDO(db, opts...),
-		ContractDO:    newContractDO(db, opts...),
-		EditorDO:      newEditorDO(db, opts...),
-		PaymentDO:     newPaymentDO(db, opts...),
-		ReaderDO:      newReaderDO(db, opts...),
-		ReceiptDO:     newReceiptDO(db, opts...),
+		AuthorPO:      newAuthorPO(db, opts...),
+		ColumnPO:      newColumnPO(db, opts...),
+		ColumnQuotePO: newColumnQuotePO(db, opts...),
+		CommissionPO:  newCommissionPO(db, opts...),
+		ContractPO:    newContractPO(db, opts...),
+		EditorPO:      newEditorPO(db, opts...),
+		PaymentPO:     newPaymentPO(db, opts...),
+		ReaderPO:      newReaderPO(db, opts...),
+		ReceiptPO:     newReceiptPO(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	AuthorDO      authorDO
-	ColumnDO      columnDO
-	ColumnQuoteDO columnQuoteDO
-	CommissionDO  commissionDO
-	ContractDO    contractDO
-	EditorDO      editorDO
-	PaymentDO     paymentDO
-	ReaderDO      readerDO
-	ReceiptDO     receiptDO
+	AuthorPO      authorPO
+	ColumnPO      columnPO
+	ColumnQuotePO columnQuotePO
+	CommissionPO  commissionPO
+	ContractPO    contractPO
+	EditorPO      editorPO
+	PaymentPO     paymentPO
+	ReaderPO      readerPO
+	ReceiptPO     receiptPO
 }
 
 func (q *Query) Available() bool { return q.db != nil }
@@ -75,15 +75,15 @@ func (q *Query) Available() bool { return q.db != nil }
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:            db,
-		AuthorDO:      q.AuthorDO.clone(db),
-		ColumnDO:      q.ColumnDO.clone(db),
-		ColumnQuoteDO: q.ColumnQuoteDO.clone(db),
-		CommissionDO:  q.CommissionDO.clone(db),
-		ContractDO:    q.ContractDO.clone(db),
-		EditorDO:      q.EditorDO.clone(db),
-		PaymentDO:     q.PaymentDO.clone(db),
-		ReaderDO:      q.ReaderDO.clone(db),
-		ReceiptDO:     q.ReceiptDO.clone(db),
+		AuthorPO:      q.AuthorPO.clone(db),
+		ColumnPO:      q.ColumnPO.clone(db),
+		ColumnQuotePO: q.ColumnQuotePO.clone(db),
+		CommissionPO:  q.CommissionPO.clone(db),
+		ContractPO:    q.ContractPO.clone(db),
+		EditorPO:      q.EditorPO.clone(db),
+		PaymentPO:     q.PaymentPO.clone(db),
+		ReaderPO:      q.ReaderPO.clone(db),
+		ReceiptPO:     q.ReceiptPO.clone(db),
 	}
 }
 
@@ -98,41 +98,41 @@ func (q *Query) WriteDB() *Query {
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:            db,
-		AuthorDO:      q.AuthorDO.replaceDB(db),
-		ColumnDO:      q.ColumnDO.replaceDB(db),
-		ColumnQuoteDO: q.ColumnQuoteDO.replaceDB(db),
-		CommissionDO:  q.CommissionDO.replaceDB(db),
-		ContractDO:    q.ContractDO.replaceDB(db),
-		EditorDO:      q.EditorDO.replaceDB(db),
-		PaymentDO:     q.PaymentDO.replaceDB(db),
-		ReaderDO:      q.ReaderDO.replaceDB(db),
-		ReceiptDO:     q.ReceiptDO.replaceDB(db),
+		AuthorPO:      q.AuthorPO.replaceDB(db),
+		ColumnPO:      q.ColumnPO.replaceDB(db),
+		ColumnQuotePO: q.ColumnQuotePO.replaceDB(db),
+		CommissionPO:  q.CommissionPO.replaceDB(db),
+		ContractPO:    q.ContractPO.replaceDB(db),
+		EditorPO:      q.EditorPO.replaceDB(db),
+		PaymentPO:     q.PaymentPO.replaceDB(db),
+		ReaderPO:      q.ReaderPO.replaceDB(db),
+		ReceiptPO:     q.ReceiptPO.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	AuthorDO      *authorDODo
-	ColumnDO      *columnDODo
-	ColumnQuoteDO *columnQuoteDODo
-	CommissionDO  *commissionDODo
-	ContractDO    *contractDODo
-	EditorDO      *editorDODo
-	PaymentDO     *paymentDODo
-	ReaderDO      *readerDODo
-	ReceiptDO     *receiptDODo
+	AuthorPO      *authorPODo
+	ColumnPO      *columnPODo
+	ColumnQuotePO *columnQuotePODo
+	CommissionPO  *commissionPODo
+	ContractPO    *contractPODo
+	EditorPO      *editorPODo
+	PaymentPO     *paymentPODo
+	ReaderPO      *readerPODo
+	ReceiptPO     *receiptPODo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		AuthorDO:      q.AuthorDO.WithContext(ctx),
-		ColumnDO:      q.ColumnDO.WithContext(ctx),
-		ColumnQuoteDO: q.ColumnQuoteDO.WithContext(ctx),
-		CommissionDO:  q.CommissionDO.WithContext(ctx),
-		ContractDO:    q.ContractDO.WithContext(ctx),
-		EditorDO:      q.EditorDO.WithContext(ctx),
-		PaymentDO:     q.PaymentDO.WithContext(ctx),
-		ReaderDO:      q.ReaderDO.WithContext(ctx),
-		ReceiptDO:     q.ReceiptDO.WithContext(ctx),
+		AuthorPO:      q.AuthorPO.WithContext(ctx),
+		ColumnPO:      q.ColumnPO.WithContext(ctx),
+		ColumnQuotePO: q.ColumnQuotePO.WithContext(ctx),
+		CommissionPO:  q.CommissionPO.WithContext(ctx),
+		ContractPO:    q.ContractPO.WithContext(ctx),
+		EditorPO:      q.EditorPO.WithContext(ctx),
+		PaymentPO:     q.PaymentPO.WithContext(ctx),
+		ReaderPO:      q.ReaderPO.WithContext(ctx),
+		ReceiptPO:     q.ReceiptPO.WithContext(ctx),
 	}
 }
 

@@ -19,7 +19,7 @@ func main() {
 
 	modelPkgPath := os.Getenv("MODEL_PKG_PATH")
 	if modelPkgPath == "" {
-		modelPkgPath = "db_model"
+		modelPkgPath = "src/model/po"
 	}
 
 	generator := gen.NewGenerator(gen.Config{
@@ -36,15 +36,15 @@ func main() {
 	generator.UseDB(db)
 	generator.ApplyBasic(
 		// 表
-		generator.GenerateModelAs("scm_author", "AuthorDO"),
-		generator.GenerateModelAs("scm_column", "ColumnDO"),
-		generator.GenerateModelAs("scm_column_quote", "ColumnQuoteDO"),
-		generator.GenerateModelAs("scm_commission", "CommissionDO"),
-		generator.GenerateModelAs("scm_contract", "ContractDO"),
-		generator.GenerateModelAs("scm_editor", "EditorDO"),
-		generator.GenerateModelAs("scm_payment", "PaymentDO"),
-		generator.GenerateModelAs("scm_reader", "ReaderDO"),
-		generator.GenerateModelAs("scm_receipt", "ReceiptDO"),
+		generator.GenerateModelAs("scm_author", "AuthorPO"),
+		generator.GenerateModelAs("scm_column", "ColumnPO"),
+		generator.GenerateModelAs("scm_column_quote", "ColumnQuotePO"),
+		generator.GenerateModelAs("scm_commission", "CommissionPO"),
+		generator.GenerateModelAs("scm_contract", "ContractPO"),
+		generator.GenerateModelAs("scm_editor", "EditorPO"),
+		generator.GenerateModelAs("scm_payment", "PaymentPO"),
+		generator.GenerateModelAs("scm_reader", "ReaderPO"),
+		generator.GenerateModelAs("scm_receipt", "ReceiptPO"),
 	)
 
 	generator.Execute()

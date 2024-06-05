@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/universal"
 	"github.com/eyebluecn/sc-misc/src/repository/query"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -28,9 +28,9 @@ func NewEditorRepo() EditorRepo {
 func (receiver EditorRepo) Page(
 	ctx context.Context,
 	req EditorPageRequest,
-) (list []*model.Editor, pagination *model.Pagination, err error) {
+) (list []*do.Editor, pagination *universal.Pagination, err error) {
 
-	table := query.Use(config.DB).EditorDO
+	table := query.Use(config.DB).EditorPO
 	conditions := make([]gen.Condition, 0)
 
 	if !req.CreateTimeGte.IsZero() {
@@ -63,7 +63,7 @@ func (receiver EditorRepo) Page(
 		return nil, nil, err
 	}
 
-	pagination = &model.Pagination{
+	pagination = &universal.Pagination{
 		PageNum:    req.PageNum,
 		PageSize:   req.PageSize,
 		TotalItems: total,
@@ -75,8 +75,8 @@ func (receiver EditorRepo) Page(
 func (receiver EditorRepo) FindByUsername(
 	ctx context.Context,
 	username string,
-) (*model.Editor, error) {
-	table := query.Use(config.DB).EditorDO
+) (*do.Editor, error) {
+	table := query.Use(config.DB).EditorPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -101,8 +101,8 @@ func (receiver EditorRepo) FindByUsername(
 func (receiver EditorRepo) FindById(
 	ctx context.Context,
 	id int64,
-) (*model.Editor, error) {
-	table := query.Use(config.DB).EditorDO
+) (*do.Editor, error) {
+	table := query.Use(config.DB).EditorPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -127,13 +127,13 @@ func (receiver EditorRepo) FindById(
 func (receiver EditorRepo) CheckById(
 	ctx context.Context,
 	id int64,
-) (*model.Editor, error) {
+) (*do.Editor, error) {
 	editor, err := receiver.FindById(ctx, id)
 	if err != nil {
 		return nil, err
 	}
 	if editor == nil {
-		return nil, errs.CodeErrorf(enums.StatusCodeNotFound, fmt.Sprintf("id=%d对应的小编不存在", id))
+		return nil, errs.CodeErrorf(errs.StatusCodeNotFound, fmt.Sprintf("id=%d对应的小编不存在", id))
 	}
 	return editor, nil
 }
@@ -141,9 +141,9 @@ func (receiver EditorRepo) CheckById(
 // 新建一个Editor
 func (receiver EditorRepo) Insert(
 	ctx context.Context,
-	editor *model.Editor,
-) (*model.Editor, error) {
-	table := query.Use(config.DB).EditorDO
+	editor *do.Editor,
+) (*do.Editor, error) {
+	table := query.Use(config.DB).EditorPO
 
 	//时间置为当前
 	editor.CreateTime = time.Now()

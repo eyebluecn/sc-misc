@@ -2,17 +2,18 @@ package api_conv
 
 import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
-	"github.com/eyebluecn/sc-misc/src/model"
-	"github.com/eyebluecn/sc-misc/src/util"
+	"github.com/eyebluecn/sc-misc/src/common/util"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 )
 
 // 转为枚举
-func ConvertColumnQuoteStatus(status model.ColumnQuoteStatus) sc_misc_api.ColumnQuoteStatus {
+func ConvertColumnQuoteStatus(status enums.ColumnQuoteStatus) sc_misc_api.ColumnQuoteStatus {
 	return sc_misc_api.ColumnQuoteStatus(status)
 }
 
 // 领域模型转为传输模型
-func ConvertColumnQuoteDTO(thing *model.ColumnQuote) *sc_misc_api.ColumnQuoteDTO {
+func ConvertColumnQuoteDTO(thing *do.ColumnQuote) *sc_misc_api.ColumnQuoteDTO {
 	if thing == nil {
 		return nil
 	}
@@ -29,7 +30,7 @@ func ConvertColumnQuoteDTO(thing *model.ColumnQuote) *sc_misc_api.ColumnQuoteDTO
 }
 
 // 数据库模型转换为领域模型
-func ConvertColumnQuoteDTOs(things []*model.ColumnQuote) []*sc_misc_api.ColumnQuoteDTO {
+func ConvertColumnQuoteDTOs(things []*do.ColumnQuote) []*sc_misc_api.ColumnQuoteDTO {
 	if things == nil {
 		return nil
 	}

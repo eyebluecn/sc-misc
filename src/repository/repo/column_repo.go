@@ -5,11 +5,11 @@ import (
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
-	"github.com/eyebluecn/sc-misc/src/common/enums"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
 	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
-	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/universal"
 	"github.com/eyebluecn/sc-misc/src/repository/query"
 	"gorm.io/gen"
 	"gorm.io/gorm"
@@ -26,9 +26,9 @@ func NewColumnRepo() ColumnRepo {
 // 新建一个Reader
 func (receiver ColumnRepo) Insert(
 	ctx context.Context,
-	column *model.Column,
-) (*model.Column, error) {
-	table := query.Use(config.DB).ColumnDO
+	column *do.Column,
+) (*do.Column, error) {
+	table := query.Use(config.DB).ColumnPO
 
 	//时间置为当前
 	column.CreateTime = time.Now()
@@ -48,9 +48,9 @@ func (receiver ColumnRepo) Insert(
 func (receiver ColumnRepo) Page(
 	ctx context.Context,
 	req ColumnPageRequest,
-) (list []*model.Column, pagination *model.Pagination, err error) {
+) (list []*do.Column, pagination *universal.Pagination, err error) {
 
-	table := query.Use(config.DB).ColumnDO
+	table := query.Use(config.DB).ColumnPO
 	conditions := make([]gen.Condition, 0)
 
 	if !req.CreateTimeGte.IsZero() {
@@ -93,7 +93,7 @@ func (receiver ColumnRepo) Page(
 		req.PageSize = 10
 	}
 	if req.PageSize > 100 {
-		return nil, nil, errs.CodeErrorf(enums.StatusCodeParamsError, "PageSize不能大于100")
+		return nil, nil, errs.CodeErrorf(errs.StatusCodeParamsError, "PageSize不能大于100")
 	}
 
 	offset := (req.PageNum - 1) * req.PageSize
@@ -104,7 +104,7 @@ func (receiver ColumnRepo) Page(
 		return nil, nil, err
 	}
 
-	pagination = &model.Pagination{
+	pagination = &universal.Pagination{
 		PageNum:    req.PageNum,
 		PageSize:   req.PageSize,
 		TotalItems: total,
@@ -116,8 +116,8 @@ func (receiver ColumnRepo) Page(
 func (receiver ColumnRepo) QueryById(
 	ctx context.Context,
 	columnId int64,
-) (*model.Column, error) {
-	table := query.Use(config.DB).ColumnDO
+) (*do.Column, error) {
+	table := query.Use(config.DB).ColumnPO
 
 	conditions := make([]gen.Condition, 0)
 
@@ -142,13 +142,13 @@ func (receiver ColumnRepo) QueryById(
 func (receiver ColumnRepo) CheckById(
 	ctx context.Context,
 	columnId int64,
-) (*model.Column, error) {
+) (*do.Column, error) {
 	column, err := receiver.QueryById(ctx, columnId)
 	if err != nil {
-		return nil, errs.CodeErrorf(enums.StatusCodeUnknown, err.Error())
+		return nil, errs.CodeErrorf(errs.StatusCodeUnknown, err.Error())
 	}
 	if column == nil {
-		return nil, errs.CodeErrorf(enums.StatusCodeNotFound, "没有找到%v对应的记录", columnId)
+		return nil, errs.CodeErrorf(errs.StatusCodeNotFound, "没有找到%v对应的记录", columnId)
 	}
 	return column, nil
 }
@@ -157,15 +157,15 @@ func (receiver ColumnRepo) CheckById(
 func (receiver ColumnRepo) QueryByIds(
 	ctx context.Context,
 	ids []int64,
-) (list []*model.Column, err error) {
+) (list []*do.Column, err error) {
 
-	table := query.Use(config.DB).ColumnDO
+	table := query.Use(config.DB).ColumnPO
 	conditions := make([]gen.Condition, 0)
 
 	if len(ids) > 0 {
 		conditions = append(conditions, table.ID.In(ids...))
 	} else {
-		return nil, errs.CodeErrorf(enums.StatusCodeParamsError, "ids列表不能为空")
+		return nil, errs.CodeErrorf(errs.StatusCodeParamsError, "ids列表不能为空")
 	}
 
 	tableDO := table.WithContext(ctx).Debug()

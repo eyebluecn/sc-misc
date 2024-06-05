@@ -6,6 +6,8 @@ import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/domain"
 	"github.com/eyebluecn/sc-misc/src/model"
+	"github.com/eyebluecn/sc-misc/src/model/do"
+	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
@@ -30,7 +32,7 @@ func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_mis
 	}
 	if author == nil {
 		//作者注册，简单用密码123456，真名和用户名一样。
-		author = &model.Author{
+		author = &do.Author{
 			Username: request.AuthorName,
 			Password: "123456",
 			Realname: request.AuthorName,
@@ -48,10 +50,10 @@ func (receiver ColumnWriteApp) ColumnOmnibus(ctx context.Context, request sc_mis
 	}
 
 	//创建专栏
-	column := &model.Column{
+	column := &do.Column{
 		Name:     request.ColumnName,
 		AuthorID: author.ID,
-		Status:   model.ColumnStatusOk,
+		Status:   enums.ColumnStatusOk,
 	}
 	column, err = domain.NewColumnDomainService().Create(ctx, column, author)
 	if err != nil {
