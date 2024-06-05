@@ -17,10 +17,7 @@ func main() {
 		outPath = "src/repository/dao"
 	}
 
-	modelPkgPath := os.Getenv("MODEL_PKG_PATH")
-	if modelPkgPath == "" {
-		modelPkgPath = "../model/po"
-	}
+	modelPkgPath := "../model/po"
 
 	generator := gen.NewGenerator(gen.Config{
 		OutPath:      outPath,
