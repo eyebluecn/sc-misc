@@ -6,7 +6,7 @@ import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
 	"github.com/eyebluecn/sc-misc/src/common/util"
-	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
 	mq2 "github.com/eyebluecn/sc-misc/src/infrastructure/middleware/mq"
 	"github.com/eyebluecn/sc-misc/src/infrastructure/third_party_service/pay"
 	"github.com/eyebluecn/sc-misc/src/model/do"
@@ -111,7 +111,7 @@ func (receiver PaymentDomainService) SendMqPaid(ctx context.Context, payment *do
 		Keys:       traceId,
 		Event:      event,
 		OccurTime:  util.Timestamp(time.Now()),
-		PaymentDTO: api_conv.ConvertPaymentDTO(payment),
+		PaymentDTO: do2dto.ConvertPaymentDTO(payment),
 	}
 	err := mq2.NewProducer().Publish(ctx, mq2.MqTopicPayment, event.String(), traceId, util.ToJSON(payload))
 	if err != nil {

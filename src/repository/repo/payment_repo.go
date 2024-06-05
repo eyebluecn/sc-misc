@@ -6,8 +6,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
-	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2po"
+	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
@@ -34,7 +34,7 @@ func (receiver PaymentRepo) Insert(
 	payment.CreateTime = time.Now()
 	payment.UpdateTime = time.Now()
 
-	paymentDO := db_model_conv.ConvertPaymentDO(payment)
+	paymentDO := do2po.ConvertPaymentPO(payment)
 
 	err := table.WithContext(ctx).Debug().Create(paymentDO)
 	if err != nil {
@@ -42,7 +42,7 @@ func (receiver PaymentRepo) Insert(
 		return nil, err
 	}
 
-	return model_conv.ConvertPayment(paymentDO), nil
+	return po2do.ConvertPaymentDO(paymentDO), nil
 }
 
 // 更新状态
@@ -90,7 +90,7 @@ func (receiver PaymentRepo) QueryById(
 		klog.CtxErrorf(ctx, "db repo error %v", err)
 		return nil, err
 	}
-	return model_conv.ConvertPayment(paymentDO), nil
+	return po2do.ConvertPaymentDO(paymentDO), nil
 }
 
 // 按照id查找，找不到返回NotFound的Err
@@ -133,7 +133,7 @@ func (receiver PaymentRepo) QueryByOrderNo(
 		klog.CtxErrorf(ctx, "db repo error %v", err)
 		return nil, err
 	}
-	return model_conv.ConvertPayment(paymentDO), nil
+	return po2do.ConvertPaymentDO(paymentDO), nil
 }
 
 // 按照id查找，找不到返回NotFound的Err

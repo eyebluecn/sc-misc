@@ -5,7 +5,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
@@ -46,7 +46,7 @@ func (receiver ColumnQuoteQueryByColumnId) doHandle(ctx context.Context, request
 		return nil, err
 	}
 	response := &sc_misc_api.ColumnQuoteQueryByColumnIdResponse{
-		Data:     api_conv.ConvertColumnQuoteDTO(columnQuote),
+		Data:     do2dto.ConvertColumnQuoteDTO(columnQuote),
 		BaseResp: nil,
 	}
 

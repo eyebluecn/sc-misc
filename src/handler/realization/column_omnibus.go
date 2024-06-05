@@ -6,7 +6,7 @@ import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/application"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
 )
 
 type ColumnOmnibus struct{}
@@ -59,6 +59,6 @@ func (receiver ColumnOmnibus) doHandle(ctx context.Context, request sc_misc_api.
 	}
 
 	return &sc_misc_api.ColumnOmnibusResponse{
-		RichColumnDTO: api_conv.ConvertRichColumnDTO(richColumn),
+		RichColumnDTO: do2dto.ConvertRichColumnDTO(richColumn),
 	}, nil
 }

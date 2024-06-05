@@ -6,8 +6,8 @@ import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/application"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/api2model_conv"
-	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
+	"github.com/eyebluecn/sc-misc/src/converter/dto2do"
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
 
@@ -51,7 +51,7 @@ func (receiver RichColumnPage) doHandle(ctx context.Context, request sc_misc_api
 	repoRequest := repo.ColumnPageRequest{
 		Name:     request.Name,
 		AuthorId: request.AuthorId,
-		Status:   api2model_conv.ConvertColumnStatus(request.Status),
+		Status:   dto2do.ConvertColumnStatus(request.Status),
 		PageNum:  request.PageNum,
 		PageSize: request.PageSize,
 	}
@@ -59,8 +59,8 @@ func (receiver RichColumnPage) doHandle(ctx context.Context, request sc_misc_api
 	richColumns, pagination, err := application.NewColumnReadApp().ReaderColumnList(ctx, *request.Operator, repoRequest)
 
 	return &sc_misc_api.RichColumnPageResponse{
-		Data:       api_conv.ConvertRichColumnDTOs(richColumns),
-		Pagination: api_conv.ConvertPagination(pagination),
+		Data:       do2dto.ConvertRichColumnDTOs(richColumns),
+		Pagination: do2dto.ConvertPagination(pagination),
 	}, nil
 
 }

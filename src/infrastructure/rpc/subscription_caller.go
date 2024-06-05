@@ -5,8 +5,9 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
-	"github.com/eyebluecn/sc-misc/src/converter/vo_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/dto2universal"
+	"github.com/eyebluecn/sc-misc/src/converter/dto2vo"
+	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
 	"github.com/eyebluecn/sc-misc/src/model/vo"
 	"github.com/eyebluecn/sc-subscription-idl/kitex_gen/sc_subscription_api"
@@ -35,7 +36,7 @@ func (receiver SubscriptionCaller) SubscriptionPage(ctx context.Context, request
 		klog.CtxErrorf(ctx, "Failed: response.BaseResp is nil")
 		return nil, nil, errs.Errorf("response is nil")
 	}
-	statusCode := model_conv.ConvertStatusCode(response.BaseResp.StatusCode)
+	statusCode := po2do.ConvertStatusCode(response.BaseResp.StatusCode)
 	if statusCode != errs.StatusCodeOk {
 		return nil, nil, errs.CodeErrorf(statusCode, response.BaseResp.StatusMessage)
 	}
@@ -46,8 +47,8 @@ func (receiver SubscriptionCaller) SubscriptionPage(ctx context.Context, request
 		return nil, nil, errs.CodeErrorf(errs.StatusCodeNotFound, "Failed: pagination is nil.")
 	}
 
-	readerVos := vo_conv.ConvertSubscriptions(response.Data)
-	pagination := model_conv.ConvertSubscriptionPagination(response.Pagination)
+	readerVos := dto2vo.ConvertSubscriptionVOs(response.Data)
+	pagination := dto2universal.ConvertSubscriptionPagination(response.Pagination)
 
 	return readerVos, pagination, nil
 }
@@ -87,7 +88,7 @@ func (receiver SubscriptionCaller) MqMessageArrive(ctx context.Context, request 
 		klog.CtxErrorf(ctx, "Failed: response.BaseResp is nil")
 		return errs.Errorf("response is nil")
 	}
-	statusCode := model_conv.ConvertStatusCode(response.BaseResp.StatusCode)
+	statusCode := po2do.ConvertStatusCode(response.BaseResp.StatusCode)
 	if statusCode != errs.StatusCodeOk {
 		return errs.CodeErrorf(statusCode, response.BaseResp.StatusMessage)
 	}

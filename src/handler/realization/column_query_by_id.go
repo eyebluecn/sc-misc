@@ -6,7 +6,7 @@ import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/application"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
 )
 
 type ColumnQueryById struct{}
@@ -46,7 +46,7 @@ func (receiver ColumnQueryById) doHandle(ctx context.Context, request sc_misc_ap
 		return nil, err
 	}
 	response := &sc_misc_api.ColumnQueryByIdResponse{
-		Data:     api_conv.ConvertColumnDTO(column),
+		Data:     do2dto.ConvertColumnDTO(column),
 		BaseResp: nil,
 	}
 

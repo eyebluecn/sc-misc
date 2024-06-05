@@ -6,8 +6,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
-	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2po"
+	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
@@ -45,7 +45,7 @@ func (receiver AuthorRepo) FindByUsername(
 		}
 		return nil, err
 	}
-	return model_conv.ConvertAuthor(readerDO), nil
+	return po2do.ConvertAuthorDO(readerDO), nil
 }
 
 // 新建一个Author
@@ -59,14 +59,14 @@ func (receiver AuthorRepo) Insert(
 	reader.CreateTime = time.Now()
 	reader.UpdateTime = time.Now()
 
-	readerDO := db_model_conv.ConvertAuthorDO(reader)
+	readerDO := do2po.ConvertAuthorPO(reader)
 
 	err := table.WithContext(ctx).Debug().Create(readerDO)
 	if err != nil {
 		return nil, err
 	}
 
-	return model_conv.ConvertAuthor(readerDO), nil
+	return po2do.ConvertAuthorDO(readerDO), nil
 }
 
 // 根据id批量查询
@@ -95,5 +95,5 @@ func (receiver AuthorRepo) FindByIds(
 		return nil, err
 	}
 
-	return model_conv.ConvertAuthors(listData), nil
+	return po2do.ConvertAuthorDOs(listData), nil
 }

@@ -6,8 +6,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
-	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2po"
+	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/do/enums"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
@@ -34,14 +34,14 @@ func (receiver ColumnQuoteRepo) Insert(
 	reader.CreateTime = time.Now()
 	reader.UpdateTime = time.Now()
 
-	readerDO := db_model_conv.ConvertColumnQuoteDO(reader)
+	readerDO := do2po.ConvertColumnQuotePO(reader)
 
 	err := table.WithContext(ctx).Debug().Create(readerDO)
 	if err != nil {
 		return nil, err
 	}
 
-	return model_conv.ConvertColumnQuote(readerDO), nil
+	return po2do.ConvertColumnQuoteDO(readerDO), nil
 }
 
 // 根据id批量查询
@@ -70,7 +70,7 @@ func (receiver ColumnQuoteRepo) FindByIds(
 		return nil, err
 	}
 
-	return model_conv.ConvertColumnQuotes(listData), nil
+	return po2do.ConvertColumnQuoteDOs(listData), nil
 }
 
 // 根据专栏id批量查询生效的
@@ -82,7 +82,7 @@ func (receiver ColumnQuoteRepo) FindOkByColumnIds(
 	table := dao.Use(config.DB).ColumnQuotePO
 	conditions := make([]gen.Condition, 0)
 
-	conditions = append(conditions, table.Status.Eq(db_model_conv.ColumnQuoteStatusToStorage(enums.ColumnQuoteStatusOk)))
+	conditions = append(conditions, table.Status.Eq(do2po.ConvertColumnQuoteStatus(enums.ColumnQuoteStatusOk)))
 	if len(columnIds) > 0 {
 		conditions = append(conditions, table.ColumnID.In(columnIds...))
 	} else {
@@ -100,7 +100,7 @@ func (receiver ColumnQuoteRepo) FindOkByColumnIds(
 		return nil, err
 	}
 
-	return model_conv.ConvertColumnQuotes(listData), nil
+	return po2do.ConvertColumnQuoteDOs(listData), nil
 }
 
 // 按照专栏id查找，找不到返回nil
@@ -126,5 +126,5 @@ func (receiver ColumnQuoteRepo) QueryByColumnId(
 		}
 		return nil, err
 	}
-	return model_conv.ConvertColumnQuote(readerDO), nil
+	return po2do.ConvertColumnQuoteDO(readerDO), nil
 }

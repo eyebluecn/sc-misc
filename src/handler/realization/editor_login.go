@@ -6,7 +6,7 @@ import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/application"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
 )
 
 type EditorLogin struct{}
@@ -46,6 +46,6 @@ func (receiver EditorLogin) doHandle(ctx context.Context, request sc_misc_api.Ed
 	}
 
 	return &sc_misc_api.EditorLoginResponse{
-		Data: api_conv.ConvertEditorDTO(editor),
+		Data: do2dto.ConvertEditorDTO(editor),
 	}, nil
 }

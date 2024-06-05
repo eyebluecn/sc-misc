@@ -6,7 +6,7 @@ import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/application"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
 )
 
 type PaymentPaidCallback struct{}
@@ -49,7 +49,7 @@ func (receiver PaymentPaidCallback) doHandle(ctx context.Context, request sc_mis
 	}
 
 	resp := &sc_misc_api.PaymentPaidCallbackResponse{
-		Data:     api_conv.ConvertPaymentDTO(payment),
+		Data:     do2dto.ConvertPaymentDTO(payment),
 		BaseResp: nil,
 	}
 

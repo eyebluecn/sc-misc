@@ -7,8 +7,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
-	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2po"
+	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
@@ -68,7 +68,7 @@ func (receiver EditorRepo) Page(
 		PageSize:   req.PageSize,
 		TotalItems: total,
 	}
-	return model_conv.ConvertEditors(pageData), pagination, nil
+	return po2do.ConvertEditorDOs(pageData), pagination, nil
 }
 
 // 按照用户名查找，找不到返回nil
@@ -94,7 +94,7 @@ func (receiver EditorRepo) FindByUsername(
 		}
 		return nil, err
 	}
-	return model_conv.ConvertEditor(editorDO), nil
+	return po2do.ConvertEditorDO(editorDO), nil
 }
 
 // 按照id查找，找不到返回nil
@@ -120,7 +120,7 @@ func (receiver EditorRepo) FindById(
 		}
 		return nil, err
 	}
-	return model_conv.ConvertEditor(editorDO), nil
+	return po2do.ConvertEditorDO(editorDO), nil
 }
 
 // 按照id查找，找不到返回err
@@ -149,12 +149,12 @@ func (receiver EditorRepo) Insert(
 	editor.CreateTime = time.Now()
 	editor.UpdateTime = time.Now()
 
-	editorDO := db_model_conv.ConvertEditorDO(editor)
+	editorDO := do2po.ConvertEditorPO(editor)
 
 	err := table.WithContext(ctx).Debug().Create(editorDO)
 	if err != nil {
 		return nil, err
 	}
 
-	return model_conv.ConvertEditor(editorDO), nil
+	return po2do.ConvertEditorDO(editorDO), nil
 }

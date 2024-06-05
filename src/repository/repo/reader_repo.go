@@ -6,8 +6,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
-	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2po"
+	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
@@ -67,7 +67,7 @@ func (receiver ReaderRepo) Page(
 		PageSize:   req.PageSize,
 		TotalItems: total,
 	}
-	return model_conv.ConvertReaders(pageData), pagination, nil
+	return po2do.ConvertReaderDOs(pageData), pagination, nil
 }
 
 // 按照用户名查找，找不到返回nil
@@ -93,7 +93,7 @@ func (receiver ReaderRepo) QueryByUsername(
 		}
 		return nil, err
 	}
-	return model_conv.ConvertReader(readerDO), nil
+	return po2do.ConvertReaderDO(readerDO), nil
 }
 
 // 新建一个Reader
@@ -107,14 +107,14 @@ func (receiver ReaderRepo) Insert(
 	reader.CreateTime = time.Now()
 	reader.UpdateTime = time.Now()
 
-	readerDO := db_model_conv.ConvertReaderDO(reader)
+	readerDO := do2po.ConvertReaderPO(reader)
 
 	err := table.WithContext(ctx).Debug().Create(readerDO)
 	if err != nil {
 		return nil, err
 	}
 
-	return model_conv.ConvertReader(readerDO), nil
+	return po2do.ConvertReaderDO(readerDO), nil
 }
 
 // 按照id查找，找不到返回nil
@@ -140,7 +140,7 @@ func (receiver ReaderRepo) QueryById(
 		}
 		return nil, err
 	}
-	return model_conv.ConvertReader(readerDO), nil
+	return po2do.ConvertReaderDO(readerDO), nil
 }
 
 // 按照id查找，找不到返回NotFound的Err
@@ -184,5 +184,5 @@ func (receiver ReaderRepo) QueryByIds(
 		return nil, err
 	}
 
-	return model_conv.ConvertReaders(listData), nil
+	return po2do.ConvertReaderDOs(listData), nil
 }

@@ -3,8 +3,8 @@ package repo
 import (
 	"context"
 	"github.com/eyebluecn/sc-misc/src/common/config"
-	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
-	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2po"
+	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"time"
@@ -28,12 +28,12 @@ func (receiver ContractRepo) Insert(
 	contract.CreateTime = time.Now()
 	contract.UpdateTime = time.Now()
 
-	contractDO := db_model_conv.ConvertContractDO(contract)
+	contractDO := do2po.ConvertContractPO(contract)
 
 	err := table.WithContext(ctx).Debug().Create(contractDO)
 	if err != nil {
 		return nil, err
 	}
 
-	return model_conv.ConvertContract(contractDO), nil
+	return po2do.ConvertContractDO(contractDO), nil
 }

@@ -6,8 +6,8 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/config"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/db_model_conv"
-	"github.com/eyebluecn/sc-misc/src/converter/model_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2po"
+	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/universal"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
@@ -34,14 +34,14 @@ func (receiver ColumnRepo) Insert(
 	column.CreateTime = time.Now()
 	column.UpdateTime = time.Now()
 
-	columnDO := db_model_conv.ConvertColumnDO(column)
+	columnDO := do2po.ConvertColumnPO(column)
 
 	err := table.WithContext(ctx).Debug().Create(columnDO)
 	if err != nil {
 		return nil, err
 	}
 
-	return model_conv.ConvertColumn(columnDO), nil
+	return po2do.ConvertColumnDO(columnDO), nil
 }
 
 // 按照分页查询 1基
@@ -66,7 +66,7 @@ func (receiver ColumnRepo) Page(
 	}
 
 	if req.Status != nil {
-		status := db_model_conv.ColumnStatusToStorage(*req.Status)
+		status := do2po.ConvertColumnStatus(*req.Status)
 		conditions = append(conditions, table.Status.Eq(status))
 	}
 
@@ -109,7 +109,7 @@ func (receiver ColumnRepo) Page(
 		PageSize:   req.PageSize,
 		TotalItems: total,
 	}
-	return model_conv.ConvertColumns(pageData), pagination, nil
+	return po2do.ConvertColumnDOs(pageData), pagination, nil
 }
 
 // 按照id查找，找不到返回nil
@@ -135,7 +135,7 @@ func (receiver ColumnRepo) QueryById(
 		}
 		return nil, err
 	}
-	return model_conv.ConvertColumn(columnDO), nil
+	return po2do.ConvertColumnDO(columnDO), nil
 }
 
 // 按照id查找，找不到返回NotFound的Err
@@ -179,5 +179,5 @@ func (receiver ColumnRepo) QueryByIds(
 		return nil, err
 	}
 
-	return model_conv.ConvertColumns(listData), nil
+	return po2do.ConvertColumnDOs(listData), nil
 }

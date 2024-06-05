@@ -6,7 +6,7 @@ import (
 	"github.com/eyebluecn/sc-misc-idl/kitex_gen/sc_misc_api"
 	"github.com/eyebluecn/sc-misc/src/application"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/api_conv"
+	"github.com/eyebluecn/sc-misc/src/converter/do2dto"
 )
 
 type ReaderQueryById struct{}
@@ -47,7 +47,7 @@ func (receiver ReaderQueryById) doHandle(ctx context.Context, request sc_misc_ap
 		return nil, err
 	}
 	response := &sc_misc_api.ReaderQueryByIdResponse{
-		Data:     api_conv.ConvertReaderDTO(reader),
+		Data:     do2dto.ConvertReaderDTO(reader),
 		BaseResp: nil,
 	}
 
