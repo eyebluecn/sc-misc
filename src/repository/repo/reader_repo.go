@@ -9,7 +9,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/query"
-	"github.com/eyebluecn/sc-misc/src/model/universal"
+	"github.com/eyebluecn/sc-misc/src/model/result"
 	"github.com/eyebluecn/sc-misc/src/repository/config"
 	"github.com/eyebluecn/sc-misc/src/repository/dao"
 	"gorm.io/gen"
@@ -28,7 +28,7 @@ func NewReaderRepo() ReaderRepo {
 func (receiver ReaderRepo) Page(
 	ctx context.Context,
 	req query.ReaderPageQuery,
-) (list []*do.ReaderDO, pagination *universal.Pagination, err error) {
+) (list []*do.ReaderDO, pagination *result.Pagination, err error) {
 
 	table := dao.Use(config.DB).ReaderPO
 	conditions := make([]gen.Condition, 0)
@@ -63,7 +63,7 @@ func (receiver ReaderRepo) Page(
 		return nil, nil, err
 	}
 
-	pagination = &universal.Pagination{
+	pagination = &result.Pagination{
 		PageNum:    req.PageNum,
 		PageSize:   req.PageSize,
 		TotalItems: total,

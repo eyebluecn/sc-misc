@@ -8,7 +8,7 @@ import (
 	"github.com/eyebluecn/sc-misc/src/model/do"
 	"github.com/eyebluecn/sc-misc/src/model/info"
 	"github.com/eyebluecn/sc-misc/src/model/query"
-	"github.com/eyebluecn/sc-misc/src/model/universal"
+	"github.com/eyebluecn/sc-misc/src/model/result"
 	"github.com/eyebluecn/sc-misc/src/model/vo"
 	"github.com/eyebluecn/sc-misc/src/repository/repo"
 )
@@ -20,7 +20,7 @@ func NewColumnReadAppSvc() *ColumnReadAppSvc {
 }
 
 // 获取某位读者查看到的专栏列表。
-func (receiver ColumnReadAppSvc) ReaderColumnList(ctx context.Context, operator sc_misc_base.Operator, repoRequest query.ColumnPageQuery) ([]*info.RichColumn, *universal.Pagination, error) {
+func (receiver ColumnReadAppSvc) ReaderColumnList(ctx context.Context, operator sc_misc_base.Operator, repoRequest query.ColumnPageQuery) ([]*info.RichColumn, *result.Pagination, error) {
 
 	columns, pagination, err := repo.NewColumnRepo().Page(ctx, repoRequest)
 	if err != nil {

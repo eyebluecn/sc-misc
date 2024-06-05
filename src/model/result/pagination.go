@@ -1,4 +1,4 @@
-package universal
+package result
 
 // 分页指示器
 type Pagination struct {

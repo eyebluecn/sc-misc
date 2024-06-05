@@ -4,11 +4,11 @@ import (
 	"context"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/eyebluecn/sc-misc/src/common/errs"
-	"github.com/eyebluecn/sc-misc/src/converter/dto2universal"
+	"github.com/eyebluecn/sc-misc/src/converter/dto2result"
 	"github.com/eyebluecn/sc-misc/src/converter/dto2vo"
 	"github.com/eyebluecn/sc-misc/src/converter/po2do"
 	"github.com/eyebluecn/sc-misc/src/infrastructure/rpc/config"
-	"github.com/eyebluecn/sc-misc/src/model/universal"
+	"github.com/eyebluecn/sc-misc/src/model/result"
 	"github.com/eyebluecn/sc-misc/src/model/vo"
 	"github.com/eyebluecn/sc-subscription-idl/kitex_gen/sc_subscription_api"
 )
@@ -22,7 +22,7 @@ func NewSubscriptionCaller() SubscriptionCaller {
 
 // 获取订阅分页列表。预期获得获取订阅分页列表，其余一律算错误。
 // 如果err==nil，则ReaderVO!=nil
-func (receiver SubscriptionCaller) SubscriptionPage(ctx context.Context, request *sc_subscription_api.SubscriptionPageRequest) ([]*vo.SubscriptionVO, *universal.Pagination, error) {
+func (receiver SubscriptionCaller) SubscriptionPage(ctx context.Context, request *sc_subscription_api.SubscriptionPageRequest) ([]*vo.SubscriptionVO, *result.Pagination, error) {
 	response, err := config.SubscriptionRpcClient.SubscriptionPage(ctx, request)
 	if err != nil {
 		klog.CtxErrorf(ctx, "Reader login failed: %v", err)
@@ -48,7 +48,7 @@ func (receiver SubscriptionCaller) SubscriptionPage(ctx context.Context, request
 	}
 
 	readerVos := dto2vo.ConvertSubscriptionVOs(response.Data)
-	pagination := dto2universal.ConvertSubscriptionPagination(response.Pagination)
+	pagination := dto2result.ConvertSubscriptionPagination(response.Pagination)
 
 	return readerVos, pagination, nil
 }
