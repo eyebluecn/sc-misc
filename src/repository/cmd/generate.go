@@ -21,9 +21,11 @@ func main() {
 	modelPkgPath := os.Getenv("MODEL_PKG_PATH")
 	if modelPkgPath == "" {
 		modelPkgPath = "src/model/po"
-		if util.IsWindows() {
-			modelPkgPath = "../model/po"
-		}
+	}
+
+	//在windows环境，是按照相对路径来识别的。
+	if util.IsWindows() {
+		modelPkgPath = "../model/po"
 	}
 
 	generator := gen.NewGenerator(gen.Config{
